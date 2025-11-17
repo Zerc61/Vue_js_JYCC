@@ -46,10 +46,12 @@
     </div>
 
     <!-- Tombol Masuk -->
-    <div class="btn-masuk" @click="goRegister">
-      <div class="rectangle-3"></div>
-      <div class="text-wrapper-6">Masuk</div>
-    </div>
+    <div class="btn-masuk">
+  <div class="rectangle-3">
+    <button class="btn-daftar" @click="goRegister">Daftar</button>
+  </div>
+</div>
+
 
     <div class="text-wrapper-7">Sign-in</div>
 
@@ -64,13 +66,13 @@
 <script>
 export default {
   name: "RegisterPage",
-
   methods: {
     goRegister() {
-      alert("Register ditekan!");
-    },
-  },
-};
+      this.$router.push("/dashboard");
+    }
+  }
+}
+
 </script>
 
 <style>
@@ -223,18 +225,26 @@ export default {
   top: 14px;
 }
 
-.btn-masuk {
+.rectangle-3 {
+  width: 280px;
+  height: 60px;
+  background: #2f357b;
+  border-radius: 20px;
   position: absolute;
-  left: 267px;
-  top: 616px;
+  top: 63.3%;
+  left: 25%;
+  transform: translate(-50%, -50%);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.rectangle-3 {
-  background-color: #4f5999;
-  border-radius: 19px;
-  height: 53px;
-  width: 176px;
+.btn-daftar {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  color: white;
 }
 
 .text-wrapper-6 {

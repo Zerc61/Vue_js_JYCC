@@ -93,26 +93,27 @@ export default {
     return {
       query: "",
       // logo via require so webpack bundles it
-      logo: require("@/assets/logo.png"),
+      logo: require("@/assets/scream.png"),
 
       menus: [
-            { name: "Halal", icon: "icon1.png", route: "/halal" },
-            { name: "UMKM", icon: "icon2.png", route: "/umkm" },
-            { name: "Destinasi", icon: "icon3.png", route: "/destinasi" },
-            { name: "Event", icon: "icon4.png", route: "/event" },
-            { name: "Travel", icon: "icon5.png", route: "/travel" },
-            { name: "Kuliner", icon: "icon6.png", route: "/kuliner" },
-            { name: "Hotel", icon: "icon7.png", route: "/hotel" },
-            { name: "Tiket", icon: "icon8.png", route: "/tiket" },
+            { name: "Halal", icon: "halal.png", route: "/halal" },
+            { name: "UMKM", icon: "umkm.png", route: "/umkm" },
+            { name: "Paket Wisata", icon: "Paket.png", route: "/destinasi" },
+            { name: "Wisata", icon: "wisata.png", route: "/event" },
+            { name: "Travel", icon: "transportasi.png", route: "/travel" },
+            { name: "Kuliner", icon: "kuliner.png", route: "/kuliner" },
+            { name: "Hotel", icon: "hotel.png", route: "/hotel" },
+            { name: "Tiket", icon: "tiket.png", route: "/tiket" },
+            { name: "Tiket", icon: "smart.png", route: "/Smart Itinerary" },
 
             // 👇 Tambahan menu Top Up dengan link
-            { name: "Top Up", icon: "icon9.png", route: "/topup" }
+            { name: "Top Up", icon: "Dcoin.png", route: "/topup" }
             ],
 
       promos: [
-        { title: "Batu Flower Garden", image: "promo1.jpg" },
-        { title: "Selecta Malang", image: "promo2.jpg" },
-        { title: "Museum Angkut", image: "promo3.jpg" }
+        { title: "Batu Flower Garden", image: "batu.png" },
+        { title: "Selecta Malang", image: "malang.png" },
+        { title: "Museum Angkut", image: "angkut.png" }
       ],
 
       umkm: [
