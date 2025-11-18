@@ -53,9 +53,9 @@
 
         <!-- Social Login -->
         <div class="social-login">
-          <i class="fa-brands fa-facebook fa-3x social-icon facebook"></i>
-          <i class="fa-brands fa-twitter fa-3x social-icon twitter"></i>
-          <i class="fa-brands fa-google fa-3x social-icon google"></i>
+          <i class="fa-brands fa-facebook fa-2x social-icon facebook"></i>
+          <i class="fa-brands fa-twitter fa-2x social-icon twitter"></i>
+          <i class="fa-brands fa-google fa-2x social-icon google"></i>
         </div>
 
       </div>
@@ -117,7 +117,7 @@ export default {
 }
 
 .foto {
-  width: 280px;
+  width: 150px;
   height: auto;
   position: absolute;
   top: 60px;
@@ -136,21 +136,20 @@ export default {
 
 .travel-by-plane {
   width: 100%;
-  max-width: 600px;
+  max-width: 400px;
   object-fit: cover;
 }
 
 .welcome-text {
   position: absolute;
-  bottom: 15%;
-  left: 28%;
-  top: ;
+  bottom: 12%;
+  left: 25%;
   color: #ffffff;
-  font-size: 2.5rem;
+  font-size: 2rem;
 }
 
 .form-section {
-  flex: 1;
+  flex: 0.1%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -158,24 +157,24 @@ export default {
 
 .form-card {
   background: #ffffff;
-  border-radius: 62px;
+  border-radius: 50px;
   box-shadow: 0 9px 4px rgba(0, 0, 0, 0.4);
-  padding: 40px;
-  width: 500px;
-  height: 800px;
+  padding: 30px;
+  width: 450px;
+  height: 565px;
   text-align: center;
 }
 
 .login-title {
   color: #3729da;
-  font-size: 3rem;
-  font-weight: 500;
-  margin-top: 100px;
-  margin-bottom: 50px;
+  font-size: 2.9rem;
+  font-weight: 700%;
+  margin-top: 20px;
+  margin-bottom: 55px;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .input-container {
@@ -188,7 +187,7 @@ export default {
   position: absolute;
   left: 15px;
   width: 24px;
-  height: 24px;
+  height: 16px;
 }
 
 .input-field {
@@ -203,15 +202,15 @@ export default {
   color: white;
   border: none;
   border-radius: 19px;
-  padding: 15px 30px;
+  padding: 13px 30px;
   font-size: 1.2rem;
   font-weight: 700;
   cursor: pointer;
-  margin: 20px 0;
+  margin: 5%;
 }
 
 .signup-link {
-  margin-top: 20px;
+  margin-top: 25px;
 }
 
 .signup-text {
@@ -224,8 +223,8 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin: 30px 0;
+  gap: 5px;
+  margin: 15px 0;
 }
 
 .line {
