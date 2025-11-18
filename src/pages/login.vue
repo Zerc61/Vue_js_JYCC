@@ -80,7 +80,7 @@ export default {
 
   methods: {
     async login() {
-  console.log("LOGIN DIKLIK");
+      console.log("LOGIN DIKLIK");
 
       try {
         const response = await axios.post("http://127.0.0.1:8000/api/login", {
@@ -95,10 +95,29 @@ export default {
 
           alert(response.data.message);
 
-          // PINDAH ROUTE
-          this.$router.push("/dashboard")
-            .then(() => console.log("BERHASIL PINDAH"))
-            .catch(err => console.log("ROUTER ERROR:", err));
+          const role = response.data.user.role; // pastikan sesuai struktur API Anda
+
+          // Simpan token jika diperlukan
+          localStorage.setItem("token", response.data.access_token);
+          localStorage.setItem("role", role);
+
+          // ARAHKAN SESUAI ROLE
+          if (role === "admin") {
+            this.$router.push("/admin");
+          } else if (role === "umkm") {
+            this.$router.push("/umkm");
+          } else if (role === "driver") {
+            this.$router.push("/driver");
+          } else {
+            this.$router.push("/dashboard"); // default
+          }
+
+          // alert(response.data.message);
+
+          // // PINDAH ROUTE
+          // this.$router.push("/dashboard")
+          //   .then(() => console.log("BERHASIL PINDAH"))
+          //   .catch(err => console.log("ROUTER ERROR:", err));
           
           // OPSIONAL: SIMPAN TOKEN (kalau perlu)
           localStorage.setItem("token", response.data.access_token);
