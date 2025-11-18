@@ -7,10 +7,11 @@
       <h2 class="title">Convert Rupiah ke D’coin</h2>
       <p class="subtitle">Masukkan nominal rupiah atau pilih jumlah D’coin</p>
 
-      <!-- Input Rupiah -->
+      <!-- Input Rupiah (dengan format titik) -->
       <input
-        type="number"
-        v-model="rupiah"
+        type="text"
+        v-model="displayRupiah"
+        @input="formatRupiahInput"
         placeholder="Masukkan nominal Rupiah"
         class="input-box"
       />
@@ -41,7 +42,8 @@ export default {
   name: "IsiSaldoView",
   data() {
     return {
-      rupiah: "",
+      rupiah: "",           // nilai asli tanpa titik
+      displayRupiah: "",    // tampilan dengan titik
       selected: null,
       dcoinList: [
         2500, 5000, 7500, 10000, 12500, 15000,
@@ -54,23 +56,50 @@ export default {
     goBack() {
       this.$router.push("/topup");
     },
+
+    /* === FORMAT INPUT RUPIAH === */
+    formatRupiahInput() {
+      // hapus titik
+      let number = this.displayRupiah.replace(/\./g, "");
+
+      // simpan nilai asli
+      this.rupiah = number;
+
+      // jika kosong, kosongkan tampilan
+      if (!number) {
+        this.displayRupiah = "";
+        return;
+      }
+
+      // format ke 1.000.000
+      this.displayRupiah = Number(number).toLocaleString("id-ID");
+    },
+
+    /* === PILIH NOMINAL D'COIN === */
     selectDcoin(value) {
       this.selected = value;
-      this.rupiah = value * 1000; // contoh konversi
+
+      const calculated = value * 1000; // contoh konversi
+      this.rupiah = calculated;
+      this.displayRupiah = calculated.toLocaleString("id-ID");
     },
+
     submitTopup() {
       if (!this.rupiah && !this.selected) {
         alert("Isi nominal atau pilih jumlah D’coin terlebih dahulu!");
         return;
       }
-      alert(`Top Up ${this.rupiah} berhasil diproses!`);
+      alert(`Top Up ${this.displayRupiah} berhasil diproses!`);
     },
+
+    /* Format angka coin */
     formatCoin(value) {
       return value.toLocaleString("id-ID");
     }
   }
 };
 </script>
+
 
 <style scoped>
 /* ======== Page Layout ======== */
