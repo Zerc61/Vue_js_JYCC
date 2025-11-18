@@ -6,6 +6,12 @@ import topupView from "@/pages/topup.vue";
 import isisaldoView from "@/pages/isisaldo.vue";
 import konfirmasiView from "@/pages/konfirmasi.vue";
 
+// Admin Pages
+import adminDashboard from "@/pages/admin/admindashboard.vue";
+import AdminUser from "@/pages/admin/AdminUser.vue";
+
+import HargaEmasView from "@/pages/HargaEmasView.vue";
+
 const routes = [
     { path: '/', redirect: '/login' },
     { path: '/login', component: login },
@@ -14,6 +20,14 @@ const routes = [
     { path: '/topup', component: topupView },
     { path: '/isisaldo', component: isisaldoView },
     { path: '/konfirmasi', component: konfirmasiView },
+
+    // Admin Pages
+    { path: '/admin', component: adminDashboard },
+    { path: '/admin/users', component: AdminUser },
+
+    
+    // NEW: Harga Emas
+    { path: "/harga-emas", component: HargaEmasView },
 ];
 
 const router = createRouter({
