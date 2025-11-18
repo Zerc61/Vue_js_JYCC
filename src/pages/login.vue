@@ -65,9 +65,12 @@
 </template>
 
 <script>
+
+import axios from "axios";
+
 export default {
   name: "LoginPages",
-  
+
   data() {
     return {
       email: "",
@@ -76,9 +79,38 @@ export default {
   },
 
   methods: {
-    login() {
-      // LOGIN STATIS (langsung masuk)
-      this.$router.push("/dashboard");
+    async login() {
+  console.log("LOGIN DIKLIK");
+
+      try {
+        const response = await axios.post("http://127.0.0.1:8000/api/login", {
+          email: this.email,
+          password: this.password
+        });
+
+        console.log("RESPONSE:", response.data);
+
+        // CEK STATUS BERHASIL
+        if (response.data.status === 1) {
+
+          alert(response.data.message);
+
+          // PINDAH ROUTE
+          this.$router.push("/dashboard")
+            .then(() => console.log("BERHASIL PINDAH"))
+            .catch(err => console.log("ROUTER ERROR:", err));
+          
+          // OPSIONAL: SIMPAN TOKEN (kalau perlu)
+          localStorage.setItem("token", response.data.access_token);
+
+        } else {
+          alert("Login gagal!");
+        }
+
+      } catch (error) {
+        console.log("ERROR:", error);
+        alert("Email atau password salah!");
+      }
     }
   }
 };

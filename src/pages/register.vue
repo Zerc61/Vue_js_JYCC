@@ -23,7 +23,7 @@
         <div class="form-group">
           <div class="input-container">
             <i class="fa-solid fa-user icon"></i>
-            <input type="Usrname" placeholder="Username" class="input-field" v-model="Username" />
+            <input type="text" placeholder="Username" class="input-field" v-model="username" />
           </div>
         </div>
 
@@ -47,7 +47,7 @@
         <div class="form-group">
           <div class="input-container">
             <i class="fa-solid fa-lock icon"></i>
-            <input type="Konfirmasi" placeholder="Konfirmasi" class="input-field" v-model="Konfirmasi" />
+            <input type="text" placeholder="Konfirmasi" class="input-field" v-model="konfirmasi" />
           </div>
         </div>
 
@@ -67,22 +67,50 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
-  name: "RegisterPages",
-  
+  name: "RegisterPage",
+
   data() {
     return {
+      username: "",
       name: "",
       email: "",
-      password: ""
+      password: "",
+      konfirmasi: ""   // <--- tambahkan ini
     };
   },
 
   methods: {
-    register() {
-      this.$router.push("/dashboard");
+  async register() {
+
+    // VALIDASI PASSWORD vs KONFIRMASI
+    if (this.password !== this.konfirmasi) {
+      alert("Password dan konfirmasi password tidak sama!");
+      return; // hentikan proses
+    }
+
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/api/users", {
+        username: this.username,
+        name: "@", // ini nanti bisa diganti data asli
+        email: this.email,
+        password: this.password
+      });
+
+      console.log("REGISTER RESPONSE:", response.data);
+
+      alert("Registrasi berhasil!");
+      this.$router.push("/login");
+
+    } catch (error) {
+      console.log("REGISTER ERROR:", error);
+
+      alert("Gagal melakukan registrasi!");
     }
   }
+}
 };
 </script>
 
