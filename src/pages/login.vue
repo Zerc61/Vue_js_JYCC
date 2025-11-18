@@ -137,13 +137,14 @@ export default {
 .travel-by-plane {
   width: 100%;
   max-width: 400px;
+  margin-left: 12%;
   object-fit: cover;
 }
 
 .welcome-text {
   position: absolute;
   bottom: 12%;
-  left: 25%;
+  left: 30%;
   color: #ffffff;
   font-size: 2rem;
 }
