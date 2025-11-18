@@ -115,16 +115,16 @@ export default {
       ],
 
       umkm: [
-        { name: "Kuliner", image: "umkm1.jpg" },
-        { name: "Makanan Olahan", image: "umkm2.jpg" },
-        { name: "Fashion", image: "umkm3.jpg" },
-        { name: "Kerajinan Tanggan", image: "minuman.png" },
-        { name: "Jasa", image: "umkm5.jpg" },
-        { name: "Agribisnis", image: "umkm5.jpg" },
-        { name: "Bisnis Sosial", image: "umkm5.jpg" },
-        { name: "IT dan Teknologi", image: "umkm5.jpg" },
-        { name: "Peternakan", image: "umkm5.jpg" },
-        { name: "Perdagangan (Ritel)", image: "umkm5.jpg" },
+        { name: "Kuliner", image: "kuliner.png" },
+        { name: "Makanan Olahan", image: "makan.png" },
+        { name: "Fashion", image: "fashion.png" },
+        { name: "Kerajinan Tanggan", image: "kerajinan.png" },
+        { name: "Jasa", image: "jasa.png" },
+        { name: "Agribisnis", image: "agri.png" },
+        { name: "Bisnis Sosial", image: "bisnis.png" },
+        { name: "IT dan Teknologi", image: "teknologi.png" },
+        { name: "Peternakan", image: "peternak.png" },
+        { name: "Perdagangan (Ritel)", image: "pedagang.png" },
       ],
 
       bottomNav: [
@@ -203,7 +203,7 @@ export default {
 .umkm-section { max-width:1100px; margin: 8px auto; padding: 0 16px 80px; }
 .umkm-list { display:flex; gap:12px; overflow-x:auto; padding:6px 0; }
 .umkm-item { min-width:84px; display:flex; flex-direction:column; align-items:center; gap:8px; background:transparent; cursor:pointer; }
-.umkm-photo { width:72px; height:72px; border-radius:50%; object-fit:cover; box-shadow: 0 6px 14px rgba(15,23,42,0.06); }
+.umkm-photo { width:60px; height:60px; border-radius:10%; object-fit:cover; box-shadow: 0 6px 14px rgba(15,23,42,0.06); }
 .umkm-name { font-size:12px; text-align:center; color:#0f172a; }
 
 /* bottom nav */

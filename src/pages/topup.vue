@@ -27,7 +27,7 @@
 
           <div class="balance-cta">
             <button class="btn-primary" @click="topUp">Isi Saldo</button>
-            <button class="btn-ghost" @click="convertGold">Tukar Emas</button>
+            <!-- <button class="btn-ghost" @click="convertGold">Tukar Emas</button> -->
           </div>
         </div>
 

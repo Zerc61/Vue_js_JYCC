@@ -3,6 +3,8 @@ import login from "@/pages/login.vue";
 import registerView from "@/pages/register.vue";
 import dashboardView from "@/pages/dashboard.vue";
 import topupView from "@/pages/topup.vue";
+import isisaldoView from "@/pages/isisaldo.vue";
+import konfirmasiView from "@/pages/konfirmasi.vue";
 
 const routes = [
     { path: '/', redirect: '/login' },
@@ -10,6 +12,8 @@ const routes = [
     { path: '/register', component: registerView },
     { path: '/dashboard', component: dashboardView },
     { path: '/topup', component: topupView },
+    { path: '/isisaldo', component: isisaldoView },
+    { path: '/konfirmasi', component: konfirmasiView },
 ];
 
 const router = createRouter({
