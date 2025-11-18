@@ -142,12 +142,11 @@ export default {
 
 .welcome-text {
   position: absolute;
-  bottom: 20%;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 15%;
+  left: 28%;
+  top: ;
   color: #ffffff;
   font-size: 2.5rem;
-  font-weight: 400;
 }
 
 .form-section {
