@@ -5,8 +5,8 @@
     <header class="header">
       <div class="header-inner">
         <div class="brand">
-          <img :src="logo" alt="Logo" class="logo" />
-          <h1 class="title">Halal Apps</h1>
+          <img :src="require('@/assets/scream.png')" alt="Logo" class="logo" />
+          <h1 class="title">SCREAM Destination</h1>
         </div>
 
         <div class="search-wrap">
@@ -96,12 +96,10 @@ export default {
       logo: require("@/assets/scream.png"),
 
       menus: [
-            { name: "Halal", icon: "halal.png", route: "/halal" },
             { name: "UMKM", icon: "umkm.png", route: "/umkm" },
             { name: "Paket Wisata", icon: "Paket.png", route: "/destinasi" },
             { name: "Wisata", icon: "wisata.png", route: "/event" },
             { name: "Travel", icon: "transportasi.png", route: "/travel" },
-            { name: "Kuliner", icon: "kuliner.png", route: "/kuliner" },
             { name: "Hotel", icon: "hotel.png", route: "/hotel" },
             { name: "Tiket", icon: "tiket.png", route: "/tiket" },
             { name: "Tiket", icon: "smart.png", route: "/Smart Itinerary" },
@@ -117,11 +115,16 @@ export default {
       ],
 
       umkm: [
-        { name: "Kerajinan", image: "umkm1.jpg" },
-        { name: "Sambal", image: "umkm2.jpg" },
-        { name: "Batik", image: "umkm3.jpg" },
-        { name: "Kopi", image: "umkm4.jpg" },
-        { name: "Olahan Ikan", image: "umkm5.jpg" }
+        { name: "Kuliner", image: "umkm1.jpg" },
+        { name: "Makanan Olahan", image: "umkm2.jpg" },
+        { name: "Fashion", image: "umkm3.jpg" },
+        { name: "Kerajinan Tanggan", image: "minuman.png" },
+        { name: "Jasa", image: "umkm5.jpg" },
+        { name: "Agribisnis", image: "umkm5.jpg" },
+        { name: "Bisnis Sosial", image: "umkm5.jpg" },
+        { name: "IT dan Teknologi", image: "umkm5.jpg" },
+        { name: "Peternakan", image: "umkm5.jpg" },
+        { name: "Perdagangan (Ritel)", image: "umkm5.jpg" },
       ],
 
       bottomNav: [
@@ -154,7 +157,7 @@ export default {
 .page { min-height: 100vh; background: #f3f4f6; padding-bottom: 88px; }
 
 /* Header */
-.header { background: linear-gradient(90deg,#3b82f6,#6366f1); color: #fff; padding: 18px 16px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; box-shadow: 0 6px 18px rgba(99,102,241,0.12); }
+.header { background: #190F49; color: #fff; padding: 18px 16px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; box-shadow: 0 6px 18px rgba(99,102,241,0.12); }
 .header-inner { max-width: 1100px; margin: 0 auto; display:flex; flex-direction:column; gap:12px; }
 .brand { display:flex; align-items:center; gap:12px; }
 .logo { width:44px; height:44px; object-fit:contain; border-radius:8px; background:rgba(255,255,255,0.08); padding:6px; }
@@ -176,7 +179,7 @@ export default {
 
 /* menu */
 .menu-section { max-width:1100px; margin: -28px auto 8px; padding: 0 16px; }
-.menu-grid { background:#fff; padding:14px; border-radius:14px; display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; box-shadow: 0 6px 18px rgba(15,23,42,0.04); }
+.menu-grid { background:#fff; padding:14px; border-radius:14px; display:grid; grid-template-columns: repeat(4, 1fr); gap:2px; box-shadow: 0 6px 18px rgba(15,23,42,0.04); }
 .menu-item { display:flex; flex-direction:column; align-items:center; gap:8px; padding:6px 4px; text-align:center; cursor:pointer; transition: transform .18s ease, box-shadow .18s ease; }
 .menu-item:hover { transform: translateY(-6px); }
 .menu-icon { width:56px; height:56px; border-radius:12px; background: #eff6ff; display:flex; align-items:center; justify-content:center; box-shadow: 0 6px 12px rgba(15,23,42,0.04); }

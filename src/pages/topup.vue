@@ -2,7 +2,7 @@
   <div class="wallet-page">
     <!-- top bar -->
     <header class="topbar">
-      <button class="icon-btn" @click="goBack">⟵</button>
+      <button class="icon-btn" @click="goRegister">⟵</button>
     </header>
 
     <!-- main content container -->
@@ -82,12 +82,12 @@ export default {
   methods: {
     goBack() {
       // contoh: router back jika pakai vue-router
-      if (this.$router && this.$router.history) this.$router.back();
+      if (this.$router) this.$router.push("/dashboard");
       else alert("Back");
     },
     topUp() {
       // contoh redirect ke halaman topup
-      if (this.$router) this.$router.push("/topup");
+      if (this.$router) this.$router.push("/isisaldo");
       else alert("Top Up clicked");
     },
     convertGold() {
@@ -108,7 +108,7 @@ export default {
       if (this.$router) this.$router.push("/history");
       else alert("Riwayat");
     },
-    goHome(){ if(this.$router) this.$router.push("/"); },
+    goHome(){ if(this.$router) this.$router.push("/dashboard"); },
     goExplore(){ if(this.$router) this.$router.push("/explore"); },
     goWallet(){ if(this.$router) this.$router.push("/wallet"); },
     goOrders(){ if(this.$router) this.$router.push("/orders"); },
