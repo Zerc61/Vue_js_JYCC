@@ -41,7 +41,7 @@
         </div>
       </div>
 
-      <button class="btn" @click="konfirmasiTopup">Konfirmasi</button>
+      <button class="btn" @click="konfirmasiTopup">Bayar</button>
     </div>
   </div>
 </template>
@@ -69,14 +69,10 @@ export default {
   },
   methods: {
     konfirmasiTopup() {
-  this.$router.push({
-    path: "/pembayaran",
-    query: {
-      total: this.totalKeseluruhan,
-      dcoin: this.dcoin
-    }
-  });
-},
+      alert(`Top Up ${this.formattedRupiah} Lanjut ke Pembayaran!`);
+      if (this.$router) this.$router.push("/pembayaran");
+      else alert("Top Up clicked");
+    },
 
     goBack() {
       this.$router.push("/isisaldo");

@@ -1,7 +1,7 @@
 <template>
   <div class="pay-page">
     <header class="head">
-      <img :src="require('@/assets/scream.png')" alt="logo" class="logo" />
+      <img src="@/assets/scream.png" alt="logo" class="logo" />
       <h1 class="title">SCREAM DESTINATION</h1>
     </header>
 
@@ -12,7 +12,7 @@
       <h3 class="category">Virtual Account</h3>
       <div
         v-for="(item, i) in vaList"
-        :key="i"
+        :key="'va-'+i"
         class="pay-box"
         @click="selected = item.name"
       >
@@ -23,10 +23,10 @@
         <input type="radio" :checked="selected === item.name" />
       </div>
 
-      <h3 class="category">E-Wallet</h3>
+      <h3 class="category">QRIS</h3>
       <div
-        v-for="(item, i) in walletList"
-        :key="i"
+        v-for="(item, i) in Qrislist"
+        :key="'qris-'+i"
         class="pay-box"
         @click="selected = item.name"
       >
@@ -35,24 +35,6 @@
           <span class="label">{{ item.name }}</span>
         </div>
         <input type="radio" :checked="selected === item.name" />
-      </div>
-
-      <h3 class="category">Qris</h3>
-      <div class="pay-box" @click="selected = 'QRIS'">
-        <div class="left">
-          <img :src="require('@/assets/qris.png')" class="icon" />
-          <span class="label">QRIS</span>
-        </div>
-        <input type="radio" :checked="selected === 'QRIS'" />
-      </div>
-
-      <h3 class="category">Credit Card</h3>
-      <div class="pay-box" @click="selected = 'Credit Card'">
-        <div class="left">
-          <img :src="require('@/assets/card.png')" class="icon-card" />
-          <span class="label">Credit Card</span>
-        </div>
-        <input type="radio" :checked="selected === 'Credit Card'" />
       </div>
 
       <div class="footer">
@@ -61,7 +43,11 @@
           <span class="price">{{ formattedTotal }}</span>
         </div>
 
-        <button class="btn" :disabled="!selected" @click="lanjut">
+        <button
+          class="btn"
+          :disabled="!selected"
+          @click="lanjut"
+        >
           Lanjutkan
         </button>
       </div>
@@ -71,45 +57,55 @@
 
 <script>
 export default {
-  name: "PembayaranView",
+  name: "PembayaranPage",
+
   data() {
     return {
-      selected: "",
-      total: Number(this.$route.query.total || 0),
-      dcoin: Number(this.$route.query.dcoin || 0),
+      total: 50000, // Nominal pembayaran
+      selected: null, // Menyimpan metode pembayaran yang dipilih
 
-      // PERBAIKAN: Semua nama file diubah menjadi huruf kecil di sini
+      // --- DATA LIST PEMBAYARAN ---
       vaList: [
-        { name: "BCA", logo: require("@/assets/BCA.png") }, // Cek apakah file fisik BCA.png diubah ke bca.png
-        { name: "BRI", logo: require("@/assets/BRI.png") },
-        { name: "CIMB Niaga", logo: require("@/assets/CIMB.jpg") },
+        { name: 'BCA Virtual Account', logo: require('@/assets/BCA.png') },
+        { name: 'MANDIRI Virtual Account', logo: require('@/assets/MANDIRI.png') },
+        { name: 'BRI Virtual Account', logo: require('@/assets/BRI.png') },
+        { name: 'CIMB NIAGA Virtual Account', logo: require('@/assets/CIMB-NIAGA.png') }
       ],
-
-      walletList: [
-        { name: "OVO", logo: require("@/assets/OVO.jpg") },
-        { name: "GoPay", logo: require("@/assets/GOPAY.jpg") },
-        { name: "ShopeePay", logo: require("@/assets/SHOPEE.png") },
-      ],
+      Qrislist: [
+        // Perhatikan name 'QRIS' harus sama dengan yang dicek di method lanjut()
+        { name: 'QRIS', logo: require('@/assets/qris.png') },
+      ]
     };
   },
 
   computed: {
     formattedTotal() {
-      return this.total.toLocaleString("id-ID");
-    },
+      if (!this.total) return "Rp 0";
+      return "Rp " + this.total.toLocaleString("id-ID");
+    }
   },
 
   methods: {
     lanjut() {
-      alert(`Pembayaran menggunakan ${this.selected} berhasil!`);
-      this.$router.push("/topup");
-    },
-  },
+  if (this.selected === 'QRIS') {
+     this.$router.push("/pembayaran/qris");
+  } 
+  else if (this.selected === 'BCA Virtual Account') {
+     this.$router.push("/pembayaran/bca");
+  }
+  else if (this.selected === 'MANDIRI Virtual Account') {
+     this.$router.push("/pembayaran/mandiri");
+  }
+  else {
+     alert(`Pembayaran menggunakan ${this.selected} berhasil!`);
+     this.$router.push("/topup");
+  }
+}
+  }
 };
 </script>
 
 <style scoped>
-/* (Bagian <style> tidak perlu diubah karena tidak ada error di sini) */
 .pay-page {
   background: #eee;
   min-height: 100vh;
@@ -157,6 +153,7 @@ export default {
   margin: 20px 0 8px;
   font-weight: 600;
   font-size: 15px;
+  color: #333;
 }
 
 .pay-box {
@@ -173,7 +170,13 @@ export default {
 }
 
 .pay-box:hover {
+  border-color: #180c4a;
   transform: scale(1.01);
+}
+
+/* Style tambahan jika item dipilih */
+.pay-box input:checked {
+  accent-color: #180c4a;
 }
 
 .left {
@@ -184,14 +187,13 @@ export default {
 
 .icon {
   width: 35px;
-}
-
-.icon-card {
-  width: 45px;
+  height: auto;
+  object-fit: contain;
 }
 
 .label {
   font-weight: 600;
+  font-size: 14px;
 }
 
 .footer {
@@ -203,20 +205,22 @@ export default {
 .price-wrap {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .tlabel {
-  font-size: 13px;
+  font-size: 14px;
+  color: #555;
 }
 
 .price {
   color: #180c4a;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .btn {
-  margin-top: 10px;
   width: 100%;
   background: #180c4a;
   color: white;
@@ -226,6 +230,11 @@ export default {
   cursor: pointer;
   font-size: 16px;
   font-weight: 600;
+  transition: background 0.3s;
+}
+
+.btn:hover:not(:disabled) {
+  background: #2a1675;
 }
 
 .btn:disabled {

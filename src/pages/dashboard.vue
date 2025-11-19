@@ -132,7 +132,7 @@ export default {
         { name: "Kuliner", image: "kuliner.png" },
         { name: "Makanan Olahan", image: "makan.png" },
         { name: "Fashion", image: "fashion.png" },
-        { name: "Kerajinan Tanggan", image: "kerajinan.png" },
+        { name: "Kerajinan Tangan", image: "kerajinan.png" },
         { name: "Jasa", image: "jasa.png" },
         { name: "Agribisnis", image: "agri.png" },
         { name: "Bisnis Sosial", image: "bisnis.png" },

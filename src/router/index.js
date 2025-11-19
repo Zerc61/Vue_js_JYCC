@@ -1,18 +1,23 @@
 import { createRouter, createWebHistory } from "vue-router";
 
+// User Pages
 import login from "@/pages/login.vue";
 import registerView from "@/pages/register.vue";
 import dashboardView from "@/pages/dashboard.vue";
 import topupView from "@/pages/topup.vue";
 import isisaldoView from "@/pages/isisaldo.vue";
 import konfirmasiView from "@/pages/konfirmasi.vue";
-import PembayaranView from "@/pages/pembayaran.vue";
+import pembayaranPage from "@/pages/pembayaran.vue";
+import QrisPage from "@/pages/qris.vue";
+import BcaPage from "@/pages/bca.vue";
+import MandiriPage from "@/pages/mandiri.vue";
 
 // Admin Pages
 import adminDashboard from "@/pages/admin/admindashboard.vue";
 import AdminUser from "@/pages/admin/AdminUser.vue";
 import AdminUmkm from "@/pages/admin/AdminUmkm.vue";
 
+// Other
 import HargaEmasView from "@/pages/HargaEmasView.vue";
 
 const routes = [
@@ -34,7 +39,10 @@ const routes = [
       dcoin: route.params.dcoin,
     }),
   },
-  { path: "/pembayaran", name: "Pembayaran", component: PembayaranView },
+  { path: "/pembayaran", name: "Pembayaran", component: pembayaranPage },
+  { path: "/pembayaran/qris", name: "Qris", component: QrisPage },
+  { path: "/pembayaran/bca", name: "BcaPage", component: BcaPage },
+  { path: "/pembayaran/mandiri", name: "MandiriPage", component: MandiriPage },
 
   // Admin routes
   { path: "/admin", name: "AdminDashboard", component: adminDashboard },
@@ -42,7 +50,7 @@ const routes = [
   { path: "/admin/umkms", name: "AdminUmkm", component: AdminUmkm },
 
   // Other
-  { path: "/harga-emas", component: HargaEmasView },
+  { path: "/harga-emas", name: "HargaEmas", component: HargaEmasView },
 ];
 
 const router = createRouter({
