@@ -1,284 +1,154 @@
 <template>
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
+  <transition name="fadeSlide">
+    <div class="login-web">
 
+      <div class="konten">
+        <img :src="require('@/assets/scream.png')" class="foto" />
+      </div>
 
-  <div class="sing-up-desktop">
-    <div class="rectangle"></div>
+      <div class="background-section">
+        <img :src="require('@/assets/regis.png')" class="travel-by-plane" />
+        <div class="welcome-text">Start your life with a better experience</div>
+      </div>
 
-   <div class="konten">
-      <img :src="require('@/assets/scream.png')" alt="" class="foto" />
+      <div class="form-section">
+        <div class="form-card">
+          <h1 class="login-title">Register</h1>
+
+          <!-- USERNAME -->
+          <div class="form-group">
+            <div class="input-container">
+              <i class="fa-solid fa-user icon"></i>
+              <input type="text" placeholder="Username" class="input-field" v-model="username" />
+            </div>
+          </div>
+
+          <!-- NAMA LENGKAP -->
+          <div class="form-group">
+            <div class="input-container">
+              <i class="fa-solid fa-user icon"></i>
+              <input type="text" placeholder="Nama Lengkap" class="input-field" v-model="name" />
+            </div>
+          </div>
+
+          <!-- EMAIL -->
+          <div class="form-group">
+            <div class="input-container">
+              <i class="fa-solid fa-envelope icon"></i>
+              <input type="email" placeholder="Email" class="input-field" v-model="email" />
+            </div>
+          </div>
+
+          <!-- PASSWORD -->
+          <div class="form-group">
+            <div class="input-container">
+              <i class="fa-solid fa-lock icon"></i>
+              <input type="password" placeholder="Password" class="input-field" v-model="password" />
+            </div>
+          </div>
+
+          <button class="login-btn" @click="register">Daftar</button>
+
+          <div class="signup-link">
+            <span>Sudah punya akun?</span>
+            <router-link to="/login" class="signup-text">Login</router-link>
+          </div>
+
+        </div>
+      </div>
+
     </div>
-
-    <div class="background-section">
-      <img :src="require('@/assets/regis.png')" alt="" class="regis" />
-      <div class="welcome-text">Welcome back Friend</div>
-    </div>
-
-    <!-- Username -->
-    <div class="form-usename">
-      <div class="div"></div>
-      <i class="fa-solid fa-user img"></i>
-      <div class="text-wrapper">Username</div>
-    </div>
-
-    <!-- Email -->
-    <div class="form-email">
-      <div class="div"></div>
-
-      <i class="fa-solid fa-envelope img"></i>
-      <div class="text-wrapper-2">Email</div>
-    </div>
-
-    <!-- Password -->
-    <div class="form-pw">
-      <div class="rectangle-2"></div>
-      <i class="fa-solid fa-lock img-2"></i>
-      <div class="text-wrapper-3">Password</div>
-    </div>
-
-    <!-- Konfirmasi / Kode OTP -->
-    <div class="form-kodeotp">
-      <div class="rectangle-2"></div>
-      <i class="fa-solid fa-key img-2"></i>
-      <div class="text-wrapper-8">Konfirmasi</div>
-    </div>
-
-    <!-- Tombol Masuk -->
-    <div class="btn-masuk">
-  <div class="rectangle-3">
-    <button class="btn-daftar" @click="goRegister">Daftar</button>
-  </div>
-</div>
-
-
-    <div class="text-wrapper-7">Sign-in</div>
-
-    <!-- Sudah punya akun -->
-    <div class="btn-login">
-      <div class="text-wrapper-4">Sudah punya akun?</div>
-      <router-link to="/login" class="text-wrapper-5">Login</router-link>
-    </div>
-  </div>
+  </transition>
 </template>
 
+
 <script>
+import axios from "axios";
+
 export default {
   name: "RegisterPage",
+
+  data() {
+    return {
+      username: "",
+      name: "",
+      email: "",
+      password: "",
+    };
+  },
+
   methods: {
-    goRegister() {
-      this.$router.push("/dashboard");
+    async register() {
+
+
+      try {
+        const response = await axios.post("http://127.0.0.1:8000/api/register", {
+          username: this.username,
+          name: this.name,
+          email: this.email,
+          password: this.password
+        });
+
+        if (response.data.status === 1) {
+          alert("Registrasi berhasil!");
+          this.$router.push("/login");
+        } else {
+          alert("Registrasi gagal!");
+        }
+
+      } catch (error) {
+        alert("Gagal registrasi! Periksa input atau server.");
+      }
     }
   }
-}
-
+};
 </script>
 
-<style>
-/* seluruh CSS tetap sama seperti versi kamu */
 
-.konten {
-  position: absolute;
-  top: -6%;
-  right: 0%;
-  text-align: center;
+<style scoped>
+/* ANIMASI SIMPLE */
+.fadeSlide-enter-active {
+  animation: fadeSlideIn .6s ease forwards;
 }
-.sing-up-desktop {
-  display: flex;              /* ⬅ Biar sejajar kiri-kanan */
-  justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.4) 0%,
-      rgba(0, 0, 0, 0.4) 100%
-    ),
-    linear-gradient(0deg, rgba(42, 25, 121, 1) 0%, rgba(42, 25, 121, 1) 100%);
-  min-height: 1024px;
-  min-width: 1440px;
-  position: relative;
-  width: 100%;
-  padding-left: 40px;
+.fadeSlide-leave-active {
+  animation: fadeSlideOut .4s ease forwards;
+  filter: blur(3px);
+}
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(40px) scale(.92); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes fadeSlideOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(-40px) scale(.95); }
 }
 
-.sing-up-desktop {
-  background-color: #ffffff;
-  border-radius: 62px;
-  box-shadow: inset 0px 9px 4px #00000040;
-  height: 850px;
-  left: 30px;
-  position: relative;
-  top: 26px;
-  width: 646px;
-}
+/* ======= CSS ASLI LOGIN (TANPA EDIT) ======= */
 
-.rectangle {
-  background-color: #ffffff;
-  border-radius: 62px;
-  box-shadow: inset 0px 9px 4px #00000040;
-  height: 910px;
-  left: auto;
-  position: relative;
-  top: 0%;
-  width: 646px; 
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-.background-section {
-  display: flex;
-  flex-direction: column;   /* gambar di atas, teks di bawah */
-  align-items: center;
-  justify-content: center;
-  width: 50%;               /* setengah layar kanan */
-  height: 100%;
+.konten { position:absolute; top:-10%; left:0%; text-align:center; }
+.login-web {
+  display:flex; flex-direction:row; min-height:100vh;
+  background:linear-gradient(0deg,rgba(0,0,0,.4),rgba(0,0,0,.4)),
+             linear-gradient(0deg,rgba(42,25,121,1),rgba(42,25,121,1));
+  font-family:"Inria Sans", Helvetica, sans-serif;
 }
-
-.regis {
-  width: 400px;
-  position: relative;
-  z-index: 2;
-  margin-bottom: 20px;
-  /* object-fit: cover; */
+.foto { width:150px; position:absolute; top:60px; left:20px; }
+.background-section { flex:1; display:flex; justify-content:center; align-items:center; position:relative; }
+.travel-by-plane { width:100%; max-width:400px; margin-left:12%; }
+.welcome-text { position:absolute; bottom:9%; left:13%; color:white; font-size:2rem; }
+.form-section { flex:.1%; display:flex; justify-content:center; align-items:center; }
+.form-card {
+  background:white; width:450px; height:565px;
+  border-radius:50px; text-align:center;
+  padding:30px; box-shadow:0 9px 4px rgba(0,0,0,.4);
 }
-
-.foto {
-  width: 280px;
-  height: auto;
-  position: absolute;
-  top: 60px;
-  right: 20px;
-  z-index: 10;
-}
-
-.welcome-text {
-  color: #ffffff;
-  font-size: 2.5rem;
-  font-weight: 400;
-  z-index: 3;
-  text-align: center;
-}
-
-.form-usename,
-.form-email,
-.form-pw,
-.form-kodeotp {
-  position: absolute;
-  height: 53px;
-  width: 436px;
-}
-
-.form-email {
-  left: 146px;
-  top: 263px;
-}
-
-.form-usename {
-  left: 145px;
-  top: 353px;
-}
-
-.form-pw {
-  left: 146px;
-  top: 443px;
-  width: 434px;
-}
-
-.form-kodeotp {
-  left: 146px;
-  top: 533px;
-  width: 434px;
-}
-
-.div,
-.rectangle-2 {
-  background-color: #ffffff;
-  border: 1px solid #000;
-  border-radius: 22px;
-  height: 53px;
-  width: 434px;
-}
-
-.img,
-.img-2 {
-  font-size: 22px;
-  color: #4d5183;
-  position: absolute;
-  left: 20px;
-  top: 15px;
-}
-
-.img-2 {
-  left: 20px;
-  top: 13px;
-  font-size: 23px;
-}
-
-.text-wrapper,
-.text-wrapper-2,
-.text-wrapper-3,
-.text-wrapper-8 {
-  color: #4d5183;
-  font-family: "Inria Sans-Light", Helvetica;
-  font-size: 20px;
-  font-weight: 300;
-  position: absolute;
-  left: 65px;
-  top: 14px;
-}
-
-.rectangle-3 {
-  width: 280px;
-  height: 60px;
-  background: #2f357b;
-  border-radius: 20px;
-  position: absolute;
-  top: 63.3%;
-  left: 25%;
-  transform: translate(-50%, -50%);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-daftar {
-  background: transparent;
-  border: none;
-  font-size: 20px;
-  color: white;
-}
-
-.text-wrapper-6 {
-  color: white;
-  position: absolute;
-  top: 15px;
-  left: 60px;
-  font-weight: bold;
-}
-
-.text-wrapper-7 {
-  font-size: 96px;
-  color: #3729da;
-  position: absolute;
-  top: 92px;
-  left: 197px;
-}
-
-.btn-login {
-  display: flex;
-  gap: 10px;
-  left: 251px;
-  position: absolute;
-  top: 699px;
-}
-
-.text-wrapper-4 {
-  font-size: 20px;
-}
-
-.text-wrapper-5 {
-  color: #0004ff;
-  font-size: 20px;
-  cursor: pointer;
-  text-decoration: underline;
-}
+.login-title { color:#3729da; font-size:2.9rem; margin-bottom:55px; }
+.input-container { position:relative; display:flex; align-items:center; }
+.icon { position:absolute; left:15px; }
+.input-field { width:100%; padding:15px 15px 15px 50px; border-radius:22px; border:1px solid #000; }
+.login-btn { background:#4f5999; padding:13px 30px; border-radius:19px; color:white; font-size:1.2rem; margin:5%; cursor:pointer; }
+.signup-text { color:#0004ff; font-weight:bold; }
+.form-group { margin-bottom:15px; }
 </style>

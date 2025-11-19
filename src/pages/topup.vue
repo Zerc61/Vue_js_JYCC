@@ -2,7 +2,7 @@
   <div class="wallet-page">
     <!-- top bar -->
     <header class="topbar">
-      <button class="icon-btn" @click="goRegister">⟵</button>
+      <button class="icon-btn" @click="goBack">⟵</button>
     </header>
 
     <!-- main content container -->
@@ -14,7 +14,7 @@
             <p class="subtitle">Konversi uang kamu ke emas, dapatkan D'coin untuk transaksi halal.</p>
           </div>
           <div class="wallet-actions">
-            <button class="btn-outline" @click="showHistory">Riwayat</button>
+            <button class="btn-ghost" @click="showHistory">Riwayat</button>
           </div>
         </div>
 
@@ -27,7 +27,6 @@
 
           <div class="balance-cta">
             <button class="btn-primary" @click="topUp">Isi Saldo</button>
-            <button class="btn-ghost" @click="convertGold">Tukar Emas</button>
           </div>
         </div>
 
@@ -81,9 +80,7 @@ export default {
   name: "topupView",
   methods: {
     goBack() {
-      // contoh: router back jika pakai vue-router
-      if (this.$router) this.$router.push("/dashboard");
-      else alert("Back");
+      this.$router.push("/dashboard");
     },
     topUp() {
       // contoh redirect ke halaman topup
@@ -137,15 +134,25 @@ export default {
   align-items: center;
   padding: 0 16px;
 }
+
+/* Tombol Back */
 .icon-btn {
-  background: rgba(255,255,255,0.6);
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  background: white;
   border: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  font-weight: 600;
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  font-size: 20px;
+  font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 6px 12px rgba(2,6,23,0.06);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+  transition: 0.25s;
+}
+.icon-btn:hover {
+  transform: scale(1.13);
 }
 
 /* container */
