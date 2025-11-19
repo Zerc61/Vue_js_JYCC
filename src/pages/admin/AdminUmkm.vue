@@ -1,21 +1,23 @@
 <template>
   <div class="page">
     <!-- SIDEBAR -->
-    <div :class="['sidebar', { collapsed: isCollapsed }]">
-      <div class="brand">ADMIN PANEL</div>
+    <div :class="['sidebar', { collapsed: isCollapsed }]" id="sidebar">
+      <div class="brand">ADMIN</div>
       <ul>
         <li @click="$router.push('/admin')">🏠 Dashboard</li>
-        <li @click="$router.push('/admin/umkms')">📊 Data UMKM</li>
+        <li @click="$router.push('/admin/users')">👤 Data User</li>
+        <li @click="$router.push('/admin/umkms')">🏪 Data UMKM</li>
+        <li @click="$router.push('/admin/laporan')">📄 Laporan</li>
+        <li @click="$router.push('/admin/setting')">⚙️ Pengaturan</li>
+        <li @click="logout">🚪 Logout</li>
       </ul>
     </div>
 
     <!-- MAIN CONTENT -->
-    <div :class="['main', { collapsed: isCollapsed }]">
-      <div class="toggle-btn" @click="toggleSidebar">
-        {{ isCollapsed ? "➡️" : "⬅️" }}
-      </div>
+    <div :class="['main', { collapsed: isCollapsed }]" id="mainContent">
+      <span class="toggle-btn" @click="toggleSidebar">☰ Toggle Sidebar</span>
 
-      <h2>Data UMKM</h2>
+      <h1>Data UMKM</h1>
 
       <table class="umkm-table">
         <thead>
@@ -78,6 +80,7 @@
 import axios from "axios";
 
 export default {
+  name: "adminUMKM",
   data() {
     return {
       isCollapsed: false,
@@ -92,12 +95,16 @@ export default {
     toggleSidebar() {
       this.isCollapsed = !this.isCollapsed;
     },
+    logout() {
+      alert("Logout clicked");
+      // axios.post('/api/logout') bisa ditambahkan di sini
+    },
     async fetchUMKMs(url = "http://127.0.0.1:8000/api/umkms") {
       try {
         const res = await axios.get(url);
         if (res.data.status === 1) {
-          this.umkms = res.data.data.data || res.data.data; // paginate or non-paginate
-          this.pagination = res.data.data; // pagination info jika paginate
+          this.umkms = res.data.data.data || res.data.data; // untuk paginate
+          this.pagination = res.data.data; // info pagination
         }
       } catch (error) {
         console.error("Gagal mengambil data UMKM:", error);
@@ -133,6 +140,79 @@ export default {
 </script>
 
 <style scoped>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+.page {
+  display: flex;
+  background: #f4f4f4;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  background: #1e1e2d;
+  color: #fff;
+  height: 100vh;
+  position: fixed;
+  transition: 0.3s;
+  overflow-y: auto;
+}
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+.sidebar .brand {
+  padding: 20px;
+  font-size: 20px;
+  text-align: center;
+  background: #27293d;
+  font-weight: bold;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar ul li {
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.sidebar ul li:hover {
+  background: #35354a;
+}
+
+/* MAIN CONTENT */
+.main {
+  margin-left: 240px;
+  padding: 20px;
+  width: 100%;
+  transition: 0.3s;
+}
+
+.main.collapsed {
+  margin-left: 70px;
+}
+
+.toggle-btn {
+  cursor: pointer;
+  padding: 10px 15px;
+  background: #fff;
+  border-radius: 5px;
+  display: inline-block;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+}
+
+/* TABLE */
 .umkm-table {
   width: 100%;
   border-collapse: collapse;
