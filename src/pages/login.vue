@@ -94,6 +94,8 @@ export default {
 
   methods: {
     async login() {
+      console.log("LOGIN DIKLIK");
+
       try {
         const response = await axios.post("http://127.0.0.1:8000/api/login", {
           email: this.email,
@@ -101,21 +103,26 @@ export default {
         });
 
         if (response.data.status === 1) {
+          alert(response.data.message);
+
+          // Ambil role sekali saja
           const role = response.data.user.role;
 
           // Simpan token & role
           localStorage.setItem("token", response.data.access_token);
           localStorage.setItem("role", role);
 
-          // ==== ROUTING SESUAI ROLE ====
+          // Arahkan sesuai role
           if (role === "admin") {
             this.$router.push("/admin");
-          } else if (role === "user") {
-            this.$router.push("/dashboard");
+          } else if (role === "umkm") {
+            this.$router.push("/umkm");
+          } else if (role === "driver") {
+            this.$router.push("/driver");
           } else {
-            // Fallback bila role tidak dikenali
-            this.$router.push("/");
+            this.$router.push("/dashboard");
           }
+
         } else {
           alert("Login gagal!");
         }
@@ -124,6 +131,7 @@ export default {
       }
     },
   },
+
 };
 </script>
 

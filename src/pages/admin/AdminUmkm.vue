@@ -12,7 +12,7 @@
     <!-- MAIN CONTENT -->
     <div :class="['main', { collapsed: isCollapsed }]">
       <div class="toggle-btn" @click="toggleSidebar">
-        {{ isCollapsed ? '➡️' : '⬅️' }}
+        {{ isCollapsed ? "➡️" : "⬅️" }}
       </div>
 
       <h2>Data UMKM</h2>
@@ -39,7 +39,7 @@
             <td>{{ umkm.pemilik }}</td>
             <td>{{ umkm.informasi_umkm }}</td>
             <td>{{ umkm.pasokan_umkm }}</td>
-            <td>{{ umkm.harga }}</td>
+            <td>{{ formatCurrency(umkm.harga) }}</td>
             <td>{{ umkm.kategori }}</td>
             <td>{{ formatDate(umkm.jam_buka) }}</td>
             <td>{{ formatDate(umkm.jam_tutup) }}</td>
@@ -50,6 +50,26 @@
           </tr>
         </tbody>
       </table>
+
+      <!-- Pagination -->
+      <div class="pagination" v-if="pagination">
+        <button
+          @click="fetchUMKMs(pagination.prev_page_url)"
+          :disabled="!pagination.prev_page_url"
+        >
+          ⬅️
+        </button>
+        <span
+          >Page {{ pagination.current_page }} of
+          {{ pagination.last_page }}</span
+        >
+        <button
+          @click="fetchUMKMs(pagination.next_page_url)"
+          :disabled="!pagination.next_page_url"
+        >
+          ➡️
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -62,6 +82,7 @@ export default {
     return {
       isCollapsed: false,
       umkms: [],
+      pagination: null,
     };
   },
   mounted() {
@@ -71,10 +92,13 @@ export default {
     toggleSidebar() {
       this.isCollapsed = !this.isCollapsed;
     },
-    async fetchUMKMs() {
+    async fetchUMKMs(url = "http://127.0.0.1:8000/api/umkms") {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/umkms");
-        this.umkms = response.data;
+        const res = await axios.get(url);
+        if (res.data.status === 1) {
+          this.umkms = res.data.data.data || res.data.data; // paginate or non-paginate
+          this.pagination = res.data.data; // pagination info jika paginate
+        }
       } catch (error) {
         console.error("Gagal mengambil data UMKM:", error);
       }
@@ -83,14 +107,22 @@ export default {
       if (!datetime) return "-";
       return new Date(datetime).toLocaleString();
     },
+    formatCurrency(value) {
+      return value ? `Rp ${Number(value).toLocaleString()}` : "-";
+    },
     editUMKM(id) {
       this.$router.push(`/admin/umkms/edit/${id}`);
     },
     async deleteUMKM(id) {
       if (confirm("Apakah kamu yakin ingin menghapus UMKM ini?")) {
         try {
-          await axios.delete(`http://127.0.0.1:8000/api/umkms/${id}`);
-          this.fetchUMKMs(); // refresh data
+          const res = await axios.delete(
+            `http://127.0.0.1:8000/api/umkms/${id}`
+          );
+          if (res.data.status === 1) {
+            alert(res.data.message);
+            this.fetchUMKMs();
+          }
         } catch (error) {
           console.error("Gagal menghapus UMKM:", error);
         }
@@ -108,7 +140,8 @@ export default {
   background: #fff;
 }
 
-.umkm-table th, .umkm-table td {
+.umkm-table th,
+.umkm-table td {
   padding: 10px;
   border: 1px solid #ccc;
   text-align: left;
@@ -123,5 +156,13 @@ export default {
   margin-right: 5px;
   padding: 5px 10px;
   cursor: pointer;
+}
+
+.pagination {
+  margin-top: 10px;
+}
+.pagination button {
+  margin: 0 5px;
+  padding: 5px 10px;
 }
 </style>

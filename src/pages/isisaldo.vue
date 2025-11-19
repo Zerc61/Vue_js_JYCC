@@ -7,7 +7,7 @@
       <h2 class="title">Convert Rupiah ke D’coin</h2>
       <p class="subtitle">Masukkan nominal Rupiah atau pilih jumlah D’coin</p>
 
-      <!-- Input Rupiah -->
+      <!-- Input Rupiah (dengan format titik) -->
       <input
         type="text"
         v-model="displayRupiah"
@@ -80,7 +80,6 @@ export default {
       displayRupiah: "",
       selected: null,
 
-      // Harga emas default
       hargaEmas: 1200000,
 
       dcoinList: [
@@ -96,6 +95,7 @@ export default {
       if (!this.rupiah) return 0;
       return this.rupiah / this.hargaEmas;
     },
+
     emasFromDcoin() {
       if (!this.selected) return 0;
       return this.rupiah / this.hargaEmas;
@@ -107,6 +107,31 @@ export default {
       this.$router.push("/topup");
     },
 
+    /* === FORMAT INPUT RUPIAH === */
+    formatRupiahInput() {
+      let number = this.displayRupiah.replace(/\./g, "");
+
+      this.rupiah = Number(number);
+
+      if (!number) {
+        this.displayRupiah = "";
+        return;
+      }
+
+      this.displayRupiah = Number(number).toLocaleString("id-ID");
+      this.selected = null;
+    },
+
+    /* === PILIH DCOIN === */
+    selectDcoin(value) {
+      this.selected = value;
+
+      const calculated = value * 400; // contoh: 1 dcoin = 400 rupiah
+      this.rupiah = calculated;
+      this.displayRupiah = calculated.toLocaleString("id-ID");
+    },
+
+    /* === LANJUT KONFIRMASI === */
     goKonfirmasi() {
       if (!this.rupiah && !this.selected) {
         alert("Isi nominal atau pilih jumlah D’coin terlebih dahulu!");
@@ -123,28 +148,7 @@ export default {
       });
     },
 
-    formatRupiahInput() {
-      let number = this.displayRupiah.replace(/\./g, "");
-
-      this.rupiah = Number(number);
-
-      if (!number) {
-        this.displayRupiah = "";
-        return;
-      }
-
-      this.displayRupiah = Number(number).toLocaleString("id-ID");
-      this.selected = null; // reset pilihan dcoin
-    },
-
-    selectDcoin(value) {
-      this.selected = value;
-      const calculated = value * 400; // 1 Dcoin = 400 Rupiah (contoh)
-
-      this.rupiah = calculated;
-      this.displayRupiah = calculated.toLocaleString("id-ID");
-    },
-
+    /* FORMAT TAMBAHAN */
     formatCoin(value) {
       return value.toLocaleString("id-ID");
     },
@@ -155,6 +159,8 @@ export default {
   }
 };
 </script>
+
+
 
 <style scoped>
 .page { min-height: 100vh; display: flex; justify-content: center; padding-top: 40px; background: linear-gradient(180deg, #e8f4ff, #cbe7ff); font-family: Inter, sans-serif; }
