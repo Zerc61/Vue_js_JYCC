@@ -1,13 +1,45 @@
 <template>
   <div class="page">
-    <!-- tombol back -->
     <button class="icon-btn" @click="goBack">⟵</button>
 
     <div class="converter-box">
       <h2 class="title">Convert Rupiah ke D’coin</h2>
       <p class="subtitle">Masukkan nominal Rupiah atau pilih jumlah D’coin</p>
 
-      <!-- Input Rupiah -->
+      <transition name="slide-fade">
+        <div class="detail-box" v-if="rupiah || selected">
+          <h3 class="detail-title">📊 Rincian Konversi</h3>
+          
+          <div class="detail-item">
+            <span class="detail-icon">💰</span>
+            <div class="detail-content">
+              <strong>Harga Emas per Gram:</strong> Rp {{ formatNum(hargaEmas) }}
+            </div>
+          </div>
+          
+          <div class="detail-item" v-if="rupiah">
+            <span class="detail-icon">🔄</span>
+            <div class="detail-content">
+              <strong>Rupiah → Emas:</strong> {{ formatNum(rupiah) }} = <span class="highlight">{{ emasFromRupiah.toFixed(4) }} gram</span>
+            </div>
+          </div>
+          
+          <div class="detail-item" v-if="selected">
+            <span class="detail-icon">🪙</span>
+            <div class="detail-content">
+              <strong>D’coin → Rupiah:</strong> {{ formatNum(selected) }} D’coin = <span class="highlight">Rp {{ formatNum(rupiah) }}</span>
+            </div>
+          </div>
+          
+          <div class="detail-item" v-if="selected">
+            <span class="detail-icon">🏆</span>
+            <div class="detail-content">
+              <strong>D’coin → Emas:</strong> {{ formatNum(selected) }} D’coin = <span class="highlight">{{ emasFromDcoin.toFixed(4) }} gram</span>
+            </div>
+          </div>
+        </div>
+      </transition>
+
       <input
         type="text"
         v-model="displayRupiah"
@@ -16,7 +48,6 @@
         class="input-box"
       />
 
-      <!-- GRID DCOIN -->
       <div class="dc-grid">
         <div
           v-for="item in dcoinList"
@@ -29,40 +60,6 @@
         </div>
       </div>
 
-      <!-- RINCIAN EMAS (Ditingkatkan untuk lebih estetik dan menarik) -->
-      <div class="detail-box" v-if="rupiah || selected">
-        <h3 class="detail-title">📊 Rincian Konversi</h3>
-        
-        <div class="detail-item">
-          <span class="detail-icon">💰</span>
-          <div class="detail-content">
-            <strong>Harga Emas per Gram:</strong> Rp {{ formatNum(hargaEmas) }}
-          </div>
-        </div>
-        
-        <div class="detail-item" v-if="rupiah">
-          <span class="detail-icon">🔄</span>
-          <div class="detail-content">
-            <strong>Rupiah → Emas:</strong> {{ formatNum(rupiah) }} = <span class="highlight">{{ emasFromRupiah.toFixed(4) }} gram</span>
-          </div>
-        </div>
-        
-        <div class="detail-item" v-if="selected">
-          <span class="detail-icon">🪙</span>
-          <div class="detail-content">
-            <strong>D’coin → Rupiah:</strong> {{ formatNum(selected) }} D’coin = <span class="highlight">Rp {{ formatNum(rupiah) }}</span>
-          </div>
-        </div>
-        
-        <div class="detail-item" v-if="selected">
-          <span class="detail-icon">🏆</span>
-          <div class="detail-content">
-            <strong>D’coin → Emas:</strong> {{ formatNum(selected) }} D’coin = <span class="highlight">{{ emasFromDcoin.toFixed(4) }} gram</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tombol Lanjutkan -->
       <button class="btn-next" @click="goKonfirmasi">
         Lanjutkan ➜
       </button>
@@ -160,7 +157,7 @@ export default {
 .page { min-height: 100vh; display: flex; justify-content: center; padding-top: 40px; background: linear-gradient(180deg, #e8f4ff, #cbe7ff); font-family: Inter, sans-serif; }
 .converter-box { width: 900px; padding: 32px; background: white; border-radius: 22px; box-shadow: 0 5px 28px #00000025; animation: fadeIn 0.4s ease; }
 .title { font-size: 28px; font-weight: 800; color: #0f172a; margin: 0; }
-.subtitle { font-size: 15px; color: #475569; margin-bottom: 22px; }
+.subtitle { font-size: 15px; color: #475569; margin-bottom: 10px; /* Dikurangi agar tidak terlalu jauh dari rincian */ }
 .icon-btn { position: absolute; top: 22px; left: 22px; background: white; border: none; width: 42px; height: 42px; border-radius: 11px; font-size: 20px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 16px rgba(0,0,0,0.08); transition: 0.25s; }
 .icon-btn:hover { transform: scale(1.13); }
 .input-box { width: 97%; height: 72px; border-radius: 16px; border: none; padding-left: 22px; font-size: 22px; background: linear-gradient(135deg, #d9e7ff, #ffffff); box-shadow: 0 3px 12px #00000025; margin-bottom: 28px; outline: none; }
@@ -169,16 +166,31 @@ export default {
 .dc-item:hover { transform: scale(1.08); }
 .dc-item.active { border: 3px solid #1976ff; box-shadow: 0 0 13px #1976ff; }
 
-/* Gaya untuk bagian rincian yang ditingkatkan */
+/* Gaya untuk bagian rincian */
 .detail-box { 
-  margin-top: 30px; 
+  /* Margin disesuaikan agar ada jarak ke input di bawahnya */
+  margin-bottom: 25px;
+  margin-top: 10px; 
   padding: 24px; 
   background: linear-gradient(135deg, #f1f5ff, #e0e7ff); 
   border-radius: 18px; 
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); 
-  animation: slideIn 0.5s ease-out; 
   border: 1px solid #d1d5db; 
 }
+
+/* Animasi transisi agar tidak kaget saat muncul di tengah */
+.slide-fade-enter-active {
+  transition: all 0.4s ease-out;
+}
+.slide-fade-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateY(-20px);
+  opacity: 0;
+}
+
 .detail-title { 
   font-size: 24px; 
   font-weight: 700; 
@@ -220,5 +232,4 @@ export default {
 .btn-next { width: 100%; height: 55px; margin-top: 40px; font-size: 22px; border-radius: 14px; font-weight: 700; border: none; cursor: pointer; background: linear-gradient(90deg, #1e40af, #2563eb); color: white; box-shadow: 0 5px 18px #2563eb60; transition: 0.3s; }
 .btn-next:hover { transform: translateY(-3px); }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
 </style>
