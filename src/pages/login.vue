@@ -1,7 +1,9 @@
 <template>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+  />
   <div class="login-web">
-
     <!-- Logo / Icon -->
     <div class="konten">
       <img :src="require('@/assets/scream.png')" alt="" class="foto" />
@@ -9,21 +11,29 @@
 
     <!-- Background Section -->
     <div class="background-section">
-      <img :src="require('@/assets/travel.png')" alt="" class="travel-by-plane" />
+      <img
+        :src="require('@/assets/travel.png')"
+        alt=""
+        class="travel-by-plane"
+      />
       <div class="welcome-text">Welcome back Friend</div>
     </div>
 
     <!-- Form Section -->
     <div class="form-section">
       <div class="form-card">
-
         <h1 class="login-title">Login</h1>
 
         <!-- Email -->
         <div class="form-group">
           <div class="input-container">
             <i class="fa-solid fa-envelope icon"></i>
-            <input type="email" placeholder="Email" class="input-field" v-model="email" />
+            <input
+              type="email"
+              placeholder="Email"
+              class="input-field"
+              v-model="email"
+            />
           </div>
         </div>
 
@@ -31,7 +41,12 @@
         <div class="form-group">
           <div class="input-container">
             <i class="fa-solid fa-lock icon"></i>
-            <input type="password" placeholder="Password" class="input-field" v-model="password" />
+            <input
+              type="password"
+              placeholder="Password"
+              class="input-field"
+              v-model="password"
+            />
           </div>
         </div>
 
@@ -41,7 +56,9 @@
         <!-- Link ke Register -->
         <div class="signup-link">
           <span>Belum punya akun?</span>
-          <router-link to="/register" class="signup-text"> Register</router-link>
+          <router-link to="/register" class="signup-text">
+            Register</router-link
+          >
         </div>
 
         <!-- Divider -->
@@ -57,21 +74,19 @@
           <i class="fa-brands fa-twitter fa-3x social-icon twitter"></i>
           <i class="fa-brands fa-google fa-3x social-icon google"></i>
         </div>
-
       </div>
     </div>
-
   </div>
 </template>
 
 <script>
 export default {
   name: "LoginPages",
-  
+
   data() {
     return {
       email: "",
-      password: ""
+      password: "",
     };
   },
 
@@ -79,8 +94,8 @@ export default {
     login() {
       // LOGIN STATIS (langsung masuk)
       this.$router.push("/dashboard");
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -108,11 +123,7 @@ export default {
       rgba(0, 0, 0, 0.4) 0%,
       rgba(0, 0, 0, 0.4) 100%
     ),
-    linear-gradient(
-      0deg,
-      rgba(42, 25, 121, 1) 0%,
-      rgba(42, 25, 121, 1) 100%
-    );
+    linear-gradient(0deg, rgba(42, 25, 121, 1) 0%, rgba(42, 25, 121, 1) 100%);
   font-family: "Inria Sans", Helvetica, sans-serif;
 }
 
