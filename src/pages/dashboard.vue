@@ -146,7 +146,7 @@ export default {
         { label: "Explore", icon: "📍" },
         { label: "Promo", icon: "⭐" },
         { label: "Wishlist", icon: "❤️" },
-        { label: "Akun", icon: "👤" },
+        { label: "account", icon: "👤" },
         { label: "Logout", icon: "🏃🏻‍♂️" }
       ]
     };
@@ -168,7 +168,7 @@ export default {
     /** 🔥 AUTO SCROLL PROMO */
     autoScrollPromo() {
       const container = this.$el.querySelector(".promo-list");
-      let scrollAmount = 0;
+      let scrollAmount = 1;
 
       setInterval(() => {
         scrollAmount += 1;
@@ -179,7 +179,7 @@ export default {
         });
 
         if (scrollAmount >= container.scrollWidth - container.clientWidth) {
-          scrollAmount = 0;
+          scrollAmount = 1;
         }
       }, 40);
     },
