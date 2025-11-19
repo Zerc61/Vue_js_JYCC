@@ -1,7 +1,7 @@
 <template>
+
   <transition name="fadeSlide">
     <div class="login-web">
-
       <!-- Logo / Icon -->
       <div class="konten">
         <img :src="require('@/assets/scream.png')" alt="" class="foto" />
@@ -9,21 +9,29 @@
 
       <!-- Background Section -->
       <div class="background-section">
-        <img :src="require('@/assets/travel.png')" alt="" class="travel-by-plane" />
+        <img
+          :src="require('@/assets/travel.png')"
+          alt=""
+          class="travel-by-plane"
+        />
         <div class="welcome-text">Welcome back Friend</div>
       </div>
 
       <!-- Form Section -->
       <div class="form-section">
         <div class="form-card">
-
           <h1 class="login-title">Login</h1>
 
           <!-- Email -->
           <div class="form-group">
             <div class="input-container">
               <i class="fa-solid fa-envelope icon"></i>
-              <input type="email" placeholder="Email" class="input-field" v-model="email" />
+              <input
+                type="email"
+                placeholder="Email"
+                class="input-field"
+                v-model="email"
+              />
             </div>
           </div>
 
@@ -31,7 +39,12 @@
           <div class="form-group">
             <div class="input-container">
               <i class="fa-solid fa-lock icon"></i>
-              <input type="password" placeholder="Password" class="input-field" v-model="password" />
+              <input
+                type="password"
+                placeholder="Password"
+                class="input-field"
+                v-model="password"
+              />
             </div>
           </div>
 
@@ -41,7 +54,9 @@
           <!-- Link ke Register -->
           <div class="signup-link">
             <span>Belum punya akun?</span>
-            <router-link to="/register" class="signup-text"> Register</router-link>
+            <router-link to="/register" class="signup-text">
+              Register</router-link
+            >
           </div>
 
           <!-- Divider -->
@@ -57,12 +72,11 @@
             <i class="fa-brands fa-twitter fa-2x social-icon twitter"></i>
             <i class="fa-brands fa-google fa-2x social-icon google"></i>
           </div>
-
         </div>
       </div>
-
     </div>
   </transition>
+
 </template>
 
 <script>
@@ -74,7 +88,7 @@ export default {
   data() {
     return {
       email: "",
-      password: ""
+      password: "",
     };
   },
 
@@ -83,75 +97,190 @@ export default {
       try {
         const response = await axios.post("http://127.0.0.1:8000/api/login", {
           email: this.email,
-          password: this.password
+          password: this.password,
         });
 
         if (response.data.status === 1) {
           const role = response.data.user.role;
+
+          // Simpan token & role
           localStorage.setItem("token", response.data.access_token);
           localStorage.setItem("role", role);
 
-          this.$router.push("/dashboard");
+          // ==== ROUTING SESUAI ROLE ====
+          if (role === "admin") {
+            this.$router.push("/admin");
+          } else if (role === "user") {
+            this.$router.push("/dashboard");
+          } else {
+            // Fallback bila role tidak dikenali
+            this.$router.push("/");
+          }
         } else {
           alert("Login gagal!");
         }
-
       } catch (error) {
         alert("Email atau password salah!");
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
 /* ANIMASI SIMPLE */
 .fadeSlide-enter-active {
-  animation: fadeSlideIn .6s ease forwards;
+  animation: fadeSlideIn 0.6s ease forwards;
 }
 .fadeSlide-leave-active {
-  animation: fadeSlideOut .4s ease forwards;
+  animation: fadeSlideOut 0.4s ease forwards;
   filter: blur(3px);
 }
 @keyframes fadeSlideIn {
-  from { opacity: 0; transform: translateY(40px) scale(.92); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 @keyframes fadeSlideOut {
-  from { opacity: 1; transform: translateY(0) scale(1); }
-  to   { opacity: 0; transform: translateY(-40px) scale(.95); }
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.95);
+  }
 }
 
 /* ======================= CSS ASLI ======================= */
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-.konten { position: absolute; top: -10%; left: 0%; text-align: center; }
+.konten {
+  position: absolute;
+  top: -10%;
+  left: 0%;
+  text-align: center;
+}
 .login-web {
-  display: flex; flex-direction: row; min-height: 100vh;
-  background: linear-gradient(0deg, rgba(0,0,0,.4) 0%, rgba(0,0,0,.4) 100%),
-              linear-gradient(0deg, rgba(42,25,121,1) 0%, rgba(42,25,121,1) 100%);
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  background: linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.4) 0%,
+      rgba(0, 0, 0, 0.4) 100%
+    ),
+    linear-gradient(0deg, rgba(42, 25, 121, 1) 0%, rgba(42, 25, 121, 1) 100%);
   font-family: "Inria Sans", Helvetica, sans-serif;
 }
-.foto { width: 150px; position: absolute; top: 60px; left: 20px; }
-.background-section { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; }
-.travel-by-plane { width: 100%; max-width: 400px; margin-left: 12%; }
-.welcome-text { position: absolute; bottom: 12%; left: 30%; color: white; font-size: 2rem; }
-.form-section { flex: .1%; display: flex; justify-content: center; align-items: center; }
-.form-card {
-  background: white; width: 450px; height: 565px;
-  border-radius: 50px; text-align: center;
-  padding: 30px; box-shadow: 0 9px 4px rgba(0,0,0,.4);
+.foto {
+  width: 150px;
+  position: absolute;
+  top: 60px;
+  left: 20px;
 }
-.login-title { color:#3729da; font-size:2.9rem; margin-bottom:55px; }
-.form-group { margin-bottom:25px; }
-.input-container { position:relative; display:flex; align-items:center; }
-.icon { position:absolute; left:15px; }
-.input-field { width:100%; padding:15px 15px 15px 50px; border-radius:22px; border:1px solid #000; }
-.login-btn { background:#4f5999; padding:13px 30px; color:white; border-radius:19px; font-size:1.2rem; margin:5%; cursor:pointer; }
-.signup-link { margin-top:25px; }
-.signup-text { color:#0004ff; font-weight:bold; }
-.divider { display:flex; justify-content:center; gap:5px; margin:15px 0; }
-.line { flex:1; height:1px; background:#cfcfcf; }
-.social-login { display:flex; justify-content:space-around; margin-top:20px; }
+.background-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.travel-by-plane {
+  width: 100%;
+  max-width: 400px;
+  margin-left: 12%;
+}
+.welcome-text {
+  position: absolute;
+  bottom: 12%;
+  left: 30%;
+  color: white;
+  font-size: 2rem;
+}
+.form-section {
+  flex: 0.1%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.form-card {
+  background: white;
+  width: 450px;
+  height: 565px;
+  border-radius: 50px;
+  text-align: center;
+  padding: 30px;
+  box-shadow: 0 9px 4px rgba(0, 0, 0, 0.4);
+}
+.login-title {
+  color: #3729da;
+  font-size: 2.9rem;
+  margin-bottom: 55px;
+}
+.form-group {
+  margin-bottom: 25px;
+}
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.icon {
+  position: absolute;
+  left: 15px;
+}
+.input-field {
+  width: 100%;
+  padding: 15px 15px 15px 50px;
+  border-radius: 22px;
+  border: 1px solid #000;
+}
+.login-btn {
+  background: #4f5999;
+  padding: 13px 30px;
+  color: white;
+  border-radius: 19px;
+  font-size: 1.2rem;
+  margin: 5%;
+  cursor: pointer;
+}
+.signup-link {
+  margin-top: 25px;
+}
+.signup-text {
+  color: #0004ff;
+  font-weight: bold;
+}
+.divider {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin: 15px 0;
+}
+.line {
+  flex: 1;
+  height: 1px;
+  background: #cfcfcf;
+}
+.social-login {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.social-icon {
+  cursor: pointer;
+}
+
 </style>
