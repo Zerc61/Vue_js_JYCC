@@ -15,6 +15,7 @@
         <div class="form-card">
           <h1 class="login-title">Register</h1>
 
+          <!-- USERNAME -->
           <div class="form-group">
             <div class="input-container">
               <i class="fa-solid fa-user icon"></i>
@@ -22,6 +23,15 @@
             </div>
           </div>
 
+          <!-- NAMA LENGKAP -->
+          <div class="form-group">
+            <div class="input-container">
+              <i class="fa-solid fa-user icon"></i>
+              <input type="text" placeholder="Nama Lengkap" class="input-field" v-model="name" />
+            </div>
+          </div>
+
+          <!-- EMAIL -->
           <div class="form-group">
             <div class="input-container">
               <i class="fa-solid fa-envelope icon"></i>
@@ -29,6 +39,7 @@
             </div>
           </div>
 
+          <!-- PASSWORD -->
           <div class="form-group">
             <div class="input-container">
               <i class="fa-solid fa-lock icon"></i>
@@ -36,18 +47,11 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <div class="input-container">
-              <i class="fa-solid fa-lock icon"></i>
-              <input type="password" placeholder="Konfirmasi Password" class="input-field" v-model="konfirmasi" />
-            </div>
-          </div>
-
           <button class="login-btn" @click="register">Daftar</button>
 
           <div class="signup-link">
             <span>Sudah punya akun?</span>
-            <router-link to="/login" class="signup-text"> Login</router-link>
+            <router-link to="/login" class="signup-text">Login</router-link>
           </div>
 
         </div>
@@ -56,6 +60,7 @@
     </div>
   </transition>
 </template>
+
 
 <script>
 import axios from "axios";
@@ -66,33 +71,38 @@ export default {
   data() {
     return {
       username: "",
+      name: "",
       email: "",
       password: "",
-      konfirmasi: ""
     };
   },
 
   methods: {
     async register() {
-      if (this.password !== this.konfirmasi) return alert("Password tidak sama!");
-
       try {
-        await axios.post("http://127.0.0.1:8000/api/users", {
+        const response = await axios.post("http://127.0.0.1:8000/api/register", {
           username: this.username,
+          name: this.name,
           email: this.email,
           password: this.password
         });
 
-        alert("Registrasi berhasil!");
-        this.$router.push("/login");
+        console.log("REGISTER RESPONSE:", response.data);
 
-      } catch (e) {
-        alert("Gagal registrasi!");
+        if (response.data.status === 1) {
+          alert("Registrasi berhasil!");
+          this.$router.push("/login");
+        }
+      } catch (error) {
+        console.log("REGISTER ERROR:", error.response);
+        alert(error.response?.data?.message || "Gagal registrasi!");
       }
     }
+
   }
 };
 </script>
+
 
 <style scoped>
 /* ANIMASI SIMPLE */
