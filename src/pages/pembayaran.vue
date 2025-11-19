@@ -1,6 +1,5 @@
 <template>
   <div class="pay-page">
-    <!-- Header -->
     <header class="head">
       <img src="@/assets/scream.png" alt="logo" class="logo" />
       <h1 class="title">SCREAM DESTINATION</h1>
@@ -10,13 +9,13 @@
       <h2 class="section-title">Pembayaran</h2>
       <p class="sub">Bayar menggunakan</p>
 
-      <!-- Virtual Account -->
       <h3 class="category">Virtual Account</h3>
       <div
         v-for="(item, i) in vaList"
-        :key="i"
+        :key="'va-'+i"
         class="pay-box"
-        @click="selected = item.name">
+        @click="selected = item.name"
+      >
         <div class="left">
           <img :src="item.logo" class="icon" />
           <span class="label">{{ item.name }}</span>
@@ -24,35 +23,20 @@
         <input type="radio" :checked="selected === item.name" />
       </div>
 
-      <!-- E-Wallet -->
-      <h3 class="category">E-Wallet</h3>
-      <div
-        v-for="(item, i) in walletList"
-        :key="i"
-        class="pay-box"
-        @click="selected = item.name">
-        <div class="left">
-          <img :src="item.logo" class="icon" />
-          <span class="label">{{ item.name }}</span>
-        </div>
-        <input type="radio" :checked="selected === item.name" />
-      </div>
-
-      <!-- QRIS -->
-      <h3 class="category">Qris</h3>
+      <h3 class="category">QRIS</h3>
       <div
         v-for="(item, i) in Qrislist"
-        :key="i"
-        class="pay-box" 
-        @click="selected = item.name">
+        :key="'qris-'+i"
+        class="pay-box"
+        @click="selected = item.name"
+      >
         <div class="left">
           <img :src="item.logo" class="icon" />
           <span class="label">{{ item.name }}</span>
         </div>
         <input type="radio" :checked="selected === item.name" />
       </div>
-      
-      <!-- Footer Total -->
+
       <div class="footer">
         <div class="price-wrap">
           <span class="tlabel">Total Harga</span>
@@ -74,43 +58,44 @@
 <script>
 export default {
   name: "PembayaranPage",
-  
-  // --- ADD THIS SECTION ---
+
   data() {
     return {
-      total: 50000, // You must define a value for total here!
-      selected: null, // To track the selected payment method
-      
-      // Define your lists so the v-for loops work
+      total: 50000, // Nominal pembayaran
+      selected: null, // Menyimpan metode pembayaran yang dipilih
+
+      // --- DATA LIST PEMBAYARAN ---
       vaList: [
-        { name: 'BCA Virtual Account', logo: require('@/assets/BCA.png') }, // Example image
+        { name: 'BCA Virtual Account', logo: require('@/assets/BCA.png') },
         { name: 'MANDIRI Virtual Account', logo: require('@/assets/MANDIRI.png') },
         { name: 'BRI Virtual Account', logo: require('@/assets/BRI.png') },
         { name: 'CIMB NIAGA Virtual Account', logo: require('@/assets/CIMB-NIAGA.png') }
       ],
-      walletList: [
-        { name: 'Gopay', logo: require('@/assets/gopay.png') },
-        { name: 'OVO', logo: require('@/assets/OVO.png') }
-      ],
       Qrislist: [
-        { name: 'Qris', logo: require('@/assets/qris.png') },
-    ]
+        // Perhatikan name 'QRIS' harus sama dengan yang dicek di method lanjut()
+        { name: 'QRIS', logo: require('@/assets/qris.png') },
+      ]
     };
   },
-  // ------------------------
 
   computed: {
     formattedTotal() {
-      // Defensive check: If total is missing, return 0 to prevent crash
-      if (!this.total) return "0";
-      return this.total.toLocaleString("id-ID");
+      if (!this.total) return "Rp 0";
+      return "Rp " + this.total.toLocaleString("id-ID");
     }
   },
 
   methods: {
     lanjut() {
-      alert(`Pembayaran menggunakan ${this.selected} berhasil!`);
-      this.$router.push("/topup");
+      // Cek jika user memilih QRIS
+      if (this.selected === 'QRIS') {
+        // Arahkan ke halaman QRIS yang baru kita buat
+        this.$router.push("/pembayaran/qris");
+      } else {
+        // Jika metode lain (VA/E-wallet), anggap sukses dan ke dashboard/topup
+        alert(`Pembayaran menggunakan ${this.selected} berhasil!`);
+        this.$router.push("/topup");
+      }
     }
   }
 };
@@ -164,6 +149,7 @@ export default {
   margin: 20px 0 8px;
   font-weight: 600;
   font-size: 15px;
+  color: #333;
 }
 
 .pay-box {
@@ -180,7 +166,13 @@ export default {
 }
 
 .pay-box:hover {
+  border-color: #180c4a;
   transform: scale(1.01);
+}
+
+/* Style tambahan jika item dipilih */
+.pay-box input:checked {
+  accent-color: #180c4a;
 }
 
 .left {
@@ -191,10 +183,13 @@ export default {
 
 .icon {
   width: 35px;
+  height: auto;
+  object-fit: contain;
 }
 
 .label {
   font-weight: 600;
+  font-size: 14px;
 }
 
 .footer {
@@ -206,20 +201,22 @@ export default {
 .price-wrap {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .tlabel {
-  font-size: 13px;
+  font-size: 14px;
+  color: #555;
 }
 
 .price {
   color: #180c4a;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .btn {
-  margin-top: 10px;
   width: 100%;
   background: #180c4a;
   color: white;
@@ -229,6 +226,11 @@ export default {
   cursor: pointer;
   font-size: 16px;
   font-weight: 600;
+  transition: background 0.3s;
+}
+
+.btn:hover:not(:disabled) {
+  background: #2a1675;
 }
 
 .btn:disabled {

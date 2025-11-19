@@ -7,6 +7,7 @@ import topupView from "@/pages/topup.vue";
 import isisaldoView from "@/pages/isisaldo.vue";
 import konfirmasiView from "@/pages/konfirmasi.vue";
 import pembayaranPage from "@/pages/pembayaran.vue";
+import QrisPage from '@/pages/qris.vue';
 import adminDashboard from "@/pages/admin/admindashboard.vue";
 import AdminUser from "@/pages/admin/AdminUser.vue";
 
@@ -30,6 +31,8 @@ const routes = [
     },
 
     { path: '/pembayaran', name: 'Pembayaran', component: pembayaranPage},
+
+    { path: '/pembayaran/qris', name: 'Qris', component: QrisPage},
 
     // Admin routes
     { path: '/admin', name: 'AdminDashboard', component: adminDashboard },
