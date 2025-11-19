@@ -143,7 +143,7 @@ export default {
   border-radius: 50px; text-align: center;
   padding: 30px; box-shadow: 0 9px 4px rgba(0,0,0,.4);
 }
-.login-title { color:#3729da; font-size:2.9rem; margin-bottom:55px; }
+.login-title { color:#3729da; font-size:2.9rem; margin-bottom:35px; }
 .form-group { margin-bottom:25px; }
 .input-container { position:relative; display:flex; align-items:center; }
 .icon { position:absolute; left:15px; }

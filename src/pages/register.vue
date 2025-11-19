@@ -126,18 +126,18 @@ export default {
 .foto { width:150px; position:absolute; top:60px; left:20px; }
 .background-section { flex:1; display:flex; justify-content:center; align-items:center; position:relative; }
 .travel-by-plane { width:100%; max-width:400px; margin-left:12%; }
-.welcome-text { position:absolute; bottom:9%; left:13%; color:white; font-size:2rem; }
+.welcome-text { position:absolute; bottom:9%; left:18%; color:white; font-size:2rem; }
 .form-section { flex:.1%; display:flex; justify-content:center; align-items:center; }
 .form-card {
   background:white; width:450px; height:565px;
   border-radius:50px; text-align:center;
   padding:30px; box-shadow:0 9px 4px rgba(0,0,0,.4);
 }
-.login-title { color:#3729da; font-size:2.9rem; margin-bottom:55px; }
+.login-title { color:#3729da; font-size:2.9rem; margin-bottom:25px; }
 .input-container { position:relative; display:flex; align-items:center; }
 .icon { position:absolute; left:15px; }
 .input-field { width:100%; padding:15px 15px 15px 50px; border-radius:22px; border:1px solid #000; }
-.login-btn { background:#4f5999; padding:13px 30px; border-radius:19px; color:white; font-size:1.2rem; margin:5%; cursor:pointer; }
+.login-btn { background:#4f5999; padding:13px 30px; border-radius:19px; color:white; font-size:1.2rem; margin:4%; cursor:pointer; }
 .signup-text { color:#0004ff; font-weight:bold; }
-.form-group { margin-bottom:15px; }
+.form-group { margin-bottom:17px; }
 </style>
