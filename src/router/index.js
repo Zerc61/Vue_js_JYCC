@@ -6,7 +6,7 @@ import dashboardView from "@/pages/dashboard.vue";
 import topupView from "@/pages/topup.vue";
 import isisaldoView from "@/pages/isisaldo.vue";
 import konfirmasiView from "@/pages/konfirmasi.vue";
-import PembayaranView from "@/pages/pembayaran.vue";
+import pembayaranPage from "@/pages/pembayaran.vue";
 import adminDashboard from "@/pages/admin/admindashboard.vue";
 import AdminUser from "@/pages/admin/AdminUser.vue";
 
@@ -21,18 +21,15 @@ const routes = [
     { path: '/topup', name: 'Topup', component: topupView },
     { path: '/isisaldo', name: 'IsiSaldo', component: isisaldoView },
 
-    {
-        path: '/konfirmasi',
-        name: 'Konfirmasi',
-        component: konfirmasiView,
+    { path: '/konfirmasi', name: 'Konfirmasi', component: konfirmasiView,
         props: route => ({
             rupiah: route.params.rupiah,
             displayRupiah: route.params.displayRupiah,
             dcoin: route.params.dcoin
         })
     },
-    
-    { path: '/pembayaran', name: 'Pembayaran', component: PembayaranView },
+
+    { path: '/pembayaran', name: 'Pembayaran', component: pembayaranPage},
 
     // Admin routes
     { path: '/admin', name: 'AdminDashboard', component: adminDashboard },

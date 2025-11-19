@@ -16,8 +16,7 @@
         v-for="(item, i) in vaList"
         :key="i"
         class="pay-box"
-        @click="selected = item.name"
-      >
+        @click="selected = item.name">
         <div class="left">
           <img :src="item.logo" class="icon" />
           <span class="label">{{ item.name }}</span>
@@ -31,8 +30,7 @@
         v-for="(item, i) in walletList"
         :key="i"
         class="pay-box"
-        @click="selected = item.name"
-      >
+        @click="selected = item.name">
         <div class="left">
           <img :src="item.logo" class="icon" />
           <span class="label">{{ item.name }}</span>
@@ -42,24 +40,18 @@
 
       <!-- QRIS -->
       <h3 class="category">Qris</h3>
-      <div class="pay-box" @click="selected = 'QRIS'">
+      <div
+        v-for="(item, i) in Qrislist"
+        :key="i"
+        class="pay-box" 
+        @click="selected = item.name">
         <div class="left">
-          <img src="@/assets/qris.png" class="icon" />
-          <span class="label">QRIS</span>
+          <img :src="item.logo" class="icon" />
+          <span class="label">{{ item.name }}</span>
         </div>
-        <input type="radio" :checked="selected === 'QRIS'" />
+        <input type="radio" :checked="selected === item.name" />
       </div>
-
-      <!-- Credit Card -->
-      <h3 class="category">Credit Card</h3>
-      <div class="pay-box" @click="selected = 'Credit Card'">
-        <div class="left">
-          <img src="@/assets/credit-card.png" class="icon-card">
-          <span class="label">Credit Card</span>
-        </div>
-        <input type="radio" :checked="selected === 'Credit Card'" />
-      </div>
-
+      
       <!-- Footer Total -->
       <div class="footer">
         <div class="price-wrap">
@@ -81,29 +73,36 @@
 
 <script>
 export default {
-  name: "PembayaranView",
+  name: "PembayaranPage",
+  
+  // --- ADD THIS SECTION ---
   data() {
     return {
-      selected: "",
-      total: Number(this.$route.query.total || 0),
-      dcoin: Number(this.$route.query.dcoin || 0),
-
+      total: 50000, // You must define a value for total here!
+      selected: null, // To track the selected payment method
+      
+      // Define your lists so the v-for loops work
       vaList: [
-        { name: "BCA", logo: require("@/assets/bca.png") },
-        { name: "BRI", logo: require("@/assets/bri.png") },
-        { name: "CIMB Niaga", logo: require("@/assets/cimb.png") }
+        { name: 'BCA Virtual Account', logo: require('@/assets/BCA.png') }, // Example image
+        { name: 'MANDIRI Virtual Account', logo: require('@/assets/MANDIRI.png') },
+        { name: 'BRI Virtual Account', logo: require('@/assets/BRI.png') },
+        { name: 'CIMB NIAGA Virtual Account', logo: require('@/assets/CIMB-NIAGA.png') }
       ],
-
       walletList: [
-        { name: "OVO", logo: require("@/assets/ovo.png") },
-        { name: "GoPay", logo: require("@/assets/gopay.png") },
-        { name: "ShopeePay", logo: require("@/assets/shopee.png") }
-      ]
+        { name: 'Gopay', logo: require('@/assets/gopay.png') },
+        { name: 'OVO', logo: require('@/assets/OVO.png') }
+      ],
+      Qrislist: [
+        { name: 'Qris', logo: require('@/assets/qris.png') },
+    ]
     };
   },
+  // ------------------------
 
   computed: {
     formattedTotal() {
+      // Defensive check: If total is missing, return 0 to prevent crash
+      if (!this.total) return "0";
       return this.total.toLocaleString("id-ID");
     }
   },
