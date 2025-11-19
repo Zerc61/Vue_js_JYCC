@@ -87,16 +87,20 @@ export default {
 
   methods: {
     lanjut() {
-      // Cek jika user memilih QRIS
-      if (this.selected === 'QRIS') {
-        // Arahkan ke halaman QRIS yang baru kita buat
-        this.$router.push("/pembayaran/qris");
-      } else {
-        // Jika metode lain (VA/E-wallet), anggap sukses dan ke dashboard/topup
-        alert(`Pembayaran menggunakan ${this.selected} berhasil!`);
-        this.$router.push("/topup");
-      }
-    }
+  if (this.selected === 'QRIS') {
+     this.$router.push("/pembayaran/qris");
+  } 
+  else if (this.selected === 'BCA Virtual Account') {
+     this.$router.push("/pembayaran/bca");
+  }
+  else if (this.selected === 'MANDIRI Virtual Account') {
+     this.$router.push("/pembayaran/mandiri");
+  }
+  else {
+     alert(`Pembayaran menggunakan ${this.selected} berhasil!`);
+     this.$router.push("/topup");
+  }
+}
   }
 };
 </script>

@@ -8,6 +8,8 @@ import isisaldoView from "@/pages/isisaldo.vue";
 import konfirmasiView from "@/pages/konfirmasi.vue";
 import pembayaranPage from "@/pages/pembayaran.vue";
 import QrisPage from '@/pages/qris.vue';
+import BcaPage from '@/pages/bca.vue';
+import MandiriPage from '@/pages/mandiri.vue';
 import adminDashboard from "@/pages/admin/admindashboard.vue";
 import AdminUser from "@/pages/admin/AdminUser.vue";
 
@@ -15,7 +17,7 @@ const routes = [
     { path: '/', redirect: '/login' },
 
     { path: '/login', name: 'Login', component: login },
-    { path: '/register', name: 'Register', component: registerView },
+    { path: '/register', name: 'Register', component: regivsterView },
 
     { path: '/dashboard', name: 'Dashboard', component: dashboardView },
 
@@ -31,8 +33,9 @@ const routes = [
     },
 
     { path: '/pembayaran', name: 'Pembayaran', component: pembayaranPage},
-
     { path: '/pembayaran/qris', name: 'Qris', component: QrisPage},
+    { path: '/pembayaran/bca', name: 'BcaPage', component: BcaPage},
+    { path: '/pembayaran/mandiri', name: 'MandiriPage', component: MandiriPage},
 
     // Admin routes
     { path: '/admin', name: 'AdminDashboard', component: adminDashboard },
