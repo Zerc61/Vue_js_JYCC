@@ -5,7 +5,7 @@
     <header class="header">
       <div class="header-inner">
         <div class="brand">
-          <img :src="require('@/assets/scream.png')" alt="Logo" class="logo" />
+          <img :src="require('@/assets/scream 2.png')" alt="Logo" class="logo" />
           <h1 class="title">SCREAM Destination</h1>
         </div>
 
@@ -22,21 +22,19 @@
 
     <!-- Menu icons -->
     <section class="menu-section">
-    <div class="menu-grid">
-
+      <div class="menu-grid">
         <router-link
-        v-for="item in menus"
-        :key="item.name"
-        :to="item.route"
-        class="menu-item"
+          v-for="item in menus"
+          :key="item.name"
+          :to="item.route"
+          class="menu-item"
         >
-        <div class="menu-icon">
+          <div class="menu-icon">
             <img :src="getAsset(item.icon)" :alt="item.name" />
-        </div>
-        <div class="menu-label">{{ item.name }}</div>
+          </div>
+          <div class="menu-label">{{ item.name }}</div>
         </router-link>
-
-    </div>
+      </div>
     </section>
 
     <!-- Promo -->
@@ -78,11 +76,26 @@
 
     <!-- Bottom navigation -->
     <nav class="bottom-nav" aria-label="Bottom navigation">
-      <button v-for="(n, i) in bottomNav" :key="i" class="nav-btn">
+      <button v-for="(n, i) in bottomNav" :key="i" class="nav-btn" @click="handleNavClick(n.label)">
         <span class="nav-ico">{{ n.icon }}</span>
         <small class="nav-label">{{ n.label }}</small>
       </button>
     </nav>
+
+    <!-- Popup Logout dengan Animasi -->
+    <transition name="popup-fade">
+      <div v-if="showLogoutPopup" class="popup-overlay" @click="closeLogoutPopup">
+        <div class="popup-content" @click.stop>
+          <h3 class="popup-title">Konfirmasi Logout</h3>
+          <p class="popup-message">Apakah Anda yakin ingin logout?</p>
+          <div class="popup-buttons">
+            <button class="btn-cancel" @click="closeLogoutPopup">Batal</button>
+            <button class="btn-logout" @click="confirmLogout">Ya, Logout</button>
+          </div>
+        </div>
+      </div>
+    </transition>
+
   </div>
 </template>
 
@@ -92,23 +105,24 @@ export default {
   data() {
     return {
       query: "",
-      // logo via require so webpack bundles it
       logo: require("@/assets/scream.png"),
+      showLogoutPopup: false, // State untuk popup logout
 
       menus: [
-            { name: "UMKM", icon: "umkm.png", route: "/umkm" },
-            { name: "Paket Wisata", icon: "Paket.png", route: "/destinasi" },
-            { name: "Wisata", icon: "wisata.png", route: "/event" },
-            { name: "Travel", icon: "transportasi.png", route: "/travel" },
-            { name: "Hotel", icon: "hotel.png", route: "/hotel" },
-            { name: "Tiket", icon: "tiket.png", route: "/tiket" },
-            { name: "Tiket", icon: "smart.png", route: "/Smart Itinerary" },
-
-            // 👇 Tambahan menu Top Up dengan link
-            { name: "Top Up", icon: "Dcoin.png", route: "/topup" }
-            ],
+        { name: "UMKM", icon: "umkm.png", route: "/umkm" },
+        { name: "Paket Wisata", icon: "Paket.png", route: "/destinasi" },
+        { name: "Wisata", icon: "wisata.png", route: "/event" },
+        { name: "Travel", icon: "transportasi.png", route: "/travel" },
+        { name: "Hotel", icon: "hotel.png", route: "/hotel" },
+        { name: "Tiket", icon: "tiket.png", route: "/tiket" },
+        { name: "Smart Itinerary", icon: "smart.png", route: "/Smart Itinerary" },
+        { name: "Top Up", icon: "Dcoin.png", route: "/topup" }
+      ],
 
       promos: [
+        { title: "Batu Flower Garden", image: "batu.png" },
+        { title: "Selecta Malang", image: "malang.png" },
+        { title: "Museum Angkut", image: "angkut.png" },
         { title: "Batu Flower Garden", image: "batu.png" },
         { title: "Selecta Malang", image: "malang.png" },
         { title: "Museum Angkut", image: "angkut.png" }
@@ -132,27 +146,76 @@ export default {
         { label: "Explore", icon: "📍" },
         { label: "Promo", icon: "⭐" },
         { label: "Wishlist", icon: "❤️" },
-        { label: "Akun", icon: "👤" }
+        { label: "Akun", icon: "👤" },
+        { label: "Logout", icon: "🏃🏻‍♂️" }
       ]
     };
   },
+
+  mounted() {
+    this.autoScrollPromo();
+  },
+
   methods: {
-    // helper to require assets dynamically
     getAsset(name) {
       try {
         return require(`@/assets/${name}`);
       } catch (e) {
-        // fallback to a placeholder image in public or a data URL
-        // return require("@/assets/placeholder.png");
-         return "";
+        return "";
       }
+    },
+
+    /** 🔥 AUTO SCROLL PROMO */
+    autoScrollPromo() {
+      const container = this.$el.querySelector(".promo-list");
+      let scrollAmount = 0;
+
+      setInterval(() => {
+        scrollAmount += 1;
+
+        container.scrollTo({
+          left: scrollAmount,
+          behavior: "smooth",
+        });
+
+        if (scrollAmount >= container.scrollWidth - container.clientWidth) {
+          scrollAmount = 0;
+        }
+      }, 40);
+    },
+
+    /** 🔥 HANDLE BOTTOM NAV CLICK */
+    handleNavClick(label) {
+      if (label === "Logout") {
+        this.showLogoutPopup = true; // Tampilkan popup
+      } else {
+        // Tambahkan logika untuk nav lain jika perlu (misalnya redirect)
+        console.log(`Navigasi ke: ${label}`);
+      }
+    },
+
+    /** 🔥 CLOSE POPUP */
+    closeLogoutPopup() {
+      this.showLogoutPopup = false;
+    },
+
+    /** 🔥 CONFIRM LOGOUT */
+    confirmLogout() {
+      // Hapus token dan role dari localStorage
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+
+      // Redirect ke halaman login
+      this.$router.push("/login");
+
+      // Tutup popup
+      this.showLogoutPopup = false;
     }
   }
 };
 </script>
 
 <style scoped>
-/* Reset */
 * { box-sizing: border-box; }
 .page { min-height: 100vh; background: #f3f4f6; padding-bottom: 88px; }
 
@@ -162,8 +225,6 @@ export default {
 .brand { display:flex; align-items:center; gap:12px; }
 .logo { width:44px; height:44px; object-fit:contain; border-radius:8px; background:rgba(255,255,255,0.08); padding:6px; }
 .title { font-size:18px; font-weight:700; margin:0; color:#fff; }
-
-/* search */
 .search-wrap { width:100%; }
 .search {
   width:100%;
@@ -177,7 +238,7 @@ export default {
   box-shadow: 0 4px 14px rgba(16,24,40,0.06);
 }
 
-/* menu */
+/* Menu */
 .menu-section { max-width:1100px; margin: -28px auto 8px; padding: 0 16px; }
 .menu-grid { background:#fff; padding:14px; border-radius:14px; display:grid; grid-template-columns: repeat(4, 1fr); gap:2px; box-shadow: 0 6px 18px rgba(15,23,42,0.04); }
 .menu-item { display:flex; flex-direction:column; align-items:center; gap:8px; padding:6px 4px; text-align:center; cursor:pointer; transition: transform .18s ease, box-shadow .18s ease; }
@@ -186,12 +247,16 @@ export default {
 .menu-icon img { width:36px; height:36px; object-fit:contain; }
 .menu-label { font-size:12px; color:#111827; }
 
-/* promo */
+/* Promo */
 .promo-section { max-width:1100px; margin: 12px auto; padding: 0 16px; }
 .section-title { font-size:16px; font-weight:700; margin-bottom:10px; color:#0f172a; }
-
-/* horizontal scroller */
-.promo-list { display:flex; gap:12px; overflow-x:auto; padding-bottom:6px; -webkit-overflow-scrolling:touch; }
+.promo-list {
+  display:flex;
+  overflow-x:auto;
+  gap:12px;
+  padding-bottom:6px;
+  scroll-behavior: smooth;
+}
 .promo-card { min-width:220px; background:#fff; border-radius:12px; overflow:hidden; box-shadow: 0 6px 18px rgba(15,23,42,0.05); transition: transform .18s ease; cursor:pointer; }
 .promo-card:hover { transform: translateY(-6px); }
 .promo-media img { width:100%; height:140px; object-fit:cover; display:block; }
@@ -199,44 +264,95 @@ export default {
 .promo-title { font-size:14px; font-weight:700; color:#0f172a; }
 .promo-badge { font-size:11px; background:#fff0f0; color:#ef4444; padding:4px 8px; border-radius:10px; font-weight:600; }
 
-/* umkm list */
+/* UMKM */
 .umkm-section { max-width:1100px; margin: 8px auto; padding: 0 16px 80px; }
 .umkm-list { display:flex; gap:12px; overflow-x:auto; padding:6px 0; }
-.umkm-item { min-width:84px; display:flex; flex-direction:column; align-items:center; gap:8px; background:transparent; cursor:pointer; }
+.umkm-item { min-width:84px; display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer; }
 .umkm-photo { width:60px; height:60px; border-radius:10%; object-fit:cover; box-shadow: 0 6px 14px rgba(15,23,42,0.06); }
 .umkm-name { font-size:12px; text-align:center; color:#0f172a; }
 
-/* bottom nav */
+/* Bottom Nav */
 .bottom-nav {
   position:fixed;
   left:0; right:0; bottom:12px;
   display:flex;
   justify-content:space-around;
   align-items:center;
-  gap:6px;
   max-width:820px;
   margin:0 auto;
   padding:8px 12px;
   background:#fff;
   border-radius:24px;
   box-shadow: 0 10px 30px rgba(2,6,23,0.12);
-  transform: translateY(0);
 }
-.nav-btn { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; background:transparent; border:none; cursor:pointer; padding:6px 10px; }
+.nav-btn { display:flex; flex-direction:column; gap:4px; background:transparent; border:none; cursor:pointer; }
 .nav-ico { font-size:18px; }
-.nav-label { font-size:11px; color:#374151; }
+.nav-label { font-size:11px; }
 
-/* scrollbar hide for modern browsers */
-.promo-list::-webkit-scrollbar, .umkm-list::-webkit-scrollbar { height:8px; }
-.promo-list::-webkit-scrollbar-thumb, .umkm-list::-webkit-scrollbar-thumb { background: rgba(15,23,42,0.08); border-radius:8px; }
+/* Popup Logout dengan Animasi */
+.popup-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.popup-content {
+  background: #fff;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  max-width: 300px;
+  width: 90%;
+}
+.popup-title { font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 12px; }
+.popup-message { font-size: 14px; color: #64748b; margin-bottom: 20px; }
+.popup-buttons { display: flex; gap: 12px; justify-content: center; }
+.btn-cancel, .btn-logout {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-cancel { background: #e5e7eb; color: #374151; }
+.btn-cancel:hover { background: #d1d5db; }
+.btn-logout { background: #ef4444; color: #fff; }
+.btn-logout:hover { background: #dc2626; }
 
-/* responsive */
+/* Animasi Popup */
+.popup-fade-enter-active, .popup-fade-leave-active {
+  transition: all 0.5s ease;
+}
+.popup-fade-enter {
+  opacity: 0;
+  transform: scale(0.8);
+  filter: blur(4px);
+}
+.popup-fade-enter-to {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
+.popup-fade-leave {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
+.popup-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.8);
+  filter: blur(4px);
+}
+
+/* Responsive */
 @media (max-width: 640px) {
-  .menu-grid { grid-template-columns: repeat(4, 1fr); }
-  .promo-media img { height:120px; }
   .promo-card { min-width:200px; }
-  .header-inner { gap:8px; }
-  .title { font-size:16px; }
-  .bottom-nav { left:12px; right:12px; bottom:12px; }
+  .promo-media img { height:120px; }
 }
 </style>

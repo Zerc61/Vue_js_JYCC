@@ -115,6 +115,8 @@ export default {
 </script>
 
 <style scoped>
+
+
 /* page */
 .wallet-page {
   min-height: 100vh;

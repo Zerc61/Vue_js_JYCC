@@ -1,71 +1,85 @@
 <template>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
-  <div class="login-web">
 
-    <!-- Logo / Icon -->
-    <div class="konten">
-      <img :src="require('@/assets/scream.png')" alt="" class="foto" />
-    </div>
+  <transition name="fadeSlide">
+    <div class="login-web">
+      <!-- Logo / Icon -->
+      <div class="konten">
+        <img :src="require('@/assets/scream.png')" alt="" class="foto" />
+      </div>
 
-    <!-- Background Section -->
-    <div class="background-section">
-      <img :src="require('@/assets/travel.png')" alt="" class="travel-by-plane" />
-      <div class="welcome-text">Welcome back Friend</div>
-    </div>
+      <!-- Background Section -->
+      <div class="background-section">
+        <img
+          :src="require('@/assets/travel.png')"
+          alt=""
+          class="travel-by-plane"
+        />
+        <div class="welcome-text">Welcome back Friend</div>
+      </div>
 
-    <!-- Form Section -->
-    <div class="form-section">
-      <div class="form-card">
+      <!-- Form Section -->
+      <div class="form-section">
+        <div class="form-card">
+          <h1 class="login-title">Login</h1>
 
-        <h1 class="login-title">Login</h1>
+          <!-- Email -->
+          <div class="form-group">
+            <div class="input-container">
+              <i class="fa-solid fa-envelope icon"></i>
+              <input
+                type="email"
+                placeholder="Email"
+                class="input-field"
+                v-model="email"
+              />
+            </div>
+          </div>
 
-        <!-- Email -->
-        <div class="form-group">
-          <div class="input-container">
-            <i class="fa-solid fa-envelope icon"></i>
-            <input type="email" placeholder="Email" class="input-field" v-model="email" />
+          <!-- Password -->
+          <div class="form-group">
+            <div class="input-container">
+              <i class="fa-solid fa-lock icon"></i>
+              <input
+                type="password"
+                placeholder="Password"
+                class="input-field"
+                v-model="password"
+              />
+            </div>
+          </div>
+
+          <!-- Button Login -->
+          <button class="login-btn" @click="login">Masuk</button>
+
+          <!-- Link ke Register -->
+          <div class="signup-link">
+            <span>Belum punya akun?</span>
+            <router-link to="/register" class="signup-text">
+              Register</router-link
+            >
+          </div>
+
+          <!-- Divider -->
+          <div class="divider">
+            <span class="line"></span>
+            <span class="or-text">Atau</span>
+            <span class="line"></span>
+          </div>
+
+          <!-- Social Login -->
+          <div class="social-login">
+            <i class="fa-brands fa-facebook fa-2x social-icon facebook"></i>
+            <i class="fa-brands fa-twitter fa-2x social-icon twitter"></i>
+            <i class="fa-brands fa-google fa-2x social-icon google"></i>
           </div>
         </div>
-
-        <!-- Password -->
-        <div class="form-group">
-          <div class="input-container">
-            <i class="fa-solid fa-lock icon"></i>
-            <input type="password" placeholder="Password" class="input-field" v-model="password" />
-          </div>
-        </div>
-
-        <!-- Button Login -->
-        <button class="login-btn" @click="login">Masuk</button>
-
-        <!-- Link ke Register -->
-        <div class="signup-link">
-          <span>Belum punya akun?</span>
-          <router-link to="/register" class="signup-text"> Register</router-link>
-        </div>
-
-        <!-- Divider -->
-        <div class="divider">
-          <span class="line"></span>
-          <span class="or-text">Atau</span>
-          <span class="line"></span>
-        </div>
-
-        <!-- Social Login -->
-        <div class="social-login">
-          <i class="fa-brands fa-facebook fa-2x social-icon facebook"></i>
-          <i class="fa-brands fa-twitter fa-2x social-icon twitter"></i>
-          <i class="fa-brands fa-google fa-2x social-icon google"></i>
-        </div>
-
       </div>
     </div>
+  </transition>
 
-  </div>
 </template>
 
 <script>
-
 import axios from "axios";
 
 export default {
@@ -74,7 +88,7 @@ export default {
   data() {
     return {
       email: "",
-      password: ""
+      password: "",
     };
   },
 
@@ -85,13 +99,11 @@ export default {
       try {
         const response = await axios.post("http://127.0.0.1:8000/api/login", {
           email: this.email,
-          password: this.password
+          password: this.password,
         });
 
-        console.log("RESPONSE:", response.data);
-
-        // CEK STATUS BERHASIL
         if (response.data.status === 1) {
+          const role = response.data.user.role;
 
           alert(response.data.message);
 
@@ -120,23 +132,63 @@ export default {
           //   .catch(err => console.log("ROUTER ERROR:", err));
           
           // OPSIONAL: SIMPAN TOKEN (kalau perlu)
-          localStorage.setItem("token", response.data.access_token);
 
+          // Simpan token & role
+          localStorage.setItem("token", response.data.access_token);
+          localStorage.setItem("role", role);
+
+          // ==== ROUTING SESUAI ROLE ====
+          if (role === "admin") {
+            this.$router.push("/admin");
+          } else if (role === "user") {
+            this.$router.push("/dashboard");
+          } else {
+            // Fallback bila role tidak dikenali
+            this.$router.push("/");
+          }
         } else {
           alert("Login gagal!");
         }
-
       } catch (error) {
-        console.log("ERROR:", error);
         alert("Email atau password salah!");
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
-/* Reset dasar */
+/* ANIMASI SIMPLE */
+.fadeSlide-enter-active {
+  animation: fadeSlideIn 0.6s ease forwards;
+}
+.fadeSlide-leave-active {
+  animation: fadeSlideOut 0.4s ease forwards;
+  filter: blur(3px);
+}
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes fadeSlideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.95);
+  }
+}
+
+/* ======================= CSS ASLI ======================= */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -149,7 +201,6 @@ export default {
   left: 0%;
   text-align: center;
 }
-
 .login-web {
   display: flex;
   flex-direction: row;
@@ -159,133 +210,99 @@ export default {
       rgba(0, 0, 0, 0.4) 0%,
       rgba(0, 0, 0, 0.4) 100%
     ),
-    linear-gradient(
-      0deg,
-      rgba(42, 25, 121, 1) 0%,
-      rgba(42, 25, 121, 1) 100%
-    );
+    linear-gradient(0deg, rgba(42, 25, 121, 1) 0%, rgba(42, 25, 121, 1) 100%);
   font-family: "Inria Sans", Helvetica, sans-serif;
 }
-
 .foto {
   width: 150px;
-  height: auto;
   position: absolute;
   top: 60px;
   left: 20px;
-  z-index: 10;
 }
-
 .background-section {
   flex: 1;
-  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
 }
-
 .travel-by-plane {
   width: 100%;
   max-width: 400px;
   margin-left: 12%;
-  object-fit: cover;
 }
-
 .welcome-text {
   position: absolute;
   bottom: 12%;
   left: 30%;
-  color: #ffffff;
+  color: white;
   font-size: 2rem;
 }
-
 .form-section {
   flex: 0.1%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
 .form-card {
-  background: #ffffff;
-  border-radius: 50px;
-  box-shadow: 0 9px 4px rgba(0, 0, 0, 0.4);
-  padding: 30px;
+  background: white;
   width: 450px;
   height: 565px;
+  border-radius: 50px;
   text-align: center;
+  padding: 30px;
+  box-shadow: 0 9px 4px rgba(0, 0, 0, 0.4);
 }
-
 .login-title {
   color: #3729da;
   font-size: 2.9rem;
-  font-weight: 700%;
-  margin-top: 20px;
   margin-bottom: 55px;
 }
-
 .form-group {
   margin-bottom: 25px;
 }
-
 .input-container {
   position: relative;
   display: flex;
   align-items: center;
 }
-
 .icon {
   position: absolute;
   left: 15px;
-  width: 24px;
-  height: 16px;
 }
-
 .input-field {
   width: 100%;
   padding: 15px 15px 15px 50px;
-  border: 1px solid #000;
   border-radius: 22px;
+  border: 1px solid #000;
 }
-
 .login-btn {
   background: #4f5999;
-  color: white;
-  border: none;
-  border-radius: 19px;
   padding: 13px 30px;
+  color: white;
+  border-radius: 19px;
   font-size: 1.2rem;
-  font-weight: 700;
-  cursor: pointer;
   margin: 5%;
+  cursor: pointer;
 }
-
 .signup-link {
   margin-top: 25px;
 }
-
 .signup-text {
   color: #0004ff;
-  text-decoration: none;
   font-weight: bold;
 }
-
 .divider {
   display: flex;
-  align-items: center;
   justify-content: center;
   gap: 5px;
   margin: 15px 0;
 }
-
 .line {
   flex: 1;
   height: 1px;
   background: #cfcfcf;
 }
-
-/* social login */
 .social-login {
   display: flex;
   justify-content: space-around;
