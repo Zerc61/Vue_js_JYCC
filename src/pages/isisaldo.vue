@@ -76,15 +76,10 @@ export default {
 
   data() {
     return {
-
-      rupiah: "",           // nilai asli tanpa titik
-      displayRupiah: "",    // tampilan dengan titik
-
       rupiah: "",
       displayRupiah: "",
       selected: null,
 
-      // Harga emas default
       hargaEmas: 1200000,
 
       dcoinList: [
@@ -100,6 +95,7 @@ export default {
       if (!this.rupiah) return 0;
       return this.rupiah / this.hargaEmas;
     },
+
     emasFromDcoin() {
       if (!this.selected) return 0;
       return this.rupiah / this.hargaEmas;
@@ -111,56 +107,7 @@ export default {
       this.$router.push("/topup");
     },
 
-
     /* === FORMAT INPUT RUPIAH === */
-    formatRupiahInput() {
-      // hapus titik
-      let number = this.displayRupiah.replace(/\./g, "");
-
-      // simpan nilai asli
-      this.rupiah = number;
-
-      // jika kosong, kosongkan tampilan
-      if (!number) {
-        this.displayRupiah = "";
-        return;
-      }
-
-      // format ke 1.000.000
-      this.displayRupiah = Number(number).toLocaleString("id-ID");
-    },
-
-    /* === PILIH NOMINAL D'COIN === */
-    selectDcoin(value) {
-      this.selected = value;
-
-      const calculated = value * 1000; // contoh konversi
-      this.rupiah = calculated;
-      this.displayRupiah = calculated.toLocaleString("id-ID");
-    },
-
-    submitTopup() {
-
-    goKonfirmasi() {
-      if (!this.rupiah && !this.selected) {
-        alert("Isi nominal atau pilih jumlah D’coin terlebih dahulu!");
-        return;
-      }
-      alert(`Top Up ${this.displayRupiah} berhasil diproses!`);
-    },
-
-    /* Format angka coin */
-
-      this.$router.push({
-        name: "Konfirmasi",
-        params: {
-          rupiah: this.rupiah,
-          displayRupiah: this.displayRupiah,
-          dcoin: this.selected
-        }
-      });
-    },
-
     formatRupiahInput() {
       let number = this.displayRupiah.replace(/\./g, "");
 
@@ -172,16 +119,36 @@ export default {
       }
 
       this.displayRupiah = Number(number).toLocaleString("id-ID");
-      this.selected = null; // reset pilihan dcoin
+      this.selected = null;
     },
 
+    /* === PILIH DCOIN === */
     selectDcoin(value) {
       this.selected = value;
-      const calculated = value * 400; // 1 Dcoin = 400 Rupiah (contoh)
 
+      const calculated = value * 400; // contoh: 1 dcoin = 400 rupiah
       this.rupiah = calculated;
       this.displayRupiah = calculated.toLocaleString("id-ID");
     },
+
+    /* === LANJUT KONFIRMASI === */
+    goKonfirmasi() {
+      if (!this.rupiah && !this.selected) {
+        alert("Isi nominal atau pilih jumlah D’coin terlebih dahulu!");
+        return;
+      }
+
+      this.$router.push({
+        name: "Konfirmasi",
+        params: {
+          rupiah: this.rupiah,
+          displayRupiah: this.displayRupiah,
+          dcoin: this.selected
+        }
+      });
+    },
+
+    /* FORMAT TAMBAHAN */
     formatCoin(value) {
       return value.toLocaleString("id-ID");
     },
@@ -192,6 +159,7 @@ export default {
   }
 };
 </script>
+
 
 
 <style scoped>

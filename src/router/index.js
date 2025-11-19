@@ -7,8 +7,6 @@ import topupView from "@/pages/topup.vue";
 import isisaldoView from "@/pages/isisaldo.vue";
 import konfirmasiView from "@/pages/konfirmasi.vue";
 import PembayaranView from "@/pages/pembayaran.vue";
-import adminDashboard from "@/pages/admin/admindashboard.vue";
-import AdminUser from "@/pages/admin/AdminUser.vue";
 
 // Admin Pages
 import adminDashboard from "@/pages/admin/admindashboard.vue";

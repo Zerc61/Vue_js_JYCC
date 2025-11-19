@@ -103,17 +103,16 @@ export default {
         });
 
         if (response.data.status === 1) {
-          const role = response.data.user.role;
-
           alert(response.data.message);
 
-          const role = response.data.user.role; // pastikan sesuai struktur API Anda
+          // Ambil role sekali saja
+          const role = response.data.user.role;
 
-          // Simpan token jika diperlukan
+          // Simpan token & role
           localStorage.setItem("token", response.data.access_token);
           localStorage.setItem("role", role);
 
-          // ARAHKAN SESUAI ROLE
+          // Arahkan sesuai role
           if (role === "admin") {
             this.$router.push("/admin");
           } else if (role === "umkm") {
@@ -121,31 +120,9 @@ export default {
           } else if (role === "driver") {
             this.$router.push("/driver");
           } else {
-            this.$router.push("/dashboard"); // default
-          }
-
-          // alert(response.data.message);
-
-          // // PINDAH ROUTE
-          // this.$router.push("/dashboard")
-          //   .then(() => console.log("BERHASIL PINDAH"))
-          //   .catch(err => console.log("ROUTER ERROR:", err));
-          
-          // OPSIONAL: SIMPAN TOKEN (kalau perlu)
-
-          // Simpan token & role
-          localStorage.setItem("token", response.data.access_token);
-          localStorage.setItem("role", role);
-
-          // ==== ROUTING SESUAI ROLE ====
-          if (role === "admin") {
-            this.$router.push("/admin");
-          } else if (role === "user") {
             this.$router.push("/dashboard");
-          } else {
-            // Fallback bila role tidak dikenali
-            this.$router.push("/");
           }
+
         } else {
           alert("Login gagal!");
         }
@@ -154,6 +131,7 @@ export default {
       }
     },
   },
+
 };
 </script>
 
