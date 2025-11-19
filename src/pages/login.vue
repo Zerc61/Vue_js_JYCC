@@ -189,6 +189,7 @@ export default {
   top: 60px;
   left: 20px;
 }
+<<<<<<< HEAD
 .background-section {
   flex: 1;
   display: flex;
@@ -284,3 +285,17 @@ export default {
 }
 
 </style>
+=======
+.login-title { color:#3729da; font-size:2.9rem; margin-bottom:35px; }
+.form-group { margin-bottom:25px; }
+.input-container { position:relative; display:flex; align-items:center; }
+.icon { position:absolute; left:15px; }
+.input-field { width:100%; padding:15px 15px 15px 50px; border-radius:22px; border:1px solid #000; }
+.login-btn { background:#4f5999; padding:13px 30px; color:white; border-radius:19px; font-size:1.2rem; margin:5%; cursor:pointer; }
+.signup-link { margin-top:25px; }
+.signup-text { color:#0004ff; font-weight:bold; }
+.divider { display:flex; justify-content:center; gap:5px; margin:15px 0; }
+.line { flex:1; height:1px; background:#cfcfcf; }
+.social-login { display:flex; justify-content:space-around; margin-top:20px; }
+</style>
+>>>>>>> bastian
