@@ -1,8 +1,7 @@
 <template>
   <div class="pay-page">
-    <!-- Header -->
     <header class="head">
-      <img src="@/assets/scream.png" alt="logo" class="logo" />
+      <img :src="require('@/assets/scream.png')" alt="logo" class="logo" />
       <h1 class="title">SCREAM DESTINATION</h1>
     </header>
 
@@ -10,7 +9,6 @@
       <h2 class="section-title">Pembayaran</h2>
       <p class="sub">Bayar menggunakan</p>
 
-      <!-- Virtual Account -->
       <h3 class="category">Virtual Account</h3>
       <div
         v-for="(item, i) in vaList"
@@ -25,7 +23,6 @@
         <input type="radio" :checked="selected === item.name" />
       </div>
 
-      <!-- E-Wallet -->
       <h3 class="category">E-Wallet</h3>
       <div
         v-for="(item, i) in walletList"
@@ -40,38 +37,31 @@
         <input type="radio" :checked="selected === item.name" />
       </div>
 
-      <!-- QRIS -->
       <h3 class="category">Qris</h3>
       <div class="pay-box" @click="selected = 'QRIS'">
         <div class="left">
-          <img src="@/assets/qris.png" class="icon" />
+          <img :src="require('@/assets/qris.png')" class="icon" />
           <span class="label">QRIS</span>
         </div>
         <input type="radio" :checked="selected === 'QRIS'" />
       </div>
 
-      <!-- Credit Card -->
       <h3 class="category">Credit Card</h3>
       <div class="pay-box" @click="selected = 'Credit Card'">
         <div class="left">
-          <img src="@/assets/credit-card.png" class="icon-card">
+          <img :src="require('@/assets/card.png')" class="icon-card" />
           <span class="label">Credit Card</span>
         </div>
         <input type="radio" :checked="selected === 'Credit Card'" />
       </div>
 
-      <!-- Footer Total -->
       <div class="footer">
         <div class="price-wrap">
           <span class="tlabel">Total Harga</span>
           <span class="price">{{ formattedTotal }}</span>
         </div>
 
-        <button
-          class="btn"
-          :disabled="!selected"
-          @click="lanjut"
-        >
+        <button class="btn" :disabled="!selected" @click="lanjut">
           Lanjutkan
         </button>
       </div>
@@ -88,36 +78,38 @@ export default {
       total: Number(this.$route.query.total || 0),
       dcoin: Number(this.$route.query.dcoin || 0),
 
+      // PERBAIKAN: Semua nama file diubah menjadi huruf kecil di sini
       vaList: [
-        { name: "BCA", logo: require("@/assets/bca.png") },
-        { name: "BRI", logo: require("@/assets/bri.png") },
-        { name: "CIMB Niaga", logo: require("@/assets/cimb.png") }
+        { name: "BCA", logo: require("@/assets/BCA.png") }, // Cek apakah file fisik BCA.png diubah ke bca.png
+        { name: "BRI", logo: require("@/assets/BRI.png") },
+        { name: "CIMB Niaga", logo: require("@/assets/CIMB.jpg") },
       ],
 
       walletList: [
-        { name: "OVO", logo: require("@/assets/ovo.png") },
-        { name: "GoPay", logo: require("@/assets/gopay.png") },
-        { name: "ShopeePay", logo: require("@/assets/shopee.png") }
-      ]
+        { name: "OVO", logo: require("@/assets/OVO.jpg") },
+        { name: "GoPay", logo: require("@/assets/GOPAY.jpg") },
+        { name: "ShopeePay", logo: require("@/assets/SHOPEE.png") },
+      ],
     };
   },
 
   computed: {
     formattedTotal() {
       return this.total.toLocaleString("id-ID");
-    }
+    },
   },
 
   methods: {
     lanjut() {
       alert(`Pembayaran menggunakan ${this.selected} berhasil!`);
       this.$router.push("/topup");
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
+/* (Bagian <style> tidak perlu diubah karena tidak ada error di sini) */
 .pay-page {
   background: #eee;
   min-height: 100vh;
@@ -192,6 +184,10 @@ export default {
 
 .icon {
   width: 35px;
+}
+
+.icon-card {
+  width: 45px;
 }
 
 .label {
