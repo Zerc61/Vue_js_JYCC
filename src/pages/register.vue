@@ -79,8 +79,6 @@ export default {
 
   methods: {
     async register() {
-
-
       try {
         const response = await axios.post("http://127.0.0.1:8000/api/register", {
           username: this.username,
@@ -89,17 +87,18 @@ export default {
           password: this.password
         });
 
+        console.log("REGISTER RESPONSE:", response.data);
+
         if (response.data.status === 1) {
           alert("Registrasi berhasil!");
           this.$router.push("/login");
-        } else {
-          alert("Registrasi gagal!");
         }
-
       } catch (error) {
-        alert("Gagal registrasi! Periksa input atau server.");
+        console.log("REGISTER ERROR:", error.response);
+        alert(error.response?.data?.message || "Gagal registrasi!");
       }
     }
+
   }
 };
 </script>
