@@ -100,6 +100,12 @@ export default {
   else if (this.selected === 'MANDIRI Virtual Account') {
      this.$router.push("/pembayaran/mandiri");
   }
+  else if (this.selected === 'BRI Virtual Account') {
+     this.$router.push("/pembayaran/bri");
+  }
+  else if (this.selected === 'CIMB NIAGA Virtual Account') {
+     this.$router.push("/pembayaran/cimb niaga");
+  }
   else {
      alert(`Pembayaran menggunakan ${this.selected} berhasil!`);
      this.$router.push("/topup");

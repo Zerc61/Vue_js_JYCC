@@ -7,8 +7,8 @@
 
     <div class="wrap">
       <div class="header-section">
-        <h2 class="section-title">BCA Virtual Account</h2>
-        <img src="@/assets/BCA.png" alt="BCA" class="bank-logo" />
+        <h2 class="section-title">CIMB Niaga Virtual Account</h2>
+        <img src="@/assets/CIMB-NIAGA.png" alt="CIMB" class="bank-logo" />
       </div>
 
       <div class="info-card">
@@ -70,47 +70,46 @@
 
 <script>
 export default {
-  name: "BcaPage",
+  name: "CimbNiagaPage",
   data() {
     return {
-      total: 50000, // Nominal (bisa diambil dari params/store)
-      vaNumber: "880123456789", // Contoh No VA
-      timeLeft: 3600, // 1 Jam dalam detik
+      total: 50000,
+      vaNumber: "7889880123456789", // contoh CIMB VA
+      timeLeft: 3600,
       timerInterval: null,
       copied: false,
-      openIndex: 0, // Index accordion yang terbuka default (0 = m-BCA)
-      
+      openIndex: 0,
+
       paymentMethods: [
         {
-          title: "m-BCA (BCA Mobile)",
+          title: "OCTO Mobile (CIMB Niaga)",
           steps: [
-            "Login ke aplikasi m-BCA.",
-            "Pilih menu m-Transfer.",
-            "Pilih BCA Virtual Account.",
-            "Masukkan nomor VA: 880123456789.",
-            "Periksa detail pembayaran & konfirmasi.",
-            "Masukkan PIN m-BCA Anda."
+            "Login ke aplikasi OCTO Mobile.",
+            "Pilih menu Transfer.",
+            "Pilih Virtual Account.",
+            "Masukkan nomor VA: 7889880123456789.",
+            "Periksa detail pembayaran.",
+            "Konfirmasi dengan memasukkan PIN."
           ]
         },
         {
-          title: "ATM BCA",
+          title: "ATM CIMB Niaga",
           steps: [
-            "Masukkan Kartu ATM & PIN.",
-            "Pilih menu Transaksi Lainnya.",
-            "Pilih Transfer > Ke Rek BCA Virtual Account.",
-            "Masukkan nomor VA: 880123456789.",
-            "Cek detail pembayaran, lalu pilih Ya.",
-            "Simpan struk sebagai bukti."
+            "Masukkan kartu ATM dan PIN.",
+            "Pilih menu Transfer.",
+            "Pilih ke Rekening CIMB Niaga.",
+            "Masukkan nomor Virtual Account: 7889880123456789.",
+            "Cek detail pembayaran dan pilih YA."
           ]
         },
         {
-          title: "KlikBCA (Internet Banking)",
+          title: "Internet Banking CIMB Clicks",
           steps: [
-            "Login ke website KlikBCA.",
-            "Pilih menu Transfer Dana.",
-            "Pilih Transfer ke BCA Virtual Account.",
-            "Masukkan nomor VA: 880123456789.",
-            "Ikuti instruksi selanjutnya untuk menyelesaikan."
+            "Login ke website CIMB Clicks.",
+            "Pilih menu Transfer.",
+            "Pilih Virtual Account.",
+            "Masukkan nomor VA: 7889880123456789.",
+            "Ikuti instruksi selanjutnya sampai selesai."
           ]
         }
       ]
@@ -124,7 +123,9 @@ export default {
       const hours = Math.floor(this.timeLeft / 3600);
       const minutes = Math.floor((this.timeLeft % 3600) / 60);
       const seconds = this.timeLeft % 60;
-      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      return `${hours.toString().padStart(2, '0')}:${minutes
+        .toString()
+        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
   },
   mounted() {
@@ -143,19 +144,16 @@ export default {
     copyVa() {
       navigator.clipboard.writeText(this.vaNumber).then(() => {
         this.copied = true;
-        setTimeout(() => { this.copied = false; }, 2000);
+        setTimeout(() => {
+          this.copied = false;
+        }, 2000);
       });
     },
     toggleAccordion(index) {
-      if (this.openIndex === index) {
-        this.openIndex = null;
-      } else {
-        this.openIndex = index;
-      }
+      this.openIndex = this.openIndex === index ? null : index;
     },
     cekStatus() {
-      // Simulasi sukses
-      alert("Pembayaran BCA Virtual Account Berhasil!");
+      alert("Pembayaran CIMB Niaga Virtual Account Berhasil!");
       this.$router.push("/topup");
     }
   }

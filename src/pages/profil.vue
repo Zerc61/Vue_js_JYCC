@@ -1,125 +1,97 @@
 <template>
   <div class="profile-page">
-
-    <!-- LOADING -->
-    <div v-if="loading" class="loading-box">
-      Loading...
-    </div>
-
-    <div v-else>
-
-      <!-- HEADER PROFIL -->
-      <section class="profile-header">
-        <div class="ph-inner">
-
-          <img :src="user.profile" class="ph-avatar" />
-
-          <div class="ph-info">
-            <h2 class="ph-name">{{ user.name }}</h2>
-            <span class="ph-badge">{{ user.vip }}</span>
-          </div>
-
-          <!-- SALDO -->
-          <div class="saldo-box">
-            <p class="sb-label">Saldo D’coin</p>
-            <p class="sb-value">
-              {{ user.saldo.toLocaleString() }}
-              <span class="sb-unit">D'C</span>
-            </p>
-          </div>
-
-          <!-- BOX EMAS & RUPIAH -->
-          <div class="ph-stats">
-            <div class="stat-box">
-              <p class="s-label">Emas</p>
-              <p class="s-value">{{ user.emas }} gram</p>
-            </div>
-
-            <div class="stat-box">
-              <p class="s-label">Rupiah</p>
-              <p class="s-value">Rp {{ user.rupiah.toLocaleString() }}</p>
-            </div>
-          </div>
-
+    <!-- Top Profile Section -->
+    <div class="profile-header">
+      <div class="left-box">
+        <img class="avatar" src="@/assets/halal.png" alt="avatar" />
+        <div class="user-info">
+          <h2 class="name">Anjar Jomoksono</h2>
+          <span class="badge">VVIP</span>
         </div>
-      </section>
-
-      <!-- RIWAYAT AKTIVITAS -->
-      <h3 class="sub-title">Riwayat Aktivitas</h3>
-
-      <div class="activity-grid">
-        <div class="activity-item">🍕 <p>Kuliner</p></div>
-        <div class="activity-item">🏨 <p>Penginapan</p></div>
-        <div class="activity-item">🚗 <p>Transportasi</p></div>
-        <div class="activity-item">🎁 <p>Paket Wisata</p></div>
-        <div class="activity-item">🌍 <p>Wisata</p></div>
       </div>
 
-      <!-- MENU LAINNYA -->
-      <div class="menu-list">
-        <div class="menu-row">Kendala Pesanan <span>›</span></div>
-        <div class="menu-row">Pusat Bantuan <span>›</span></div>
-        <div class="menu-row">Tentang Kami <span>›</span></div>
+      <div class="right-box">
+        <div class="info-card">
+          <p>Emas</p>
+          <h3>2 gram</h3>
+        </div>
+        <div class="info-card">
+          <p>Rupiah</p>
+          <h4>Rp 234.253 (kosong)</h4>
+        </div>
+        <div class="info-card balance">
+          <p>Saldo D’coin</p>
+          <h3 class="dc"><span class="coin">🪙</span> 10.000 D'C</h3>
+        </div>
       </div>
-
     </div>
 
-    <!-- Bottom Navigation (disembunyikan di desktop) -->
-    <nav class="bottom-nav">
-      <router-link to="/" class="nav-btn">🏠 <small>Home</small></router-link>
-      <router-link to="/explore" class="nav-btn">📍 <small>Explore</small></router-link>
-      <router-link to="/promo" class="nav-btn">⭐ <small>Promo</small></router-link>
-      <router-link to="/wishlist" class="nav-btn">❤️ <small>Wishlist</small></router-link>
-      <router-link to="/profil" class="nav-btn active">👤 <small>Akun</small></router-link>
-    </nav>
+    <!-- Riwayat Aktivitas -->
+    <h3 class="section-title">Riwayat Aktivitas</h3>
+    <div class="activity-grid">
+      <div class="item"><img src="" />Kuliner</div>
+      <div class="item">Penginapan</div>
+      <div class="item">Transportasi</div>
+      <div class="item">Paket Wisata</div>
+      <div class="item">Wisata</div>
+    </div>
 
+    <!-- Mitra Section -->
+    <h3 class="section-title">Mulai Usaha atau Jadi Mitra?</h3>
+    <div class="mitra-grid">
+      <div class="item">UMKM</div>
+      <div class="item">penginapan</div>
+      <div class="item">Driver</div>
+      <div class="item">wisata</div>
+    </div>
+
+    <!-- Footer Links -->
+    <div class="footer-links">
+      <div class="left">
+        <p>Kendala Pesanan</p>
+        <p>Pusat Bantuan</p>
+        <p>Daftar Komplain</p>
+      </div>
+      <div class="right">
+        <p>Tentang SCREAM</p>
+        <p>Tentang Brand</p>
+        <p>Aturan Penggunaan</p>
+        <p>Hubungi Kami</p>
+        <p>Kebijakan Privasi</p>
+      </div>
+    </div>
+
+    <!-- Bottom navigation -->
+    <nav class="bottom-nav" aria-label="Bottom navigation">
+  <router-link
+    v-for="(n, i) in bottomNav"
+    :key="i"
+    :to="n.route"
+    class="nav-btn"
+  >
+    <img :src="n.image" class="nav-image" />
+    <small class="nav-label">{{ n.label }}</small>
+  </router-link>
+</nav>
+    
   </div>
 </template>
 
 <script>
 export default {
-  name: "ProfileView",
+  name: "ProfileDashboard",
 
   data() {
     return {
-      loading: true,
-      user: {
-        name: "",
-        saldo: 0,
-        emas: 0,
-        rupiah: 0,
-        vip: "",
-        profile: ""
-      }
-    };
-  },
+      query: "",
 
-  async mounted() {
-    await this.fetchUser();
-  },
-
-  methods: {
-    async fetchUser() {
-      try {
-        const res = await fetch("https://api.example.com/user/profile");
-        const data = await res.json();
-
-        this.user = {
-          name: data.name,
-          saldo: data.saldo,
-          emas: data.emas,
-          rupiah: data.rupiah,
-          vip: data.vip,
-          profile: data.profile
-            ? data.profile
-            : require("@/assets/scream 2.png")
-        };
-
-      } catch (e) {
-        console.error("Gagal ambil profil:", e);
-      } finally {
-        this.loading = false;
-      }
+      bottomNav: [
+        { label: "Home", image: require('@/assets/dashboard.png'), route: "/" },
+        { label: "Explore", image: require('@/assets/explore.png'), route: "/explore" },
+        { label: "Promo", image: require('@/assets/promo.png'), route: "/promo" },
+        { label: "Wishlist", image: require('@/assets/wishlist.png'), route: "/wishlist" },
+        { label: "Profil", image: require('@/assets/profil.png'), route: "/profil" }
+      ]
     }
   }
 };
@@ -127,191 +99,124 @@ export default {
 
 <style scoped>
 .profile-page {
-  padding: 0 16px 80px;
-  background: #f3f4f6;
-  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  padding: 20px;
 }
-
-/* LOADING */
-.loading-box {
-  margin-top: 40px;
-  text-align: center;
-  font-size: 16px;
-}
-
-/* HEADER */
 .profile-header {
-  background: #190F49;
-  padding: 26px 20px;
-  margin-bottom: 20px;
-  border-bottom-left-radius: 24px;
-  border-bottom-right-radius: 24px;
-  color: white;
-}
-
-.ph-inner {
-  max-width: 1100px;
-  margin: auto;
-}
-
-.ph-avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 100%;
-  border: 3px solid white;
-}
-
-.ph-name {
-  font-size: 22px;
-  font-weight: 700;
-}
-
-.ph-badge {
-  background: #fff;
-  color: #190F49;
-  padding: 4px 12px;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 12px;
-}
-
-/* SALDO */
-.saldo-box {
-  background: white;
-  color: #190F49;
-  padding: 14px 16px;
-  border-radius: 12px;
-  margin-top: 18px;
-  width: fit-content;
-}
-
-.sb-label {
-  font-size: 12px;
-  color: #6b7280;
-}
-
-.sb-value {
-  font-size: 22px;
-  color: #ef4444;
-  margin-top: 4px;
-  font-weight: 700;
-}
-
-.sb-unit {
-  color: #190F49;
-}
-
-/* STATS */
-.ph-stats {
-  display: flex;
-  gap: 12px;
-  margin-top: 16px;
-}
-
-.stat-box {
-  background: white;
-  padding: 14px;
-  border-radius: 12px;
-  flex: 1;
-}
-
-.s-label {
-  font-size: 12px;
-  color: #6b7280;
-}
-
-.s-value {
-  font-size: 18px;
-  font-weight: 700;
-}
-
-/* ACTIVITIES */
-.sub-title {
-  font-size: 16px;
-  font-weight: 700;
-  margin: 10px 0;
-}
-
-.activity-grid {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.activity-item {
-  width: 90px;
-  height: 90px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  text-align: center;
-  padding-top: 18px;
-  font-size: 26px;
-}
-
-.activity-item p {
-  margin-top: 6px;
-  font-size: 12px;
-}
-
-/* MENU LIST */
-.menu-list {
-  margin-top: 20px;
-  background: white;
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-.menu-row {
   display: flex;
   justify-content: space-between;
-  padding: 14px;
-  border-bottom: 1px solid #eee;
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.left-box {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.user-info .name {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+.badge {
+  background: #3b1b8f;
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+.right-box {
+  display: flex;
+  gap: 15px;  
+}
+.info-card {
+  background: #f8f9fc;
+  padding: 12px 18px;
+  border-radius: 12px;
+  text-align: center;
+  border: 2px solid #dcdcdc;
+}
+.balance {
+  border-color: #3b1b8f;
+}
+.dc {
+  color: #ff9800;
+  font-weight: 700;
+}
+.section-title {
+  margin-top: 25px;
+  font-size: 18px;
+  font-weight: 600;
+}
+.activity-grid, .mitra-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+  margin-top: 10px;
+}
+.item {
+  background: #fff;
+  border: 2px solid #e0e0e0;
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+}
+.footer-links {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
   font-size: 14px;
+  color: #555;
 }
 
-.menu-row:last-child {
-  border-bottom: none;
-}
-
-/* BOTTOM NAV — hidden on desktop */
+/* Bottom Navigation */
 .bottom-nav {
   position: fixed;
-  bottom: 12px;
   left: 0;
   right: 0;
+  bottom: 14px;
+  margin: 0 auto;
   max-width: 820px;
-  margin: auto;
-  padding: 8px 12px;
-  background: white;
-  border-radius: 24px;
-  box-shadow: 0 10px 30px rgba(2,6,23,0.12);
+
   display: flex;
   justify-content: space-around;
+  align-items: center;
+
+  padding: 10px 18px;
+  background: #ffffff;
+  border-radius: 22px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
+
+  z-index: 999;
 }
 
 .nav-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 18px;
   text-decoration: none;
-  color: #111;
+  color: #222;
+  gap: 4px;
+  font-family: "Poppins", sans-serif;
 }
 
-.nav-btn.active {
-  color: #190F49;
-  font-weight: 700;
+.nav-image {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  display: block;
 }
 
-.nav-btn small {
+.nav-label {
   font-size: 11px;
-}
-
-/* ONLY MOBILE SHOW NAV */
-@media (min-width: 768px) {
-  .bottom-nav {
-    display: none;
-  }
+  color: #444;
 }
 </style>

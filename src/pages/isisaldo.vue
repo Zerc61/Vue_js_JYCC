@@ -72,8 +72,8 @@
           <div class="detail-item" v-if="selected">
             <span class="detail-icon">🏆</span>
             <div class="detail-content">
-              <strong>D’coin → Emas:</strong> {{ formatNum(selected) }} D’coin =
-              <span class="highlight">{{ emasFromDcoin.toFixed(4) }} gram</span>
+              <strong>D’coin → Emas:</strong> 1 D’coin =
+              <span class="highlight">0,0002 gram</span>
             </div>
           </div>
         </div>
@@ -155,7 +155,8 @@ export default {
         if (!gold || !gold.ask || !gold.bid) {
           throw new Error("Data harga emas tidak lengkap");
         }
-        const ounceToGram = 31.1034768;
+        // const ounceToGram = 31.1034768;
+        const ounceToGram = 25;
         const askOunce = Number(gold.ask);
         const bidOunce = Number(gold.bid);
         if (!askOunce || !bidOunce) {

@@ -18,7 +18,7 @@
         <p class="success-title">&#x2705; Transaksi Berhasil</p>
 
         <div class="coin-row">
-          <img :src="require('@/assets/Dcoin.png')" class="coin" />
+          <img :src="require('@/assets/logo.png')" class="coin" />
           <span class="dcoin">{{ dcoin.toLocaleString("id-ID") }} D’coins</span>
         </div>
       </div>

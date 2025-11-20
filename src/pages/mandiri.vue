@@ -1,7 +1,7 @@
 <template>
   <div class="pay-page">
     <header class="head">
-      <img src="@/assets/scream.png" alt="logo" class="logo" />
+      <img src="@/assets/scream 2.png" alt="logo" class="logo" />
       <h1 class="title">SCREAM DESTINATION</h1>
     </header>
 

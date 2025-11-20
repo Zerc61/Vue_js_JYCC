@@ -10,7 +10,7 @@
       <!-- Background Section -->
       <div class="background-section">
         <img
-          :src="require('@/assets/travel.png')"
+          :src="require('@/assets/travell.png')"
           alt=""
           class="travel-by-plane"
         />
@@ -49,20 +49,20 @@
           </div>
 
           <!-- Button Login -->
-          <button class="login-btn" @click="login">Masuk</button>
+          <button class="login-btn" @click="login">Log in</button>
 
           <!-- Link ke Register -->
           <div class="signup-link">
-            <span>Belum punya akun?</span>
+            <span>Don't have an account?</span>
             <router-link to="/register" class="signup-text">
-              Register</router-link
+              Sign up</router-link
             >
           </div>
 
           <!-- Divider -->
           <div class="divider">
             <span class="line"></span>
-            <span class="or-text">Atau</span>
+            <span class="or-text">or</span>
             <span class="line"></span>
           </div>
 

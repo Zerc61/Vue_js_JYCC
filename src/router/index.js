@@ -12,6 +12,8 @@ import pembayaranPage from "@/pages/pembayaran.vue";
 import QrisPage from "@/pages/qris.vue";
 import BcaPage from "@/pages/bca.vue";
 import MandiriPage from "@/pages/mandiri.vue";
+import BriPage from "@/pages/bri.vue";
+import CimbNiagaPage from "@/pages/cimb niaga.vue";
 import TransaksiBerhasil from "@/pages/transaksiberhasil.vue";
 
 // Admin Pages
@@ -49,6 +51,8 @@ const routes = [
   { path: "/transaksiberhasil/:dcoin/:rupiah/:metode", name: "TransaksiBerhasil", component: TransaksiBerhasil, props: true},
   { path: "/pembayaran/bca", name: "BcaPage", component: BcaPage },
   { path: "/pembayaran/mandiri", name: "MandiriPage", component: MandiriPage },
+  { path: "/pembayaran/bri", name: "BriPage", component: BriPage },
+  { path: "/pembayaran/cimb niaga", name: "BriPage", component: CimbNiagaPage },
 
   // Admin routes
   { path: "/admin", name: "AdminDashboard", component: adminDashboard },

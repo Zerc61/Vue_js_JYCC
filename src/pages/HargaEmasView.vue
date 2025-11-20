@@ -18,7 +18,7 @@
         <tbody>
   <tr>
     <td>{{ harga.GSPPJ.Gold.IDR.currencyname }} (IDR / gram)</td>
-    <td>{{ Number((harga.GSPPJ.Gold.IDR.ask / 28).toFixed(0)).toLocaleString('id-ID') }}</td>
+    <td>{{ Number((harga.GSPPJ.Gold.IDR.ask / 30).toFixed(0)).toLocaleString('id-ID') }}</td>
 <td>{{ Number((harga.GSPPJ.Gold.IDR.bid / 30).toFixed(0)).toLocaleString('id-ID') }}</td>
 
   </tr>

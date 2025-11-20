@@ -13,7 +13,7 @@
 
       <div class="form-section">
         <div class="form-card">
-          <h1 class="login-title">Register</h1>
+          <h1 class="login-title">Create a new account</h1>
 
           <!-- USERNAME -->
           <div class="form-group">
@@ -27,7 +27,7 @@
           <div class="form-group">
             <div class="input-container">
               <i class="fa-solid fa-user icon"></i>
-              <input type="text" placeholder="Nama Lengkap" class="input-field" v-model="name" />
+              <input type="text" placeholder="Full Name" class="input-field" v-model="name" />
             </div>
           </div>
 
@@ -47,11 +47,11 @@
             </div>
           </div>
 
-          <button class="login-btn" @click="register">Daftar</button>
+          <button class="login-btn" @click="register">Sign up</button>
 
           <div class="signup-link">
-            <span>Sudah punya akun?</span>
-            <router-link to="/login" class="signup-text">Login</router-link>
+            <span>Have an account?</span>
+            <router-link to="/login" class="signup-text">Log in</router-link>
           </div>
 
         </div>
@@ -136,14 +136,14 @@ export default {
 .foto { width:150px; position:absolute; top:60px; left:20px; }
 .background-section { flex:1; display:flex; justify-content:center; align-items:center; position:relative; }
 .travel-by-plane { width:100%; max-width:400px; margin-left:12%; }
-.welcome-text { position:absolute; bottom:9%; left:18%; color:white; font-size:2rem; }
+.welcome-text { position:absolute; bottom:9%; left:20%; color:white; font-size:2rem; }
 .form-section { flex:.1%; display:flex; justify-content:center; align-items:center; }
 .form-card {
   background:white; width:450px; height:565px;
   border-radius:50px; text-align:center;
   padding:30px; box-shadow:0 9px 4px rgba(0,0,0,.4);
 }
-.login-title { color:#3729da; font-size:2.9rem; margin-bottom:25px; }
+.login-title { color:#3729da; font-size:2rem; margin-bottom:40px; }
 .input-container { position:relative; display:flex; align-items:center; }
 .icon { position:absolute; left:15px; }
 .input-field { width:100%; padding:15px 15px 15px 50px; border-radius:22px; border:1px solid #000; }
