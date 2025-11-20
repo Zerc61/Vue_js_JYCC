@@ -6,6 +6,37 @@
       <h2 class="title">Convert Rupiah ke D’coin</h2>
       <p class="subtitle">Masukkan nominal Rupiah atau pilih jumlah D’coin</p>
 
+      <div class="price-banner">
+        <div class="price-row">
+          <div>
+            <p class="price-label">Harga Ask per Gram</p>
+            <p class="price-value">
+              <span v-if="loadingHarga">Memuat harga emas…</span>
+              <span v-else-if="errorHarga">{{ errorHarga }}</span>
+              <span v-else-if="hargaEmas">Rp {{ formatNum(hargaEmas) }}</span>
+              <span v-else>Tidak tersedia</span>
+            </p>
+          </div>
+          <div>
+            <p class="price-label">Harga Bid per Gram</p>
+            <p class="price-value">
+              <span v-if="loadingHarga">Memuat harga emas…</span>
+              <span v-else-if="errorHarga">-</span>
+              <span v-else-if="hargaEmasBid">Rp {{ formatNum(hargaEmasBid) }}</span>
+              <span v-else>-</span>
+            </p>
+          </div>
+          <div class="price-actions">
+            <button class="refresh-btn" @click="fetchHargaEmas" :disabled="loadingHarga">
+              {{ loadingHarga ? "Menyegarkan…" : "Perbarui harga" }}
+            </button>
+            <small v-if="hargaUpdate" class="update-time">
+              Terakhir diperbarui: {{ hargaUpdate }}
+            </small>
+          </div>
+        </div>
+      </div>
+
       <!-- Rincian konversi -->
       <transition name="slide-fade">
         <div class="detail-box" v-if="rupiah || selected">
@@ -76,6 +107,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "IsiSaldoView",
   data() {
@@ -83,7 +116,11 @@ export default {
       rupiah: "",
       displayRupiah: "",
       selected: null,
-      hargaEmas: 1200000,
+      hargaEmas: null,
+      hargaEmasBid: null,
+      hargaUpdate: null,
+      loadingHarga: false,
+      errorHarga: null,
       dcoinList: [
         2500, 5000, 7500, 10000, 12500, 15000, 17500, 20000, 22500, 25000,
         27500, 30000, 32500, 35000, 37500,
@@ -92,15 +129,51 @@ export default {
   },
   computed: {
     emasFromRupiah() {
-      if (!this.rupiah) return 0;
+      if (!this.rupiah || !this.hargaEmas) return 0;
       return this.rupiah / this.hargaEmas;
     },
     emasFromDcoin() {
-      if (!this.selected) return 0;
-      return this.rupiah / this.hargaEmas;
+      if (!this.selected || !this.hargaEmas) return 0;
+      // 2500 D’coin = 0.5 gram, jadi setiap 2500 D’coin = 0.5 gram
+      const gramPer2500 = 0.5;
+      const gram = (this.selected / 2500) * gramPer2500;
+      return gram;
     },
   },
+  created() {
+    this.fetchHargaEmas();
+  },
   methods: {
+    async fetchHargaEmas() {
+      this.loadingHarga = true;
+      this.errorHarga = null;
+      try {
+        const { data } = await axios.get(
+          "http://localhost:3000/api/harga-emas"
+        );
+        const gold = data?.GSPPJ?.Gold?.IDR;
+        if (!gold || !gold.ask || !gold.bid) {
+          throw new Error("Data harga emas tidak lengkap");
+        }
+        const ounceToGram = 31.1034768;
+        const askOunce = Number(gold.ask);
+        const bidOunce = Number(gold.bid);
+        if (!askOunce || !bidOunce) {
+          throw new Error("Data harga emas bukan angka");
+        }
+        const askPerGram = askOunce / ounceToGram;
+        const bidPerGram = bidOunce / ounceToGram;
+        this.hargaEmas = Math.round(askPerGram);
+        this.hargaEmasBid = Math.round(bidPerGram);
+        this.hargaUpdate = data?.GSPPJ?.date ?? null;
+      } catch (error) {
+        console.error("Gagal mengambil harga emas:", error);
+        this.errorHarga =
+          "Tidak bisa memuat harga emas terbaru. Silakan coba lagi.";
+      } finally {
+        this.loadingHarga = false;
+      }
+    },
     goBack() {
       this.$router.push("/topup");
     },
@@ -116,9 +189,13 @@ export default {
     },
     selectDcoin(value) {
       this.selected = value;
-      const calculated = value * 400; // contoh: 1 dcoin = 400 rupiah
-      this.rupiah = calculated;
-      this.displayRupiah = calculated.toLocaleString("id-ID");
+      // Hitung gram emas: 2500 D’coin = 0.5 gram, jadi gram = (value / 2500) * 0.5
+      const gramPer2500 = 0.5;
+      const gram = (value / 2500) * gramPer2500;
+      // Rupiah = gram * hargaEmas
+      const calculated = gram * this.hargaEmas;
+      this.rupiah = Math.round(calculated); // Bulatkan ke rupiah penuh
+      this.displayRupiah = this.rupiah.toLocaleString("id-ID");
     },
     goKonfirmasi() {
       if (!this.rupiah && !this.selected) {
@@ -138,6 +215,7 @@ export default {
       return value.toLocaleString("id-ID");
     },
     formatNum(num) {
+      if (num === null || num === undefined || Number.isNaN(num)) return "-";
       return Number(num).toLocaleString("id-ID");
     },
   },
@@ -172,6 +250,60 @@ export default {
   font-size: 15px;
   color: #475569;
   margin-bottom: 10px;
+}
+.price-banner {
+  margin-top: 18px;
+  margin-bottom: 20px;
+  padding: 18px 22px;
+  border-radius: 18px;
+  background: linear-gradient(120deg, #fff7e6, #ffe4ba);
+  box-shadow: 0 4px 15px rgba(255, 149, 0, 0.18);
+}
+.price-row {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.price-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #b45309;
+  margin: 0;
+}
+.price-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #92400e;
+  margin: 4px 0 0;
+}
+.price-actions {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+.refresh-btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 999px;
+  background: #f97316;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.refresh-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.refresh-btn:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+.update-time {
+  font-size: 12px;
+  color: #78350f;
 }
 .icon-btn {
   position: absolute;
@@ -279,7 +411,7 @@ export default {
   color: #374151;
   line-height: 1.5;
 }
-.highlight {
+.highlight {  
   color: #2563eb;
   font-weight: 700;
   font-size: 18px;

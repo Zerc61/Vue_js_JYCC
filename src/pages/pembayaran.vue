@@ -1,7 +1,8 @@
 <template>
   <div class="pay-page">
+    <button class="icon-btn" @click="goBack">⟵</button>
     <header class="head">
-      <img src="@/assets/scream.png" alt="logo" class="logo" />
+      <img src="@/assets/scream 2.png" alt="logo" class="logo" />
       <h1 class="title">SCREAM DESTINATION</h1>
     </header>
 
@@ -86,6 +87,9 @@ export default {
   },
 
   methods: {
+    goBack() {
+      this.$router.push("/topup");
+    },
     lanjut() {
   if (this.selected === 'QRIS') {
      this.$router.push("/pembayaran/qris");
@@ -106,6 +110,25 @@ export default {
 </script>
 
 <style scoped>
+.icon-btn {
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  background: white;
+  border: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  transition: 0.25s;
+}
+.icon-btn:hover {
+  transform: scale(1.13);
+}
+
 .pay-page {
   background: #eee;
   min-height: 100vh;

@@ -37,7 +37,7 @@
           </button>
 
           <button class="small-card" @click="coinsCashback">
-            <div class="card-title">Bonus Cashback</div>
+            <div class="card-title">Harga Emas</div>
             <div class="card-sub">+5.000 DC</div>
           </button>
 

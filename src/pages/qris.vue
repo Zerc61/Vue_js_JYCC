@@ -1,7 +1,7 @@
 <template>
   <div class="pay-page">
     <header class="head">
-      <img src="@/assets/scream.png" alt="logo" class="logo" />
+      <img src="@/assets/scream 2.png" alt="logo" class="logo" />
       <h1 class="title">SCREAM DESTINATION</h1>
     </header>
 
@@ -89,15 +89,20 @@ export default {
       }, 1000);
     },
     cekStatus() {
-      // Di sini nanti logika cek ke backend / API
-      // Untuk simulasi, kita anggap sukses
-      const isSuccess = confirm("Simulasi: Apakah pembayaran sudah masuk?");
-      if (isSuccess) {
-        alert("Pembayaran Berhasil!");
-        this.$router.push("/topup"); // Atau halaman sukses
-      }
+    const isSuccess = confirm("Simulasi: Apakah pembayaran sudah masuk?");
+    if (isSuccess) {
+      alert("Pembayaran Berhasil!");
+      this.$router.push({
+        name: "TransaksiBerhasil",
+        params: {
+          dcoin: 10000,  // contoh nominal Dcoin
+          rupiah: this.total,
+          metode: "QRIS"
+        }
+      });
     }
   }
+}
 };
 </script>
 
