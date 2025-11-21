@@ -1,51 +1,63 @@
 <template>
   <div class="profile-page">
-    <!-- Top Profile Section -->
+
+    <!-- HEADER PROFILE -->
     <div class="profile-header">
       <div class="left-box">
         <img class="avatar" src="@/assets/halal.png" alt="avatar" />
+
         <div class="user-info">
           <h2 class="name">Anjar Jomoksono</h2>
           <span class="badge">VVIP</span>
         </div>
       </div>
 
-      <div class="right-box">
-        <div class="info-card">
-          <p>Emas</p>
-          <h3>2 gram</h3>
-        </div>
-        <div class="info-card">
-          <p>Rupiah</p>
-          <h4>Rp 234.253 (kosong)</h4>
-        </div>
-        <div class="info-card balance">
-          <p>Saldo D’coin</p>
-          <h3 class="dc"><span class="coin">🪙</span> 10.000 D'C</h3>
-        </div>
+      <!-- logout button -->
+      <button class="logout-btn" @click="logout">
+        <img src="@/assets/logout.png" alt="logout" />
+      </button>
+    </div>
+
+    <!-- STATISTIK -->
+    <div class="stat-box">
+      <div class="info-card">
+        <p>Emas</p>
+        <h3>2 gram</h3>
+      </div>
+
+      <div class="info-card">
+        <p>Rupiah</p>
+        <h3>Rp 234.253</h3>
+      </div>
+
+      <div class="info-card balance">
+        <p>Saldo D’coin</p>
+        <h3 class="dc">
+          <span class="coin">&#x1FA99;</span> 10.000 D'C
+        </h3>
       </div>
     </div>
 
-    <!-- Riwayat Aktivitas -->
+    <!-- RIWAYAT AKTIVITAS -->
     <h3 class="section-title">Riwayat Aktivitas</h3>
     <div class="activity-grid">
-      <div class="item"><img src="" />Kuliner</div>
+      <div class="item">Kuliner</div>
       <div class="item">Penginapan</div>
       <div class="item">Transportasi</div>
       <div class="item">Paket Wisata</div>
       <div class="item">Wisata</div>
     </div>
 
-    <!-- Mitra Section -->
+    <!-- MITRA -->
     <h3 class="section-title">Mulai Usaha atau Jadi Mitra?</h3>
     <div class="mitra-grid">
       <div class="item">UMKM</div>
-      <div class="item">penginapan</div>
+      <div class="item">Penginapan</div>
       <div class="item">Driver</div>
-      <div class="item">wisata</div>
+      <div class="item">Wisata</div>
     </div>
 
-    <!-- Footer Links -->
+    <!-- FOOTER -->
     <div class="footer-links">
       <div class="left">
         <p>Kendala Pesanan</p>
@@ -61,19 +73,19 @@
       </div>
     </div>
 
-    <!-- Bottom navigation -->
-    <nav class="bottom-nav" aria-label="Bottom navigation">
-  <router-link
-    v-for="(n, i) in bottomNav"
-    :key="i"
-    :to="n.route"
-    class="nav-btn"
-  >
-    <img :src="n.image" class="nav-image" />
-    <small class="nav-label">{{ n.label }}</small>
-  </router-link>
-</nav>
-    
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+      <router-link
+        v-for="(n, i) in bottomNav"
+        :key="i"
+        :to="n.route"
+        class="nav-btn"
+      >
+        <img :src="n.image" class="nav-image" />
+        <small class="nav-label">{{ n.label }}</small>
+      </router-link>
+    </nav>
+
   </div>
 </template>
 
@@ -83,15 +95,19 @@ export default {
 
   data() {
     return {
-      query: "",
-
       bottomNav: [
-        { label: "Home", image: require('@/assets/dashboard.png'), route: "/" },
+        { label: "Home", image: require('@/assets/dashboard.png'), route: "/dashboard" },
         { label: "Explore", image: require('@/assets/explore.png'), route: "/explore" },
         { label: "Promo", image: require('@/assets/promo.png'), route: "/promo" },
         { label: "Wishlist", image: require('@/assets/wishlist.png'), route: "/wishlist" },
         { label: "Profil", image: require('@/assets/profil.png'), route: "/profil" }
       ]
+    }
+  },
+
+  methods: {
+    logout() {
+      this.$router.push("/login?swipe=right");
     }
   }
 };
@@ -101,83 +117,112 @@ export default {
 .profile-page {
   font-family: "Poppins", sans-serif;
   padding: 20px;
+  padding-bottom: 120px; /* biar ga ketutup bottom nav */
 }
+
+/* HEADER */
 .profile-header {
   display: flex;
   justify-content: space-between;
   background: #fff;
   padding: 20px;
-  border-radius: 14px;
+  border-radius: 16px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  align-items: center;
 }
+
 .left-box {
   display: flex;
   align-items: center;
   gap: 15px;
 }
+
 .avatar {
-  width: 80px;
-  height: 80px;
+  width: 75px;
+  height: 75px;
   border-radius: 50%;
   object-fit: cover;
 }
+
 .user-info .name {
   margin: 0;
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 600;
 }
+
 .badge {
   background: #3b1b8f;
   color: #fff;
-  font-size: 12px;
   padding: 4px 10px;
+  font-size: 12px;
   border-radius: 20px;
 }
-.right-box {
+
+.logout-btn img {
+  width: 28px;
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+/* STAT BAR */
+.stat-box {
   display: flex;
-  gap: 15px;  
+  gap: 15px;
+  margin-top: 20px;
 }
+
 .info-card {
+  flex: 1;
   background: #f8f9fc;
-  padding: 12px 18px;
-  border-radius: 12px;
+  padding: 15px;
+  border-radius: 14px;
   text-align: center;
-  border: 2px solid #dcdcdc;
+  border: 2px solid #e3e3e3;
 }
+
 .balance {
   border-color: #3b1b8f;
 }
+
 .dc {
   color: #ff9800;
   font-weight: 700;
 }
+
+/* GRID */
 .section-title {
-  margin-top: 25px;
-  font-size: 18px;
+  margin-top: 30px;
   font-weight: 600;
+  font-size: 17px;
 }
-.activity-grid, .mitra-grid {
+
+.activity-grid,
+.mitra-grid {
+  margin-top: 12px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 15px;
-  margin-top: 10px;
+  gap: 12px;
 }
+
 .item {
   background: #fff;
-  border: 2px solid #e0e0e0;
+  border: 2px solid #ebebeb;
   padding: 15px;
-  border-radius: 12px;
+  border-radius: 14px;
+  font-size: 13px;
   text-align: center;
 }
+
+/* FOOTER */
 .footer-links {
-  margin-top: 40px;
+  margin-top: 35px;
   display: flex;
   justify-content: space-between;
   font-size: 14px;
   color: #555;
 }
 
-/* Bottom Navigation */
+/* BOTTOM NAV */
 .bottom-nav {
   position: fixed;
   left: 0;
@@ -185,16 +230,13 @@ export default {
   bottom: 14px;
   margin: 0 auto;
   max-width: 820px;
-
   display: flex;
   justify-content: space-around;
   align-items: center;
-
   padding: 10px 18px;
   background: #ffffff;
   border-radius: 22px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
-
+  box-shadow: 0 8px 28px rgba(0,0,0,0.15);
   z-index: 999;
 }
 
@@ -202,17 +244,15 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 4px;
   text-decoration: none;
   color: #222;
-  gap: 4px;
-  font-family: "Poppins", sans-serif;
 }
 
 .nav-image {
   width: 26px;
   height: 26px;
   object-fit: contain;
-  display: block;
 }
 
 .nav-label {

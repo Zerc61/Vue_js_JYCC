@@ -1,14 +1,16 @@
 <template>
   <div class="page">
-
     <!-- Header -->
     <header class="header">
       <div class="header-inner">
         <div class="brand">
-          <img :src="require('@/assets/scream 2.png')" alt="Logo" class="logo" />
+          <img
+            :src="require('@/assets/scream 2.png')"
+            alt="Logo"
+            class="logo"
+          />
           <h1 class="title">SCREAM Destination</h1>
         </div>
-
         <div class="search-wrap">
           <input
             v-model="query"
@@ -30,7 +32,10 @@
           class="menu-item"
         >
           <div class="menu-icon">
-            <img :src="getAsset(item.icon)" :alt="item.name" />
+            <img
+              :src="getAsset(item.icon)"
+              :alt="item.name"
+            />
           </div>
           <div class="menu-label">{{ item.name }}</div>
         </router-link>
@@ -40,7 +45,6 @@
     <!-- Promo -->
     <section class="promo-section">
       <h2 class="section-title">Promo Saat Ini</h2>
-
       <div class="promo-list">
         <article
           v-for="(p, i) in promos"
@@ -48,9 +52,11 @@
           class="promo-card"
         >
           <div class="promo-media">
-            <img :src="getAsset(p.image)" :alt="p.title" />
+            <img
+              :src="getAsset(p.image)"
+              :alt="p.title"
+            />
           </div>
-
           <div class="promo-body">
             <div class="promo-title">{{ p.title }}</div>
             <div class="promo-badge">20% OFF</div>
@@ -62,64 +68,67 @@
     <!-- UMKM POPULER -->
     <section class="umkm-section">
       <h2 class="section-title">UMKM Populer</h2>
-
       <div class="umkm-list">
         <div
           v-for="(u, i) in umkm"
           :key="i"
           class="umkm-item"
         >
-          <img :src="getAsset(u.image)" :alt="u.name" class="umkm-photo" />
+          <img
+            :src="getAsset(u.image)"
+            :alt="u.name"
+            class="umkm-photo"
+          />
           <div class="umkm-name">{{ u.name }}</div>
         </div>
       </div>
     </section>
 
     <!-- Bottom navigation -->
-    <nav class="bottom-nav" aria-label="Bottom navigation">
-  <router-link
-    v-for="(n, i) in bottomNav"
-    :key="i"
-    :to="n.route"
-    class="nav-btn"
-  >
-    <img :src="n.image" class="nav-image" />
-    <small class="nav-label">{{ n.label }}</small>
-  </router-link>
-</nav>
-
-
+    <nav
+      class="bottom-nav"
+      aria-label="Bottom navigation"
+    >
+      <router-link
+        v-for="(n, i) in bottomNav"
+        :key="i"
+        :to="n.route"
+        class="nav-btn"
+      >
+        <img
+          :src="n.image"
+          class="nav-image"
+        />
+        <small class="nav-label">{{ n.label }}</small>
+      </router-link>
+    </nav>
   </div>
 </template>
 
 <script>
 export default {
   name: "DashboardView",
-
   data() {
     return {
       query: "",
-
       menus: [
         { name: "UMKM", icon: "umkm.png", route: "/umkm" },
         { name: "Paket Wisata", icon: "Paket.png", route: "/destinasi" },
         { name: "Wisata", icon: "wisata.png", route: "/event" },
-        { name: "Travel", icon: "transportasi.png", route: "/travel" },
+        { name: "Travel", icon: "travel.png", route: "/travel" },
         { name: "Hotel", icon: "hotel.png", route: "/hotel" },
         { name: "Tiket", icon: "tiket.png", route: "/tiket" },
         { name: "Smart Itinerary", icon: "smart.png", route: "/smart" },
-        { name: "Top Up", icon: "Dcoin.png", route: "/topup" }
+        { name: "Top Up", icon: "Dcoin.png", route: "/topup" },
       ],
-
       promos: [
         { title: "Batu Flower Garden", image: "batu.png" },
         { title: "Selecta Malang", image: "malang.png" },
         { title: "Museum Angkut", image: "angkut.png" },
         { title: "Batu Flower Garden", image: "batu.png" },
         { title: "Selecta Malang", image: "malang.png" },
-        { title: "Museum Angkut", image: "angkut.png" }
+        { title: "Museum Angkut", image: "angkut.png" },
       ],
-
       umkm: [
         { name: "Kuliner", image: "kuliner.png" },
         { name: "Makanan Olahan", image: "makan.png" },
@@ -130,23 +139,40 @@ export default {
         { name: "Bisnis Sosial", image: "bisnis.png" },
         { name: "IT & Teknologi", image: "teknologi.png" },
         { name: "Peternakan", image: "peternak.png" },
-        { name: "Perdagangan (Ritel)", image: "pedagang.png" }
+        { name: "Perdagangan (Ritel)", image: "pedagang.png" },
       ],
-
       bottomNav: [
-        { label: "Home", image: require('@/assets/dashboard.png'), route: "/" },
-        { label: "Explore", image: require('@/assets/explore.png'), route: "/explore" },
-        { label: "Promo", image: require('@/assets/promo.png'), route: "/promo" },
-        { label: "Wishlist", image: require('@/assets/wishlist.png'), route: "/wishlist" },
-        { label: "Profil", image: require('@/assets/profil.png'), route: "/profil" }
-      ]
+        {
+          label: "Home",
+          image: require("@/assets/dashboard.png"),
+          route: "/",
+        },
+        {
+          label: "Explore",
+          image: require("@/assets/explore.png"),
+          route: "/explore",
+        },
+        {
+          label: "Promo",
+          image: require("@/assets/promo.png"),
+          route: "/promo",
+        },
+        {
+          label: "Wishlist",
+          image: require("@/assets/wishlist.png"),
+          route: "/wishlist",
+        },
+        {
+          label: "Profil",
+          image: require("@/assets/profil.png"),
+          route: "/profil",
+        },
+      ],
     };
-  }, 
-
+  },
   mounted() {
     this.autoScrollPromo();
   },
-
   methods: {
     getAsset(name) {
       try {
@@ -155,26 +181,22 @@ export default {
         return "";
       }
     },
-
     // AUTO SCROLL PROMO
     autoScrollPromo() {
       const container = this.$el.querySelector(".promo-list");
       let scrollAmount = 1;
-
       setInterval(() => {
         scrollAmount += 1;
-
         container.scrollTo({
           left: scrollAmount,
-          behavior: "smooth"
+          behavior: "smooth",
         });
-
         if (scrollAmount >= container.scrollWidth - container.clientWidth) {
           scrollAmount = 1;
         }
       }, 40);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -401,16 +423,13 @@ export default {
   bottom: 14px;
   margin: 0 auto;
   max-width: 820px;
-
   display: flex;
   justify-content: space-around;
   align-items: center;
-
   padding: 10px 18px;
   background: #ffffff;
   border-radius: 22px;
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
-
   z-index: 999;
 }
 

@@ -154,10 +154,19 @@ export default {
       }
     },
     cekStatus() {
-      // Simulasi sukses
-      alert("Pembayaran BCA Virtual Account Berhasil!");
-      this.$router.push("/topup");
-    }
+  const isSuccess = confirm("Simulasi: Apakah pembayaran sudah masuk?");
+  if (isSuccess) {
+    alert("Pembayaran Berhasil!");
+    this.$router.push({
+      name: "TransaksiBerhasilBCA", // ← Gunakan name yang benar
+      params: {
+        dcoin: "10000",
+        rupiah: this.total.toString(),
+        metode: "BRI Virtual Account"
+      }
+    });
+  }
+}
   }
 };
 </script>

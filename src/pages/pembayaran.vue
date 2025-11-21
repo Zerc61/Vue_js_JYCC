@@ -73,7 +73,6 @@ export default {
         { name: 'CIMB NIAGA Virtual Account', logo: require('@/assets/CIMB-NIAGA.png') }
       ],
       Qrislist: [
-        // Perhatikan name 'QRIS' harus sama dengan yang dicek di method lanjut()
         { name: 'QRIS', logo: require('@/assets/qris.png') },
       ]
     };
@@ -91,26 +90,26 @@ export default {
       this.$router.push("/topup");
     },
     lanjut() {
-  if (this.selected === 'QRIS') {
-     this.$router.push("/pembayaran/qris");
-  } 
-  else if (this.selected === 'BCA Virtual Account') {
-     this.$router.push("/pembayaran/bca");
-  }
-  else if (this.selected === 'MANDIRI Virtual Account') {
-     this.$router.push("/pembayaran/mandiri");
-  }
-  else if (this.selected === 'BRI Virtual Account') {
-     this.$router.push("/pembayaran/bri");
-  }
-  else if (this.selected === 'CIMB NIAGA Virtual Account') {
-     this.$router.push("/pembayaran/cimb niaga");
-  }
-  else {
-     alert(`Pembayaran menggunakan ${this.selected} berhasil!`);
-     this.$router.push("/topup");
-  }
-}
+      if (this.selected === 'QRIS') {
+        this.$router.push("/pembayaran/qris");
+      } 
+      else if (this.selected === 'BCA Virtual Account') {
+        this.$router.push("/pembayaran/bca");
+      }
+      else if (this.selected === 'MANDIRI Virtual Account') {
+        this.$router.push("/pembayaran/mandiri");
+      }
+      else if (this.selected === 'BRI Virtual Account') {
+        this.$router.push("/pembayaran/bri");
+      }
+      else if (this.selected === 'CIMB NIAGA Virtual Account') {
+        this.$router.push("/pembayaran/cimbniaga");
+      }
+      else {
+        alert(`Pembayaran menggunakan ${this.selected} berhasil!`);
+        this.$router.push("/topup");
+      }
+    }
   }
 };
 </script>
@@ -203,7 +202,6 @@ export default {
   transform: scale(1.01);
 }
 
-/* Style tambahan jika item dipilih */
 .pay-box input:checked {
   accent-color: #180c4a;
 }

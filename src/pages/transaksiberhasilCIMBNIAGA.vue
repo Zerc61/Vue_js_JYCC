@@ -6,15 +6,13 @@
     </header>
 
     <div class="wrap center-content">
-      <h2 class="section-title">Scan QRIS</h2>
-      <p class="sub">Silakan scan QR Code di bawah ini</p>
+      <h2 class="section-title">Pembayaran CIMB Niaga Virtual Account</h2>
+      <p class="sub">Transfer ke nomor rekening di bawah ini</p>
 
-      <div class="qr-container">
-        <img 
-          src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" 
-          alt="QR Code" 
-          class="qr-image" 
-        />
+      <div class="va-container">
+        <img :src="require('@/assets/CIMB-NIAGA.png')" alt="CIMB Niaga Logo" class="bank-logo" />
+        <p class="va-number">{{ vaNumber }}</p>
+        <p class="va-label">Nomor Virtual Account CIMB Niaga</p>
       </div>
 
       <div class="payment-details">
@@ -29,8 +27,9 @@
 
       <div class="instructions">
         <ol>
-          <li>Buka aplikasi e-wallet atau banking Anda.</li>
-          <li>Scan QR Code di atas.</li>
+          <li>Buka aplikasi OCTO Mobile atau ATM CIMB Niaga.</li>
+          <li>Pilih menu Transfer > Ke Rekening CIMB Niaga Virtual Account.</li>
+          <li>Masukkan nomor VA: <b>{{ vaNumber }}</b>.</li>
           <li>Periksa nama merchant <b>Scream Destination</b>.</li>
           <li>Selesaikan pembayaran.</li>
         </ol>
@@ -50,11 +49,12 @@
 
 <script>
 export default {
-  name: "QrisPage",
+  name: "CimbNiagaPage",
   data() {
     return {
-      total: 50000, // Pastikan ini sesuai dengan data yang dikirim
-      timeLeft: 900, // 15 menit dalam detik (15 * 60)
+      total: 50000,
+      vaNumber: "5566778899001122", // Dalam produksi, dapatkan dari API Midtrans
+      timeLeft: 900,
       timerInterval: null
     };
   },
@@ -65,7 +65,6 @@ export default {
     timerDisplay() {
       const minutes = Math.floor(this.timeLeft / 60);
       const seconds = this.timeLeft % 60;
-      // Menambahkan '0' di depan jika angka di bawah 10 (contoh: 09:05)
       return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
   },
@@ -73,7 +72,6 @@ export default {
     this.startTimer();
   },
   beforeUnmount() {
-    // Hentikan timer jika user pindah halaman agar tidak error
     clearInterval(this.timerInterval);
   },
   methods: {
@@ -84,7 +82,7 @@ export default {
         } else {
           clearInterval(this.timerInterval);
           alert("Waktu pembayaran habis!");
-          this.$router.push("/"); // Kembali ke home jika habis
+          this.$router.push("/");
         }
       }, 1000);
     },
@@ -95,9 +93,9 @@ export default {
         this.$router.push({
           name: "TransaksiBerhasil",
           params: {
-            dcoin: 10000,  // contoh nominal Dcoin
+            dcoin: 10000,
             rupiah: this.total,
-            metode: "QRIS"
+            metode: "CIMB NIAGA Virtual Account"
           }
         });
       }
@@ -107,7 +105,6 @@ export default {
 </script>
 
 <style scoped>
-/* Menggunakan style dasar yang sama agar konsisten */
 .pay-page {
   background: #eee;
   min-height: 100vh;
@@ -134,12 +131,12 @@ export default {
 
 .wrap {
   background: #fff;
-  max-width: 500px; /* Sedikit lebih kecil agar fokus ke QR */
+  max-width: 500px;
   margin: 25px auto;
   padding: 30px;
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  text-align: center; /* Center semua isi */
+  text-align: center;
 }
 
 .center-content {
@@ -160,18 +157,31 @@ export default {
   margin-bottom: 20px;
 }
 
-.qr-container {
+.va-container {
   border: 2px dashed #180c4a;
-  padding: 15px;
+  padding: 20px;
   border-radius: 10px;
   background: #fff;
   margin-bottom: 20px;
+  text-align: center;
 }
 
-.qr-image {
-  width: 200px;
-  height: 200px;
-  display: block;
+.bank-logo {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 10px;
+}
+
+.va-number {
+  font-size: 24px;
+  font-weight: 800;
+  color: #180c4a;
+  margin: 10px 0;
+}
+
+.va-label {
+  font-size: 14px;
+  color: #666;
 }
 
 .payment-details {

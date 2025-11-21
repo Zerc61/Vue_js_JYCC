@@ -127,6 +127,7 @@ export default {
       ],
     };
   },
+
   computed: {
     emasFromRupiah() {
       if (!this.rupiah || !this.hargaEmas) return 0;
@@ -134,39 +135,59 @@ export default {
     },
     emasFromDcoin() {
       if (!this.selected || !this.hargaEmas) return 0;
-      // 2500 D’coin = 0.5 gram, jadi setiap 2500 D’coin = 0.5 gram
       const gramPer2500 = 0.5;
-      const gram = (this.selected / 2500) * gramPer2500;
-      return gram;
+      return (this.selected / 2500) * gramPer2500;
     },
   },
+
   created() {
     this.fetchHargaEmas();
   },
+
   methods: {
+    formatTo24Hour(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const hours = String(date.getHours()).padStart(2, "0");
+      const minutes = String(date.getMinutes()).padStart(2, "0");
+      const seconds = String(date.getSeconds()).padStart(2, "0");
+
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    },
+
+    // -------------------------
+    //  FIX: Sekarang update jam selalu TERKINI
+    // -------------------------
     async fetchHargaEmas() {
       this.loadingHarga = true;
       this.errorHarga = null;
+
       try {
-        const { data } = await axios.get(
-          "http://localhost:3000/api/harga-emas"
-        );
+        const { data } = await axios.get("http://localhost:3000/api/harga-emas");
+
         const gold = data?.GSPPJ?.Gold?.IDR;
         if (!gold || !gold.ask || !gold.bid) {
           throw new Error("Data harga emas tidak lengkap");
         }
-        // const ounceToGram = 31.1034768;
+
         const ounceToGram = 25;
         const askOunce = Number(gold.ask);
         const bidOunce = Number(gold.bid);
+
         if (!askOunce || !bidOunce) {
           throw new Error("Data harga emas bukan angka");
         }
+
         const askPerGram = askOunce / ounceToGram;
         const bidPerGram = bidOunce / ounceToGram;
+
         this.hargaEmas = Math.round(askPerGram);
         this.hargaEmasBid = Math.round(bidPerGram);
-        this.hargaUpdate = data?.GSPPJ?.date ?? null;
+
+        // ⭐ UPDATE JAM SAAT INI — FIX
+        this.hargaUpdate = this.formatTo24Hour(new Date());
+
       } catch (error) {
         console.error("Gagal mengambil harga emas:", error);
         this.errorHarga =
@@ -175,34 +196,38 @@ export default {
         this.loadingHarga = false;
       }
     },
+
     goBack() {
       this.$router.push("/topup");
     },
+
     formatRupiahInput() {
       let number = this.displayRupiah.replace(/\./g, "");
       this.rupiah = Number(number);
+
       if (!number) {
         this.displayRupiah = "";
         return;
       }
+
       this.displayRupiah = Number(number).toLocaleString("id-ID");
       this.selected = null;
     },
+
     selectDcoin(value) {
       this.selected = value;
-      // Hitung gram emas: 2500 D’coin = 0.5 gram, jadi gram = (value / 2500) * 0.5
-      const gramPer2500 = 0.5;
-      const gram = (value / 2500) * gramPer2500;
-      // Rupiah = gram * hargaEmas
+      const gram = (value / 2500) * 0.5;
       const calculated = gram * this.hargaEmas;
-      this.rupiah = Math.round(calculated); // Bulatkan ke rupiah penuh
+      this.rupiah = Math.round(calculated);
       this.displayRupiah = this.rupiah.toLocaleString("id-ID");
     },
+
     goKonfirmasi() {
       if (!this.rupiah && !this.selected) {
         alert("Isi nominal atau pilih jumlah D’coin terlebih dahulu!");
         return;
       }
+
       this.$router.push({
         name: "Konfirmasi",
         params: {
@@ -212,9 +237,11 @@ export default {
         },
       });
     },
+
     formatCoin(value) {
       return value.toLocaleString("id-ID");
     },
+
     formatNum(num) {
       if (num === null || num === undefined || Number.isNaN(num)) return "-";
       return Number(num).toLocaleString("id-ID");
