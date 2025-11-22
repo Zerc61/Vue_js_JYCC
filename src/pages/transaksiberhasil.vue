@@ -1,40 +1,31 @@
 <template>
-  <div class="page">
+  <div class="pay-page">
+    <header class="head">
+      <img src="@/assets/scream 2.png" alt="logo" class="logo" />
+      <h1 class="title">SCREAM DESTINATION</h1>
+    </header>
 
-    <!-- Header -->
-    <div class="header">
-      <img :src="require('@/assets/scream 2.png')" class="logo" />
-      <div class="title">SCREAM DESTINATION</div>
-    </div>
-
-    <!-- CARD -->
-    <div class="card">
-
-      <!-- CARD TOP -->
-      <div class="card-top">
-        <div class="success-row">
-          <span class="green-dot">●</span>
-          <span>✓ Transaksi Berhasil</span>
-        </div>
-
-        <div class="coins">
-          <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" />
-          {{ dcoin }} D'coins
-        </div>
+    <div class="wrap center-content">
+      <div class="success-banner">
+        <div class="check-icon">✓</div>
+        <h2 class="success-title">Transaksi Berhasil</h2>
       </div>
 
-      <!-- DETAILS -->
-      <div class="details">
-        <h2>Rincian</h2>
+      <div class="reward-box">
+        <img 
+          src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" 
+          alt="Coins" 
+          class="coin-icon" 
+        />
+        <h3 class="coin-amount">+ {{ dcoin }} D'coins</h3>
+      </div>
+
+      <div class="rincian-box">
+        <h3 class="box-title">Rincian Transaksi</h3>
 
         <div class="row">
           <span>Total Emas</span>
           <span>{{ totalEmas }} Gram</span>
-        </div>
-
-        <div class="row">
-          <span>Total Harga</span>
-          <span>Rp {{ rupiahFormatted }}</span>
         </div>
 
         <div class="row">
@@ -43,28 +34,37 @@
         </div>
 
         <div class="row">
-          <span>PPN (12%)</span>
+          <span>Harga Dasar</span>
+          <span>Rp {{ rupiahFormatted }}</span>
+        </div>
+
+        <div class="row">
+          <span class="text-muted">PPN (12%)</span>
           <span>Rp {{ ppnFormatted }}</span>
         </div>
 
         <div class="row">
-          <span>Biaya Admin</span>
-          <span>Rp {{ ppnFormatted }}</span>
+          <span class="text-muted">Biaya Admin</span>
+          <span>Rp {{ adminFormatted }}</span>
         </div>
 
-        <div class="line"></div>
+        <hr class="line" />
 
         <div class="row total">
-          <span>Total Keseluruhan</span>
-          <strong>Rp {{ totalFormatted }}</strong>
+          <span>Total Dibayar</span>
+          <span>Rp {{ totalFormatted }}</span>
         </div>
       </div>
 
-      <button class="btn-primary" @click="$router.push('/topup')">Cek Saldo D'coin</button>
-      <button class="btn-secondary" @click="$router.push('/dashboard')">Beranda</button>
-
+      <div class="footer-actions">
+        <button class="btn btn-primary" @click="$router.push('/topup')">
+          Cek Saldo D'coin
+        </button>
+        <button class="btn btn-secondary" @click="$router.push('/dashboard')">
+          Kembali ke Beranda
+        </button>
+      </div>
     </div>
-
   </div>
 </template>
 
@@ -72,8 +72,14 @@
 export default {
   name: "TransaksiBerhasil",
 
+  data() {
+    return {
+      biayaAdmin: 5000 // Fixed admin fee
+    };
+  },
+
   computed: {
-    // Ambil dari URL params
+    // Get params passed from Payment Page
     dcoin() {
       return Number(this.$route.params.dcoin || 0);
     },
@@ -81,14 +87,15 @@ export default {
       return Number(this.$route.params.rupiah || 0);
     },
     metode() {
-      return this.$route.params.metode || "-";
+      return this.$route.params.metode || "QRIS";
     },
 
-    // Convert
+    // formatting
     rupiahFormatted() {
       return this.rupiah.toLocaleString("id-ID");
     },
 
+    // Calculations
     ppn() {
       return Math.round(this.rupiah * 0.12);
     },
@@ -96,15 +103,19 @@ export default {
       return this.ppn.toLocaleString("id-ID");
     },
 
+    adminFormatted() {
+      return this.biayaAdmin.toLocaleString("id-ID");
+    },
+
     totalKeseluruhan() {
-      return this.rupiah + this.ppn;
+      return this.rupiah + this.ppn + this.biayaAdmin;
     },
     totalFormatted() {
       return this.totalKeseluruhan.toLocaleString("id-ID");
     },
 
     totalEmas() {
-      // Rumus sama dengan halaman QRIS
+      // Logic: 5000 DC = 0.1 Gram
       return ((this.dcoin / 5000) * 0.1).toFixed(2);
     }
   }
@@ -112,124 +123,149 @@ export default {
 </script>
 
 <style scoped>
-.page {
-  background: #efefef;
+/* --- Layout Main --- */
+.pay-page {
+  background: #f3f4f6;
   min-height: 100vh;
-  padding-bottom: 40px;
+  font-family: "Poppins", sans-serif;
 }
 
-/* Header */
-.header {
-  background: #1a0a50;
-  padding: 20px;
+/* --- Header --- */
+.head {
+  background: #180c4a;
   color: white;
+  padding: 15px 25px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-}
-.logo {
-  width: 50px;
-}
-.title {
-  font-size: 26px;
-  font-weight: bold;
-}
-
-/* Card */
-.card {
-  width: 70%;
-  margin: 40px auto;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
-}
-
-/* Card Top */
-.card-top {
-  background: #2d1179;
-  padding: 40px 20px;
-  text-align: center;
-  color: white;
-}
-
-.success-row {
-  font-size: 22px;
-  font-weight: 600;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-}
-.green-dot {
-  color: #00ff3c;
-  font-size: 28px;
-}
-
-.coins {
-  margin-top: 15px;
-  font-size: 24px;
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
   gap: 10px;
 }
-.coins img {
-  width: 28px;
+
+.logo { width: 45px; }
+.title { font-size: 20px; font-weight: 600; }
+
+/* --- Wrap --- */
+.wrap {
+  background: #fff;
+  max-width: 500px;
+  margin: 25px auto;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Details */
-.details {
-  padding: 30px 40px;
-}
-
-.details h2 {
+/* --- Success Banner --- */
+.success-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-bottom: 20px;
 }
+.check-icon {
+  width: 60px;
+  height: 60px;
+  background: #22c55e;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3);
+}
+.success-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #180c4a;
+  margin: 0;
+}
 
+/* --- Reward Box --- */
+.reward-box {
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  padding: 15px 25px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+.coin-icon { width: 30px; }
+.coin-amount {
+  font-size: 20px;
+  font-weight: 700;
+  color: #b45309;
+  margin: 0;
+}
+
+/* --- Rincian Box --- */
+.rincian-box {
+  width: 100%;
+  background: #fafafa;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  border: 1px solid #eee;
+}
+.box-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #333;
+  text-align: left;
+}
 .row {
   display: flex;
   justify-content: space-between;
-  margin: 12px 0;
-  font-size: 18px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #555;
 }
-
+.text-muted { opacity: 0.7; }
 .line {
-  height: 2px;
-  background: #000;
-  opacity: 0.4;
   margin: 15px 0;
+  border: 0;
+  border-top: 1px dashed #ccc;
 }
-
 .total {
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 18px;
+  font-weight: 700;
+  color: #180c4a;
 }
 
-/* Buttons */
-.btn-primary {
-  width: 85%;
-  padding: 15px;
-  margin: 25px auto 10px;
-  display: block;
+/* --- Buttons --- */
+.footer-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.btn {
+  width: 100%;
+  padding: 14px;
   border-radius: 30px;
-  background: #2d1179;
-  color: white;
-  font-size: 18px;
   border: none;
   cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: 0.2s;
 }
+.btn-primary {
+  background: #180c4a;
+  color: white;
+  box-shadow: 0 4px 12px rgba(24, 12, 74, 0.2);
+}
+.btn-primary:hover { background: #2a1675; }
+
 .btn-secondary {
-  width: 85%;
-  padding: 15px;
-  margin: 10px auto 30px;
-  display: block;
-  border-radius: 30px;
-  font-size: 18px;
-  border: 3px solid #2d1179;
-  color: #2d1179;
   background: white;
-  cursor: pointer;
+  border: 2px solid #180c4a;
+  color: #180c4a;
 }
+.btn-secondary:hover { background: #f0f0f0; }
 </style>

@@ -62,7 +62,7 @@ export default {
 
   data() {
     return {
-      total: 50000, // Nominal pembayaran
+      total: 50000, // Nominal pembayaran (Note: Sebaiknya diambil dari props/store)
       selected: null, // Menyimpan metode pembayaran yang dipilih
 
       // --- DATA LIST PEMBAYARAN ---
@@ -87,7 +87,7 @@ export default {
 
   methods: {
     goBack() {
-      this.$router.push("/isisaldo");
+      this.$router.push("/topup");
     },
     lanjut() {
       if (this.selected === 'QRIS') {
@@ -106,8 +106,9 @@ export default {
         this.$router.push("/pembayaran/cimbniaga");
       }
       else {
+        // Default fallback
         alert(`Pembayaran menggunakan ${this.selected} berhasil!`);
-        this.$router.push("/isisaldo");
+        this.$router.push("/topup");
       }
     }
   }
@@ -129,6 +130,7 @@ export default {
   cursor: pointer;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
   transition: 0.25s;
+  z-index: 10;
 }
 .icon-btn:hover {
   transform: scale(1.13);
@@ -146,7 +148,7 @@ export default {
   padding: 15px 25px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center; /* Centered for balance with back button */
   gap: 10px;
 }
 

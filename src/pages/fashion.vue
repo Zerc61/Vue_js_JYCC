@@ -1,10 +1,9 @@
 <template>
   <div class="page">
-    <!-- header with logo & search -->
     <header class="header">
       <div class="header-inner">
         <div class="brand">
-          <img :src="getAsset('halal.png')" class="logo" />
+          <img :src="logoUrl" alt="Logo" class="logo" />
           <div class="search-wrap">
             <input v-model="q" class="search" placeholder="Cari fashion..." />
             <button v-if="q" class="clear" @click="q = ''">✕</button>
@@ -13,7 +12,6 @@
       </div>
     </header>
 
-    <!-- filters -->
     <section class="filters">
       <div class="filters-inner">
         <div class="category" :class="{active: selectedCategory === 'all'}" @click="selectCategory('all')">Semua</div>
@@ -30,13 +28,14 @@
       </div>
     </section>
 
-    <!-- product grid -->
     <main class="content">
       <div class="grid">
-        <article v-for="p in filteredProducts" 
-         :key="p.id" 
-         class="card"
-         @click="goToDetail(p)">
+        <article 
+          v-for="p in filteredProducts" 
+          :key="p.id" 
+          class="card"
+          @click="goToDetail(p)"
+        >
           <div class="img-wrap">
             <img :src="getAsset(p.image)" :alt="p.title" />
             <span v-if="p.badge" class="badge">{{ p.badge }}</span>
@@ -45,7 +44,7 @@
             <h4 class="title">{{ p.title }}</h4>
             <div class="meta">
               <div class="price">Rp {{ formatNumber(p.price) }}</div>
-              <button class="btn-buy" @click="addToCart(p)">Beli</button>
+              <button class="btn-buy" @click.stop="addToCart(p)">Beli</button>
             </div>
           </div>
         </article>
@@ -53,6 +52,13 @@
 
       <div v-if="filteredProducts.length === 0" class="empty">Tidak ada produk.</div>
     </main>
+
+    <nav class="bottom-nav">
+      <router-link v-for="n in bottomNav" :key="n.label" :to="n.route" class="nav-btn" :class="{active: $route.path === n.route}">
+        <img :src="getAsset(n.image)" class="nav-img" :alt="n.label" />
+        <small class="nav-label">{{ n.label }}</small>
+      </router-link>
+    </nav>
   </div>
 </template>
 
@@ -61,7 +67,8 @@ export default {
   name: "UmkmFashion",
   data() {
     return {
-      logoUrl: require('@/assets/halal.png'),
+      // Using require ensures the asset is found by Webpack/Vite
+      logoUrl: require('@/assets/halal.png'), 
       q: '',
       selectedCategory: 'all',
       sortKey: 'popular',
@@ -76,6 +83,14 @@ export default {
         { id:7, title:'Maxi Dress', image:'fashion3.png', price:140000, category:'Dress', badge:'' },
         { id:8, title:'Set Aksesoris', image:'fashion4.png', price:45000, category:'Aksesoris', badge:'' }
       ],
+      bottomNav: [
+        { label: 'Home', route: '/', image: 'logo.png' },
+        { label: 'Explore', route: '/explore', image: 'logo.png' },
+        { label: 'Promo', route: '/promo', image: 'logo.png' },
+        { label: 'Wishlist', route: '/wishlist', image: 'logo.png' },
+        { label: 'Profil', route: '/profil', image: 'logo.png' },
+        { label: 'Logout', route: '/logout', image: 'logout.png' }
+      ]
     };
   },
   computed: {
@@ -99,30 +114,38 @@ export default {
     }
   },
   methods: {
-  selectCategory(c) { this.selectedCategory = c; },
-  formatNumber(n) { return Number(n).toLocaleString('id-ID'); },
-  getAsset(filename) { try { return require(`@/assets/${filename}`); } catch (e) { return '/mnt/data/halal.jpeg'; } },
-  addToCart(p) { alert(`Tambah "${p.title}" ke keranjang (contoh).`); },
-
-  goToDetail(product) {
-    this.$router.push({
-      name: 'ProductDetailPage',
-      params: { id: product.id }
-    });
+    selectCategory(c) { this.selectedCategory = c; },
+    formatNumber(n) { return Number(n).toLocaleString('id-ID'); },
+    getAsset(filename) { 
+      try { 
+        // Adjust the path according to your folder structure
+        return require(`@/assets/${filename}`); 
+      } catch (e) { 
+        return ''; 
+      } 
+    },
+    addToCart(p) { 
+      alert(`Tambah "${p.title}" ke keranjang.`); 
+    },
+    goToDetail(product) {
+      this.$router.push({
+        name: 'ProductDetailPage',
+        params: { id: product.id }
+      });
+    }
   }
-},
-}
+};
 </script>
 
 <style scoped>
-*{box-sizing:border-box}
-.page{min-height:100vh;background:#f5f6f8;padding-bottom:92px;font-family:Poppins, sans-serif}
+/* Global */
+.page{font-family:'Poppins',sans-serif;background:#f8f9fa;min-height:100vh;padding-bottom:80px}
 
 /* header */
-.header{background:linear-gradient(90deg,#1a1f6b,#2c2a74);padding:16px}
+.header{background:#1a1f6b;padding:16px;position:sticky;top:0;z-index:50}
 .header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center}
-.brand{display:flex;gap:12px;width:100%}
-.logo{width:140px;height:38px;object-fit:cover;border-radius:6px}
+.brand{display:flex;gap:12px;align-items:center;width:100%}
+.logo{height:40px;width:40px;object-fit:contain;border-radius:50%;background:#fff}
 .search-wrap{flex:1;position:relative}
 .search{width:100%;padding:10px;border-radius:12px;border:none;outline:none;background:#fff}
 .clear{position:absolute;right:10px;top:8px;background:transparent;border:none;cursor:pointer}
@@ -137,7 +160,7 @@ export default {
 /* grid */
 .content{max-width:1100px;margin:12px auto;padding:0 12px}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-.card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(15,23,42,0.06);display:flex;flex-direction:column}
+.card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(15,23,42,0.06);display:flex;flex-direction:column;cursor:pointer;transition:transform 0.2s}
 .card:hover{transform:translateY(-6px)}
 .img-wrap{position:relative}
 .img-wrap img{width:100%;height:260px;object-fit:cover;display:block}

@@ -1,6 +1,5 @@
 <template>
   <div class="page">
-    <!-- Header -->
     <header class="header">
       <div class="header-inner">
         <div class="brand">
@@ -22,7 +21,6 @@
       </div>
     </header>
 
-    <!-- Menu icons -->
     <section class="menu-section">
       <div class="menu-grid">
         <router-link
@@ -42,7 +40,6 @@
       </div>
     </section>
 
-    <!-- Promo -->
     <section class="promo-section">
       <h2 class="section-title">Promo Saat Ini</h2>
       <div class="promo-list">
@@ -66,17 +63,16 @@
     </section>
     <br>
 
-    <!-- UMKM POPULER -->
-    <section class="menu-section">
+    <section class="umkm-section">
       <h2 class="section-title">UMKM Populer</h2>
       <div class="umkm-list">
         <router-link
           v-for="item in umkm"
           :key="item.name"
-          :to="item.route"
+          :to="item.route ? item.route : '/umkm'"
           class="umkm-item"
         >
-          <div class="umkm-photo">
+          <div class="umkm-photo-wrap">
             <img
               :src="getAsset(item.icon)"
               :alt="item.name"
@@ -88,7 +84,6 @@
       </div>
     </section>
 
-    <!-- Bottom navigation -->
     <nav
       class="bottom-nav"
       aria-label="Bottom navigation"
@@ -102,6 +97,7 @@
         <img
           :src="n.image"
           class="nav-image"
+          :alt="n.label"
         />
         <small class="nav-label">{{ n.label }}</small>
       </router-link>
@@ -182,26 +178,28 @@ export default {
       try {
         return require(`@/assets/${name}`);
       } catch {
-        return "";
+        return ""; // Fallback if image is missing
       }
     },
-    // AUTO SCROLL PROMO - Diperbaiki untuk lebih smooth tanpa getar-getar
+    // AUTO SCROLL PROMO - Menggunakan RequestAnimationFrame (Lebih Smooth)
     autoScrollPromo() {
       const container = this.$el.querySelector(".promo-list");
+      if (!container) return;
+      
       let scrollAmount = 0;
-      const scrollSpeed = 1; // Kecepatan scroll per frame (tingkatkan untuk lebih cepat)
-      const resetThreshold = 50; // Jarak sebelum reset (untuk menghindari loncatan)
+      const scrollSpeed = 1; 
+      const resetThreshold = 50;
 
       const scroll = () => {
         scrollAmount += scrollSpeed;
         container.scrollLeft = scrollAmount;
 
-        // Reset ke awal ketika mendekati akhir, tapi dengan transisi smooth
+        // Reset ke awal ketika mendekati akhir
         if (scrollAmount >= container.scrollWidth - container.clientWidth - resetThreshold) {
           scrollAmount = 0;
         }
 
-        requestAnimationFrame(scroll); // Gunakan requestAnimationFrame untuk animasi yang lebih smooth
+        requestAnimationFrame(scroll);
       };
 
       requestAnimationFrame(scroll);
@@ -278,7 +276,7 @@ export default {
   box-shadow: 0 4px 14px rgba(16, 24, 40, 0.06);
 }
 
-/* Menu */
+/* Menu Grid */
 .menu-section {
   max-width: 1100px;
   margin: -28px auto 8px;
@@ -304,6 +302,8 @@ export default {
   text-align: center;
   cursor: pointer;
   transition: transform 0.18s ease;
+  text-decoration: none;
+  color: inherit;
 }
 
 .menu-item:hover {
@@ -329,9 +329,10 @@ export default {
 
 .menu-label {
   font-size: 12px;
+  color: #333;
 }
 
-/* Promo */
+/* Promo Section */
 .promo-section {
   max-width: 1100px;
   margin: 12px auto;
@@ -342,6 +343,7 @@ export default {
   font-size: 16px;
   font-weight: 700;
   margin-bottom: 10px;
+  color: #111;
 }
 
 .promo-list {
@@ -349,13 +351,14 @@ export default {
   overflow-x: auto;
   gap: 12px;
   padding-bottom: 6px;
-  /* Menyembunyikan scrollbar untuk tampilan bersih, tapi auto-scroll tetap berjalan */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE dan Edge */
+  /* Hide scrollbar but allow functionality */
+  scrollbar-width: none; 
+  -ms-overflow-style: none; 
+  scroll-behavior: smooth;
 }
 
 .promo-list::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none; 
 }
 
 .promo-card {
@@ -397,56 +400,71 @@ export default {
   font-weight: 600;
 }
 
-/* UMKM */
+/* UMKM Section */
 .umkm-section {
   max-width: 1100px;
   margin: 8px auto;
-  padding: 0 16px 80px;
+  padding: 0 16px 20px; /* Added padding bottom */
 }
 
 .umkm-list {
   display: flex;
-  gap: 25px;
-  overflow-x: auto;
-  padding: 6px 0;
+  overflow-x: auto; /* Ensure it scrolls horizontally */
+  gap: 16px;
+  padding-bottom: 10px;
+  scrollbar-width: none;
+}
+
+.umkm-list::-webkit-scrollbar {
+  display: none;
 }
 
 .umkm-item {
-  min-width: 84px;
+  min-width: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-decoration: none;
+  color: #333;
   gap: 8px;
 }
 
+.umkm-photo-wrap {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
 .umkm-photo {
-  width: 60px;
-  height: 60px;
-  border-radius: 10%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.06);
 }
 
 .umkm-name {
   font-size: 12px;
+  text-align: center;
+  max-width: 80px;
+  line-height: 1.2;
 }
 
 /* Bottom Navigation */
 .bottom-nav {
   position: fixed;
+  bottom: 0;
   left: 0;
   right: 0;
-  bottom: 14px;
-  margin: 0 auto;
-  max-width: 820px;
+  background: #ffffff;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
   display: flex;
   justify-content: space-around;
-  align-items: center;
-  padding: 10px 18px;
-  background: #ffffff;
-  border-radius: 22px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
-  z-index: 999;
+  padding: 12px 16px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+  z-index: 99;
 }
 
 .nav-btn {
@@ -457,17 +475,23 @@ export default {
   color: #222;
   gap: 4px;
   font-family: "Poppins", sans-serif;
+  transition: color 0.2s;
+}
+
+.nav-btn.router-link-active {
+  color: #190f49;
+  font-weight: 600;
 }
 
 .nav-image {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
   display: block;
 }
 
 .nav-label {
-  font-size: 11px;
-  color: #444;
+  font-size: 10px;
+  color: inherit;
 }
 </style>

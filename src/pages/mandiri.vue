@@ -1,19 +1,16 @@
 <template>
-  <div class="page">
-    <!-- Header -->
-    <div class="header">
-      <img :src="require('@/assets/scream 2.png')" alt="logo" class="logo" />
+  <div class="pay-page">
+    <header class="head">
+      <img src="@/assets/scream 2.png" alt="logo" class="logo" />
       <h1 class="title">SCREAM DESTINATION</h1>
-    </div>
+    </header>
 
-    <!-- Wrap -->
     <div class="wrap">
       <div class="header-section">
         <h2 class="section-title">Mandiri Virtual Account</h2>
         <img src="@/assets/MANDIRI.png" alt="Mandiri" class="bank-logo" />
       </div>
 
-      <!-- Rincian -->
       <div class="rincian-box">
         <h2 class="rincian-title">Rincian</h2>
 
@@ -35,14 +32,19 @@
         </div>
 
         <hr class="line" />
+      </div>
 
-        <div class="row total">
-          <strong>Total Keseluruhan</strong>
-          <strong>{{ formattedTotal }}</strong>
+      <div class="info-card">
+        <div class="row">
+          <span>Total Pembayaran</span>
+          <span class="price">{{ formattedTotal }}</span>
+        </div>
+        <div class="row">
+          <span>Batas Waktu</span>
+          <span class="timer">{{ timerDisplay }}</span>
         </div>
       </div>
 
-      <!-- VA Section -->
       <div class="va-box">
         <p class="va-label">Nomor Virtual Account</p>
         <div class="va-number-wrap">
@@ -54,7 +56,6 @@
         <p class="va-info">Proses verifikasi otomatis. Tidak perlu kirim bukti bayar.</p>
       </div>
 
-      <!-- Instruksi -->
       <div class="instructions">
         <h3 class="inst-title">Cara Pembayaran</h3>
         
@@ -78,7 +79,6 @@
         </div>
       </div>
 
-      <!-- Buttons -->
       <div class="footer-actions">
         <button class="btn btn-check" @click="cekStatus">
           Cek Status Pembayaran
@@ -103,7 +103,7 @@ export default {
     return {
       totalEmas: 0,
       biayaAdmin: 5000,
-      vaNumber: "895081234567890", // VA MANDIRI
+      vaNumber: "895081234567890", // Mandiri VA Format
       timeLeft: 3600,
       timerInterval: null,
       copied: false,
@@ -111,26 +111,38 @@ export default {
 
       paymentMethods: [
         {
-          title: "Livin' by Mandiri",
+          title: "Livin' by Mandiri (Mobile Banking)",
           steps: [
-            "Buka aplikasi Livin' by Mandiri.",
-            "Login menggunakan akun Anda.",
-            "Pilih menu 'Bayar'.",
-            "Pilih kategori 'Multipayment'.",
-            "Pilih penyedia jasa: SCREAM PAY.",
-            "Masukkan nomor VA: 895081234567890.",
-            "Periksa detail pembayaran lalu konfirmasi."
+            "Login ke aplikasi Livin' by Mandiri.",
+            "Pilih menu Pembayaran (Pay).",
+            "Pilih menu Buat Pembayaran Baru > Multi Payment.",
+            "Pilih Penyedia Jasa: 'Scream Destination' atau masukkan kode perusahaan.",
+            "Masukkan Nomor VA: 895081234567890.",
+            "Konfirmasi detail tagihan dan klik Lanjut.",
+            "Masukkan PIN Livin' Anda."
           ]
         },
         {
           title: "ATM Mandiri",
           steps: [
-            "Masukkan kartu ATM dan PIN.",
-            "Pilih menu 'Bayar/Beli'.",
-            "Pilih 'Multipayment'.",
-            "Masukkan kode penyedia + nomor VA.",
-            "Periksa detail pembayaran.",
-            "Konfirmasi dan selesaikan transaksi."
+            "Masukkan Kartu ATM dan PIN.",
+            "Pilih menu Bayar/Beli.",
+            "Pilih menu Lainnya > Lainnya > Multi Payment.",
+            "Masukkan Kode Perusahaan (misal: 88908).",
+            "Masukkan Nomor VA: 895081234567890.",
+            "Konfirmasi data pembayaran, tekan Angka 1, lalu YA.",
+            "Simpan struk transaksi."
+          ]
+        },
+        {
+          title: "Internet Banking Mandiri",
+          steps: [
+            "Login ke Mandiri Online / Internet Banking.",
+            "Pilih menu Pembayaran > Multi Payment.",
+            "Pilih penyedia jasa dan masukkan Nomor VA.",
+            "Klik Lanjut dan konfirmasi detail pembayaran.",
+            "Masukkan Challenge Code dari Token Mandiri.",
+            "Pembayaran selesai."
           ]
         }
       ]
@@ -154,6 +166,12 @@ export default {
     },
     formattedTotal() {
       return "Rp " + this.totalKeseluruhan.toLocaleString("id-ID");
+    },
+    timerDisplay() {
+      const hours = Math.floor(this.timeLeft / 3600);
+      const minutes = Math.floor((this.timeLeft % 3600) / 60);
+      const seconds = this.timeLeft % 60;
+      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
   },
   mounted() {
@@ -167,6 +185,7 @@ export default {
     startTimer() {
       this.timerInterval = setInterval(() => {
         if (this.timeLeft > 0) this.timeLeft--;
+        else clearInterval(this.timerInterval);
       }, 1000);
     },
     copyVa() {
@@ -183,10 +202,10 @@ export default {
       if (success) {
         alert("Pembayaran berhasil!");
         this.$router.push({
-          name: "TransaksiBerhasilBRI",
+          name: "TransaksiBerhasilMandiri", // Ensure this route exists in your router
           params: {
             dcoin: this.dcoin.toString(),
-            rupiah: this.rupiah.toString(),
+            rupiah: this.totalKeseluruhan.toString(),
             metode: "Mandiri Virtual Account"
           }
         });
@@ -197,36 +216,35 @@ export default {
 </script>
 
 <style scoped>
-/* --- Styling sama persis seperti versi BRI (rapi) --- */
-.page {
+/* --- Layout Utama --- */
+.pay-page {
   background: #f3f4f6;
   min-height: 100vh;
   font-family: "Poppins", sans-serif;
-  padding: 20px;
 }
 
-.header {
+.head {
   background: #180c4a;
   color: white;
-  padding: 15px 20px;
+  padding: 15px 25px;
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 10px;
-  margin-bottom: 25px;
 }
+
 .logo { width: 45px; }
 .title { font-size: 20px; font-weight: 600; }
 
 .wrap {
   background: #fff;
   max-width: 550px;
-  margin: 0 auto;
+  margin: 25px auto;
   padding: 25px;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
+/* --- Header Section --- */
 .header-section {
   display: flex;
   justify-content: space-between;
@@ -235,26 +253,54 @@ export default {
   border-bottom: 1px solid #eee;
   padding-bottom: 15px;
 }
-.section-title { font-size: 22px; font-weight: 700; color: #333; }
-.bank-logo { height: 28px; width: auto; }
+.section-title { font-size: 18px; font-weight: 700; color: #333; }
+.bank-logo { height: 30px; width: auto; }
 
+/* --- Rincian Box (Details) --- */
 .rincian-box { margin-bottom: 20px; width: 100%; }
-.rincian-title { font-size: 22px; font-weight: 600; margin-bottom: 10px; }
-.row { display: flex; justify-content: space-between; margin-bottom: 7px; }
-.ppn { font-size: small; opacity: 60%; }
-.line { margin: 10px 0; border: 0.7px solid #222; }
-.total { font-size: 18px; font-weight: 600; }
+.rincian-title { font-size: 16px; font-weight: 600; margin-bottom: 10px; color: #444; }
+.rincian-box .row { display: flex; justify-content: space-between; margin-bottom: 7px; font-size: 14px; color: #555;}
+.ppn { font-size: 13px; opacity: 70%; }
+.line { margin: 10px 0; border: 0; border-top: 1px dashed #ccc; }
 
-.va-box { text-align: center; margin-bottom: 25px; }
+/* --- Info Card (Total & Timer) --- */
+.info-card {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+.info-card .row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #555;
+}
+.info-card .row:last-child { margin-bottom: 0; }
+.price { font-weight: 700; color: #180c4a; font-size: 16px; }
+.timer { font-weight: 700; color: #d9534f; }
+
+/* --- VA Box --- */
+.va-box {
+  text-align: center;
+  margin-bottom: 25px;
+}
 .va-label { font-size: 13px; color: #777; margin-bottom: 5px; }
 .va-number-wrap {
-  display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 .va-number {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 800;
   color: #180c4a;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
+  margin: 0;
+  word-break: break-all;
 }
 .btn-copy {
   background: none;
@@ -265,9 +311,13 @@ export default {
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
+  transition: 0.2s;
+  flex-shrink: 0;
 }
 .btn-copy:hover { background: #180c4a; color: white; }
+.va-info { font-size: 12px; color: #888; }
 
+/* --- Accordion Instruksi --- */
 .instructions { margin-bottom: 30px; }
 .inst-title { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
 
@@ -280,9 +330,15 @@ export default {
 .accordion-header {
   background: #fafafa;
   padding: 12px 15px;
-  display: flex; justify-content: space-between; align-items: center;
-  cursor: pointer; font-weight: 500; font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  transition: 0.2s;
 }
+.accordion-header:hover { background: #f0f0f0; }
 .arrow { transition: transform 0.3s; font-size: 12px; }
 .arrow.rotated { transform: rotate(180deg); }
 
@@ -292,9 +348,24 @@ export default {
   font-size: 13px;
   color: #444;
   line-height: 1.6;
+  border-top: 1px solid #eee;
 }
+.accordion-body ol { padding-left: 20px; margin: 0; }
 
+/* --- Buttons --- */
 .footer-actions { display: flex; flex-direction: column; gap: 10px; }
+.btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: 0.2s;
+}
 .btn-check { background: #180c4a; color: white; }
+.btn-check:hover { background: #281675; }
 .btn-cancel { background: white; border: 1px solid #ddd; color: #555; }
+.btn-cancel:hover { background: #f0f0f0; }
 </style>

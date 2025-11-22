@@ -1,17 +1,14 @@
 <template>
-  <div class="combined-page">
-    <!-- Header -->
-    <div class="header">
-      <img :src="require('@/assets/scream 2.png')" alt="logo" class="logo" />
+  <div class="pay-page">
+    <header class="head">
+      <img src="@/assets/scream 2.png" alt="logo" class="logo" />
       <h1 class="title">SCREAM DESTINATION</h1>
-    </div>
+    </header>
 
-    <!-- Wrap Versi QRIS dengan Rincian Digabung -->
     <div class="wrap center-content">
       <h2 class="section-title">Scan QRIS</h2>
       <p class="sub">Silakan scan QR Code di bawah ini</p>
 
-      <!-- Rincian Digabung di Bawah Section Title -->
       <div class="rincian-box">
         <h2 class="rincian-title">Rincian</h2>
 
@@ -20,7 +17,7 @@
           <span>{{ totalEmas }} Gram</span>
         </div>
         <div class="row">
-          <span>Total Harga</span>
+          <span>Harga Emas</span>
           <span>{{ formattedRupiah }}</span>
         </div>
         <div class="row">
@@ -33,11 +30,6 @@
         </div>
 
         <hr class="line" />
-
-        <div class="row total">
-          <strong>Total Keseluruhan</strong>
-          <strong>{{ formattedTotal }}</strong>
-        </div>
       </div>
 
       <div class="qr-container">
@@ -50,7 +42,7 @@
 
       <div class="payment-details">
         <p class="label">Total Pembayaran</p>
-        <h3 class="price">Rp {{ formattedTotal }}</h3>
+        <h3 class="price">{{ formattedTotal }}</h3>
       </div>
 
       <div class="timer-box">
@@ -81,7 +73,7 @@
 
 <script>
 export default {
-  name: "CombinedDetailQrisPage",
+  name: "QrisPage",
   props: {
     rupiah: { type: [Number, String], default: 0 },
     displayRupiah: { type: String, default: "0" },
@@ -89,19 +81,24 @@ export default {
   },
   data() {
     return {
-      totalEmas: 0,
-      biayaAdmin: 5000, // Biaya admin tetap, bisa disesuaikan
-      timeLeft: 900, // 15 menit dalam detik (15 * 60) untuk QRIS
+      biayaAdmin: 5000, // Fixed Admin Fee
+      timeLeft: 900, // 15 minutes in seconds
       timerInterval: null
     };
   },
   computed: {
+    // Calculations
+    totalEmas() {
+      return ((Number(this.dcoin) / 5000) * 0.1).toFixed(2);
+    },
     ppn() {
-      return Math.round(Number(this.rupiah) * 0.12); // PPN 12%
+      return Math.round(Number(this.rupiah) * 0.12); // 12% Tax
     },
     totalKeseluruhan() {
       return Number(this.rupiah) + this.ppn + this.biayaAdmin;
     },
+    
+    // Formatters
     formattedRupiah() {
       return "Rp " + Number(this.rupiah).toLocaleString("id-ID");
     },
@@ -112,8 +109,10 @@ export default {
       return "Rp " + this.biayaAdmin.toLocaleString("id-ID");
     },
     formattedTotal() {
-      return this.totalKeseluruhan.toLocaleString("id-ID");
+      return "Rp " + this.totalKeseluruhan.toLocaleString("id-ID");
     },
+    
+    // Timer Logic
     timerDisplay() {
       const minutes = Math.floor(this.timeLeft / 60);
       const seconds = this.timeLeft % 60;
@@ -121,17 +120,12 @@ export default {
     }
   },
   mounted() {
-    this.totalEmas = ((this.dcoin / 5000) * 0.1).toFixed(2);
     this.startTimer();
   },
   beforeUnmount() {
     clearInterval(this.timerInterval);
   },
   methods: {
-    konfirmasiTopup() {
-      alert(`Top Up ${this.formattedRupiah} Lanjut ke Pembayaran!`);
-      // Scroll ke bagian pembayaran atau langsung proses
-    },
     startTimer() {
       this.timerInterval = setInterval(() => {
         if (this.timeLeft > 0) {
@@ -139,7 +133,7 @@ export default {
         } else {
           clearInterval(this.timerInterval);
           alert("Waktu pembayaran habis!");
-          this.$router.push("/"); // Kembali ke home jika habis
+          this.$router.push("/"); // Redirect home on timeout
         }
       }, 1000);
     },
@@ -151,7 +145,7 @@ export default {
           name: "TransaksiBerhasil",
           params: {
             dcoin: this.dcoin.toString(),
-            rupiah: this.rupiah.toString(),
+            rupiah: this.totalKeseluruhan.toString(),
             metode: "QRIS"
           }
         });
@@ -162,41 +156,40 @@ export default {
 </script>
 
 <style scoped>
-/* --- Layout Utama Gabungan --- */
-.combined-page {
+/* --- Layout Utama --- */
+.pay-page {
   background: #f3f4f6;
   min-height: 100vh;
   font-family: "Poppins", sans-serif;
-  padding: 20px;
 }
 
-/* --- Header --- */
-.header {
+.head {
   background: #180c4a;
   color: white;
-  padding: 15px 20px;
+  padding: 15px 25px;
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 10px;
 }
+
 .logo {
   width: 45px;
 }
+
 .title {
   font-size: 20px;
   font-weight: 600;
 }
 
-/* --- Wrap Versi QRIS --- */
+/* --- Wrap Content --- */
 .wrap {
   background: #fff;
-  max-width: 500px; /* Sedikit lebih kecil agar fokus ke QR */
-  margin: 0 auto;
+  max-width: 500px;
+  margin: 25px auto;
   padding: 30px;
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  text-align: center; /* Center semua isi */
+  text-align: center;
 }
 
 .center-content {
@@ -217,32 +210,32 @@ export default {
   margin-bottom: 20px;
 }
 
-/* --- Rincian Box (Digabung ke Wrap) --- */
+/* --- Rincian Box --- */
 .rincian-box {
   margin-bottom: 20px;
   width: 100%;
 }
 .rincian-title {
-  font-size: 22px;
+  font-size: 16px;
   font-weight: 600;
   margin-bottom: 10px;
+  color: #555;
+  text-align: left;
 }
 .row {
   display: flex;
   justify-content: space-between;
   margin-bottom: 7px;
+  font-size: 14px;
 }
 .ppn {
-  font-size: small;
-  opacity: 60%;
+  font-size: 13px;
+  opacity: 70%;
 }
 .line {
   margin: 10px 0;
-  border: 0.7px solid #222;
-}
-.total {
-  font-size: 18px;
-  font-weight: 600;
+  border: 0;
+  border-top: 1px dashed #ccc;
 }
 
 /* --- QR Container --- */
@@ -250,13 +243,14 @@ export default {
   border: 2px dashed #180c4a;
   padding: 15px;
   border-radius: 10px;
-  background: #fff;
+  background: #f8f9fa;
   margin-bottom: 20px;
+  display: inline-block;
 }
 
 .qr-image {
-  width: 200px;
-  height: 200px;
+  width: 180px;
+  height: 180px;
   display: block;
 }
 
@@ -268,6 +262,7 @@ export default {
 .label {
   font-size: 14px;
   color: #777;
+  margin: 0;
 }
 
 .price {
@@ -302,6 +297,7 @@ export default {
   border-radius: 10px;
   width: 100%;
   margin-bottom: 25px;
+  border: 1px solid #eee;
 }
 
 .instructions ol {

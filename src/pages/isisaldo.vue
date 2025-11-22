@@ -1,7 +1,5 @@
 <template>
   <div class="page">
-
-    <!-- Header -->
     <div class="header">
       <img :src="require('@/assets/scream 2.png')" alt="logo" class="logo" />
       <h1 class="header-title">SCREAM DESTINATION</h1>
@@ -89,9 +87,8 @@
         type="text"
         v-model="displayRupiah"
         @input="formatRupiahInput"
-        placeholder="Total Harga D'coin"
+        placeholder="Masukkan nominal Rupiah"
         class="input-box"
-        readonly
       />
 
       <div class="dc-grid">
@@ -141,7 +138,7 @@ export default {
     },
 
     emasFromDcoin() {
-      if (!this.selected) return 0;
+      if (!this.selected || !this.hargaEmas) return 0;
       const gramPer2500 = 0.5;
       return (this.selected / 2500) * gramPer2500;
     },
@@ -152,6 +149,7 @@ export default {
   },
 
   mounted() {
+    // Auto refresh prices every 30 seconds
     this.autoRefresh = setInterval(() => {
       this.fetchHargaEmas();
     }, 30000);
@@ -180,22 +178,30 @@ export default {
         const { data } = await axios.get("http://localhost:3000/api/harga-emas");
 
         const gold = data?.GSPPJ?.Gold?.IDR;
-        if (!gold || !gold.ask || !gold.bid) {
-          throw new Error("Data harga emas tidak lengkap");
+        const askOunce = Number(gold?.ask);
+        const bidOunce = Number(gold?.bid);
+
+        if (!gold || isNaN(askOunce) || isNaN(bidOunce)) {
+          throw new Error("Data harga emas tidak lengkap atau bukan angka");
         }
 
         const ounceToGram = 25;
-        const askPerGram = Number(gold.ask) / ounceToGram;
-        const bidPerGram = Number(gold.bid) / ounceToGram;
+        const askPerGram = askOunce / ounceToGram;
+        const bidPerGram = bidOunce / ounceToGram;
 
         this.hargaEmas = Math.round(askPerGram);
         this.hargaEmasBid = Math.round(bidPerGram);
         this.hargaUpdate = this.formatTo24Hour(new Date());
       } catch (error) {
+        console.error("Gagal mengambil harga emas:", error);
         this.errorHarga = "Tidak bisa memuat harga emas terbaru. Silakan coba lagi.";
       } finally {
         this.loadingHarga = false;
       }
+    },
+
+    goBack() {
+      this.$router.push("/topup");
     },
 
     formatRupiahInput() {
@@ -208,11 +214,12 @@ export default {
       }
 
       this.displayRupiah = Number(number).toLocaleString("id-ID");
-      this.selected = null;
+      this.selected = null; // Deselect package if user types manually
     },
 
     selectDcoin(value) {
       this.selected = value;
+      // Logic: 2500 Dcoin = 0.5g Gold.
       const gram = (value / 2500) * 0.5;
       const calculated = gram * this.hargaEmas;
       this.rupiah = Math.round(calculated);
@@ -220,7 +227,7 @@ export default {
     },
 
     goKonfirmasi() {
-      if (!this.rupiah && !this.selected) {
+      if (!this.rupiah) {
         alert("Isi nominal atau pilih jumlah D’coin terlebih dahulu!");
         return;
       }
@@ -230,7 +237,7 @@ export default {
         params: {
           rupiah: this.rupiah,
           displayRupiah: this.displayRupiah,
-          dcoin: this.selected,
+          dcoin: this.selected || 0,
         },
       });
     },
@@ -248,15 +255,11 @@ export default {
       if (!value) return "0,0000";
       return value.toFixed(4).replace(".", ",");
     },
-    goBack() {
-      this.$router.push("/topup");
-    }
   },
 };
 </script>
 
 <style scoped>
-
 /* --- Header --- */
 .header {
   background: #180c4a;
@@ -282,7 +285,7 @@ export default {
   font-weight: 600;
 }
 
-/* --- STYLE TIDAK DIUBAH --- */
+/* --- Page Layout --- */
 .page {
   min-height: 100vh;
   display: flex;
@@ -292,6 +295,7 @@ export default {
   background: linear-gradient(180deg, #e8f4ff, #cbe7ff);
   font-family: Inter, sans-serif;
 }
+
 .converter-box {
   width: 900px;
   padding: 32px;
@@ -299,19 +303,24 @@ export default {
   border-radius: 22px;
   box-shadow: 0 5px 28px #00000025;
   animation: fadeIn 0.4s ease;
+  /* Add margin to prevent overlap with icon-btn on smaller screens */
+  margin-top: 20px; 
 }
+
 .title {
   font-size: 28px;
   font-weight: 800;
   color: #0f172a;
   margin: 0;
 }
+
 .subtitle {
   font-size: 15px;
   color: #475569;
   margin-bottom: 10px;
 }
 
+/* --- Price Banner --- */
 .price-banner {
   margin-top: 18px;
   margin-bottom: 20px;
@@ -320,24 +329,28 @@ export default {
   background: linear-gradient(120deg, #fff7e6, #ffe4ba);
   box-shadow: 0 4px 15px rgba(255, 149, 0, 0.18);
 }
+
 .price-row {
   display: flex;
   gap: 24px;
   align-items: center;
   flex-wrap: wrap;
 }
+
 .price-label {
   font-size: 14px;
   font-weight: 600;
   color: #b45309;
   margin: 0;
 }
+
 .price-value {
   font-size: 20px;
   font-weight: 700;
   color: #92400e;
   margin: 4px 0 0;
 }
+
 .price-actions {
   margin-left: auto;
   display: flex;
@@ -345,6 +358,7 @@ export default {
   align-items: flex-end;
   gap: 6px;
 }
+
 .refresh-btn {
   padding: 10px 18px;
   border: none;
@@ -355,20 +369,25 @@ export default {
   cursor: pointer;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
+
 .refresh-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
+
 .refresh-btn:not(:disabled):hover {
   transform: translateY(-1px);
 }
+
 .update-time {
   font-size: 12px;
   color: #78350f;
 }
+
+/* --- Back Button --- */
 .icon-btn {
   position: absolute;
-  top: 22px;
+  top: 85px; /* Adjusted to sit below header */
   left: 22px;
   background: white;
   border: none;
@@ -380,10 +399,14 @@ export default {
   cursor: pointer;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
   transition: 0.25s;
+  z-index: 10;
 }
+
 .icon-btn:hover {
   transform: scale(1.13);
 }
+
+/* --- Inputs --- */
 .input-box {
   width: 97%;
   height: 72px;
@@ -396,12 +419,15 @@ export default {
   margin-bottom: 28px;
   outline: none;
 }
+
+/* --- Grid --- */
 .dc-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 18px;
   margin-top: 18px;
 }
+
 .dc-item {
   background: white;
   padding: 22px 0;
@@ -413,13 +439,17 @@ export default {
   box-shadow: 0 4px 12px #00000020;
   transition: 0.25s;
 }
+
 .dc-item:hover {
   transform: scale(1.08);
 }
+
 .dc-item.active {
   border: 3px solid #1976ff;
   box-shadow: 0 0 13px #1976ff;
 }
+
+/* --- Detail Box --- */
 .detail-box {
   margin-bottom: 25px;
   margin-top: 10px;
@@ -429,6 +459,7 @@ export default {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   border: 1px solid #d1d5db;
 }
+
 .detail-title {
   font-size: 24px;
   font-weight: 700;
@@ -437,6 +468,7 @@ export default {
   text-align: center;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
+
 .detail-item {
   display: flex;
   align-items: center;
@@ -447,25 +479,46 @@ export default {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
 .detail-item:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
 .detail-icon {
   font-size: 28px;
   margin-right: 16px;
   flex-shrink: 0;
 }
+
 .detail-content {
   font-size: 16px;
   color: #374151;
   line-height: 1.5;
 }
+
 .highlight {
   color: #2563eb;
   font-weight: 700;
   font-size: 18px;
 }
+
+/* --- Animation --- */
+.slide-fade-enter-active {
+  transition: all 0.4s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateY(-20px);
+  opacity: 0;
+}
+
+/* --- Buttons --- */
 .btn-next {
   width: 100%;
   height: 55px;
@@ -480,9 +533,11 @@ export default {
   box-shadow: 0 5px 18px #2563eb60;
   transition: 0.3s;
 }
+
 .btn-next:hover {
   transform: translateY(-3px);
 }
+
 @keyframes fadeIn {
   from {
     opacity: 0;

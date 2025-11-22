@@ -1,18 +1,15 @@
 <template>
   <div class="wallet-page">
-
-    <!-- tombol back -->
+    
     <header class="topbar">
       <button class="icon-btn" @click="goBack">⟵</button>
     </header>
 
-    <!-- 🔥 HEADER BARU -->
     <div class="header">
       <img :src="require('@/assets/scream 2.png')" alt="logo" class="logo" />
       <h1 class="title">SCREAM DESTINATION</h1>
     </div>
 
-    <!-- main content container -->
     <main class="container">
       <section class="wallet-card">
         <div class="wallet-head">
@@ -55,7 +52,6 @@
         </div>
       </section>
 
-      <!-- info / promo area -->
       <section class="info-section">
         <h3>Penawaran & Info</h3>
         <div class="info-grid">
@@ -71,21 +67,15 @@
       </section>
     </main>
 
-    <!-- Bottom navigation -->
-    <nav
-      class="bottom-nav"
-      aria-label="Bottom navigation"
-    >
+    <nav class="bottom-nav" aria-label="Bottom navigation">
       <router-link
         v-for="(n, i) in bottomNav"
         :key="i"
         :to="n.route"
         class="nav-btn"
+        active-class="active"
       >
-        <img
-          :src="n.image"
-          class="nav-image"
-        />
+        <img :src="n.image" class="nav-image" :alt="n.label" />
         <small class="nav-label">{{ n.label }}</small>
       </router-link>
     </nav>
@@ -94,15 +84,15 @@
 
 <script>
 export default {
-  name: "topupView",
+  name: "TopupView",
   data() {
     return {  
-    query: "",
-  bottomNav: [
+      query: "",
+      bottomNav: [
         {
           label: "Home",
           image: require("@/assets/dashboard.png"),
-          route: "/dashboard",
+          route: "/",
         },
         {
           label: "Explore",
@@ -128,6 +118,10 @@ export default {
     };
   },
   methods: {
+    goBack() { 
+      // Navigate back to dashboard or previous page
+      this.$router.push("/"); 
+    },
     topUp() { this.$router.push("/isisaldo"); },
     convertGold() { this.$router.push("/convert-gold"); },
     monthlyTrans() { alert("Detail transaksi bulanan"); },
@@ -139,8 +133,47 @@ export default {
 </script>
 
 <style scoped>
+/* --- Page Layout --- */
+.wallet-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #f7fbff 0%, #f0f7ff 40%, #eaf6ff 100%);
+  color: #0f172a;
+  font-family: "Poppins", sans-serif;
+}
 
-/* --- Header --- */
+/* --- Topbar --- */
+.topbar {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  position: relative;
+  z-index: 10;
+}
+
+.icon-btn {
+  background: white;
+  border: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+  transition: 0.25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn:hover {
+  transform: scale(1.13);
+}
+
+/* --- Header Branding --- */
 .header {
   background: #180c4a;
   color: white;
@@ -149,45 +182,23 @@ export default {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  position: relative;
-  top: -56px;
+  /* Adjust position to sit nicely under topbar */
+  margin-bottom: 10px;
 }
 
-.logo {
-  width: 45px;
-}
-.title {
-  font-size: 20px;
-  font-weight: 600;
-}
+.logo { width: 45px; }
+.title { font-size: 20px; font-weight: 600; }
 
-/* --- PAGE --- */
-.wallet-page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(180deg, #f7fbff 0%, #f0f7ff 40%, #eaf6ff 100%);
-  color: #0f172a;
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-}
-
-/* --- TOPBAR BUTTON --- */
-.topbar {
-  height: 56px;
-  display: flex;
-  align-items: center;
-}
-
-/* --- CONTAINER --- */
+/* --- Container --- */
 .container {
   width: 100%;
   max-width: 920px;
   margin: 12px auto;
-  padding: 0 16px 80px;
+  padding: 0 16px 100px; /* Padding bottom for nav */
   box-sizing: border-box;
 }
 
-/* --- WALLET CARD --- */
+/* --- Wallet Card --- */
 .wallet-card {
   background: linear-gradient(180deg, #ffffff 0%, #f8fdff 100%);
   border-radius: 18px;
@@ -196,89 +207,84 @@ export default {
   overflow: hidden;
 }
 
-/* --- TITLE INSIDE CARD --- */
 .wallet-head {
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  align-items:flex-start;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
   margin-bottom: 8px;
 }
-.wallet-title h2 {
-  margin:0;
-  font-size:20px;
-}
-.wallet-title .subtitle {
-  margin-top:6px;
-  color:#475569;
-  font-size:13px;
-}
 
-/* --- BALANCE AREA --- */
+.wallet-title h2 { margin: 0; font-size: 20px; }
+.wallet-title .subtitle { margin-top: 6px; color: #475569; font-size: 13px; }
+
+/* --- Balance Area --- */
 .balance-area {
-  display:flex;
-  gap:16px;
-  align-items:center;
-  justify-content:space-between;
-  margin-top:12px;
-  flex-wrap:wrap;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  flex-wrap: wrap;
 }
-.balance-left {
-  min-width: 220px;
-}
-.balance-label { color:#64748b; font-size:13px; margin-bottom:6px; }
-.balance-value { font-size:28px; font-weight:800; color:#0f172a; display:flex; align-items:baseline; gap:8px; }
-.balance-value .dc { font-size:14px; font-weight:700; color:#2563eb; }
-.balance-small { color:#94a3b8; font-size:12px; margin-top:6px; }
 
-/* --- BUTTONS --- */
-.balance-cta { display:flex; gap:10px; align-items:center; }
+.balance-left { min-width: 220px; }
+.balance-label { color: #64748b; font-size: 13px; margin-bottom: 6px; }
+.balance-value { font-size: 28px; font-weight: 800; color: #0f172a; display: flex; align-items: baseline; gap: 8px; }
+.balance-value .dc { font-size: 14px; font-weight: 700; color: #2563eb; }
+.balance-small { color: #94a3b8; font-size: 12px; margin-top: 6px; }
+
+/* --- Buttons --- */
+.balance-cta { display: flex; gap: 10px; align-items: center; }
 .btn-primary {
-  background: linear-gradient(180deg,#1e40af,#2563eb);
-  color:white;
-  border:none;
-  padding:10px 14px;
-  border-radius:12px;
-  font-weight:700;
-  cursor:pointer;
+  background: linear-gradient(180deg, #1e40af, #2563eb);
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
   box-shadow: 0 8px 20px rgba(37,99,235,0.18);
 }
+
 .btn-ghost {
   background: transparent;
-  color:#0f172a;
-  border:1px solid rgba(15,23,42,0.06);
-  padding:10px 12px;
-  border-radius:12px;
-  cursor:pointer;
+  color: #0f172a;
+  border: 1px solid rgba(15,23,42,0.06);
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
 }
 
-/* --- SMALL ACTION CARDS --- */
+/* --- Action Cards --- */
 .wallet-actions-row {
-  display:flex;
-  gap:10px;
-  margin-top:16px;
-  flex-wrap:wrap;
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  flex-wrap: wrap;
 }
+
 .small-card {
-  flex:1 1 30%;
-  min-width:140px;
-  background:#fff;
-  padding:12px;
-  border-radius:12px;
-  border:1px solid rgba(2,6,23,0.04);
+  flex: 1 1 30%;
+  min-width: 140px;
+  background: #fff;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(2,6,23,0.04);
   box-shadow: 0 8px 18px rgba(2,6,23,0.04);
-  cursor:pointer;
-  text-align:left;
+  cursor: pointer;
+  text-align: left;
 }
-.small-card .card-title { font-weight:700; color:#0f172a; }
-.small-card .card-sub { color:#475569; margin-top:6px; font-size:13px; }
 
-/* --- INFO SECTION --- */
-.info-section { margin-top:18px; }
-.info-grid { display:grid; grid-template-columns: repeat(2,1fr); gap:12px; margin-top:8px; }
-.info-card { background:#fff; padding:12px; border-radius:12px; box-shadow:0 8px 18px rgba(2,6,23,0.04); }
+.small-card .card-title { font-weight: 700; color: #0f172a; }
+.small-card .card-sub { color: #475569; margin-top: 6px; font-size: 13px; }
 
-/* Bottom Navigation */
+/* --- Info Section --- */
+.info-section { margin-top: 18px; }
+.info-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-top: 8px; }
+.info-card { background: #fff; padding: 12px; border-radius: 12px; box-shadow: 0 8px 18px rgba(2,6,23,0.04); }
+
+/* --- Bottom Navigation --- */
 .bottom-nav {
   position: fixed;
   left: 0;
@@ -306,6 +312,11 @@ export default {
   font-family: "Poppins", sans-serif;
 }
 
+.nav-btn.active {
+  color: #2563eb;
+  font-weight: 600;
+}
+
 .nav-image {
   width: 26px;
   height: 26px;
@@ -315,14 +326,14 @@ export default {
 
 .nav-label {
   font-size: 11px;
-  color: #444;
+  color: inherit;
 }
 
-/* --- RESPONSIVE --- */
+/* --- Responsive --- */
 @media (max-width: 720px) {
   .info-grid { grid-template-columns: repeat(1,1fr); }
-  .wallet-head { flex-direction:column; align-items:flex-start; gap:8px; }
-  .balance-area { flex-direction:column; align-items:flex-start; gap:12px; }
-  .bottom-nav { width: calc(100% - 24px); left: 12px; transform:none; }
+  .wallet-head { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .balance-area { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .bottom-nav { width: calc(100% - 24px); left: 12px; margin: 0; }
 }
 </style>

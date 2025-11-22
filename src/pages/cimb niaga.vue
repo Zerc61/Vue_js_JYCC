@@ -7,30 +7,8 @@
 
     <div class="wrap">
       <div class="header-section">
-        <h2 class="section-title">BCA Virtual Account</h2>
-        <img src="@/assets/BCA.png" alt="BCA" class="bank-logo" />
-      </div>
-
-      <div class="rincian-box">
-        <h2 class="rincian-title">Rincian</h2>
-
-        <div class="row">
-          <span>Total Emas</span>
-          <span>{{ totalEmas }} Gram</span>
-        </div>
-        <div class="row">
-          <span>Harga Emas</span>
-          <span>{{ formattedRupiah }}</span>
-        </div>
-        <div class="row">
-          <span class="ppn">PPN (12%)</span>
-          <span>{{ formattedPPN }}</span>
-        </div>
-        <div class="row">
-          <span>Biaya Admin</span>
-          <span>{{ formattedBiayaAdmin }}</span>
-        </div>
-        <hr class="line" />
+        <h2 class="section-title">CIMB Niaga Virtual Account</h2>
+        <img src="@/assets/CIMB-NIAGA.png" alt="CIMB" class="bank-logo" />
       </div>
 
       <div class="info-card">
@@ -92,87 +70,62 @@
 
 <script>
 export default {
-  name: "CombinedDetailBcaPage",
-  props: {
-    rupiah: { type: [Number, String], default: 0 },
-    displayRupiah: { type: String, default: "0" },
-    dcoin: { type: Number, default: 0 }
-  },
+  name: "CimbNiagaPage",
   data() {
     return {
-      biayaAdmin: 5000, // Fixed Admin Fee
-      vaNumber: "880123456789",
-      timeLeft: 3600, // 1 Hour in seconds
+      total: 50000,
+      vaNumber: "7889880123456789", // contoh CIMB VA
+      timeLeft: 3600,
       timerInterval: null,
       copied: false,
-      openIndex: 0, // Default open accordion (m-BCA)
-      
+      openIndex: 0,
+
       paymentMethods: [
         {
-          title: "m-BCA (BCA Mobile)",
+          title: "OCTO Mobile (CIMB Niaga)",
           steps: [
-            "Login ke aplikasi m-BCA.",
-            "Pilih menu m-Transfer.",
-            "Pilih BCA Virtual Account.",
-            "Masukkan nomor VA: 880123456789.",
-            "Periksa detail pembayaran & konfirmasi.",
-            "Masukkan PIN m-BCA Anda."
+            "Login ke aplikasi OCTO Mobile.",
+            "Pilih menu Transfer.",
+            "Pilih Virtual Account.",
+            "Masukkan nomor VA: 7889880123456789.",
+            "Periksa detail pembayaran.",
+            "Konfirmasi dengan memasukkan PIN."
           ]
         },
         {
-          title: "ATM BCA",
+          title: "ATM CIMB Niaga",
           steps: [
-            "Masukkan Kartu ATM & PIN.",
-            "Pilih menu Transaksi Lainnya.",
-            "Pilih Transfer > Ke Rek BCA Virtual Account.",
-            "Masukkan nomor VA: 880123456789.",
-            "Cek detail pembayaran, lalu pilih Ya.",
-            "Simpan struk sebagai bukti."
+            "Masukkan kartu ATM dan PIN.",
+            "Pilih menu Transfer.",
+            "Pilih ke Rekening CIMB Niaga.",
+            "Masukkan nomor Virtual Account: 7889880123456789.",
+            "Cek detail pembayaran dan pilih YA."
           ]
         },
         {
-          title: "KlikBCA (Internet Banking)",
+          title: "Internet Banking CIMB Clicks",
           steps: [
-            "Login ke website KlikBCA.",
-            "Pilih menu Transfer Dana.",
-            "Pilih Transfer ke BCA Virtual Account.",
-            "Masukkan nomor VA: 880123456789.",
-            "Ikuti instruksi selanjutnya untuk menyelesaikan."
+            "Login ke website CIMB Clicks.",
+            "Pilih menu Transfer.",
+            "Pilih Virtual Account.",
+            "Masukkan nomor VA: 7889880123456789.",
+            "Ikuti instruksi selanjutnya sampai selesai."
           ]
         }
       ]
     };
   },
   computed: {
-    // Calculations
-    totalEmas() {
-      return ((Number(this.dcoin) / 5000) * 0.1).toFixed(2);
-    },
-    ppn() {
-      return Math.round(Number(this.rupiah) * 0.12); // 12% PPN
-    },
-    totalKeseluruhan() {
-      return Number(this.rupiah) + this.ppn + this.biayaAdmin;
-    },
-    // Formatting
-    formattedRupiah() {
-      return "Rp " + Number(this.rupiah).toLocaleString("id-ID");
-    },
-    formattedPPN() {
-      return "Rp " + Number(this.ppn).toLocaleString("id-ID");
-    },
-    formattedBiayaAdmin() {
-      return "Rp " + this.biayaAdmin.toLocaleString("id-ID");
-    },
     formattedTotal() {
-      return "Rp " + this.totalKeseluruhan.toLocaleString("id-ID");
+      return "Rp " + this.total.toLocaleString("id-ID");
     },
-    // Timer Logic
     timerDisplay() {
       const hours = Math.floor(this.timeLeft / 3600);
       const minutes = Math.floor((this.timeLeft % 3600) / 60);
       const seconds = this.timeLeft % 60;
-      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      return `${hours.toString().padStart(2, '0')}:${minutes
+        .toString()
+        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
   },
   mounted() {
@@ -191,25 +144,17 @@ export default {
     copyVa() {
       navigator.clipboard.writeText(this.vaNumber).then(() => {
         this.copied = true;
-        setTimeout(() => { this.copied = false; }, 2000);
+        setTimeout(() => {
+          this.copied = false;
+        }, 2000);
       });
     },
     toggleAccordion(index) {
       this.openIndex = this.openIndex === index ? null : index;
     },
     cekStatus() {
-      const isSuccess = confirm("Simulasi: Apakah pembayaran sudah masuk?");
-      if (isSuccess) {
-        alert("Pembayaran Berhasil!");
-        this.$router.push({
-          name: "TransaksiBerhasilBCA",
-          params: {
-            dcoin: this.dcoin.toString(),
-            rupiah: this.totalKeseluruhan.toString(), // Send total paid
-            metode: "BCA Virtual Account"
-          }
-        });
-      }
+      alert("Pembayaran CIMB Niaga Virtual Account Berhasil!");
+      this.$router.push("/topup");
     }
   }
 };
@@ -223,7 +168,6 @@ export default {
   font-family: "Poppins", sans-serif;
 }
 
-/* --- Header --- */
 .head {
   background: #180c4a;
   color: white;
@@ -232,10 +176,10 @@ export default {
   align-items: center;
   gap: 10px;
 }
+
 .logo { width: 45px; }
 .title { font-size: 20px; font-weight: 600; }
 
-/* --- Wrapper --- */
 .wrap {
   background: #fff;
   max-width: 550px;
@@ -245,7 +189,7 @@ export default {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* --- Header Section (Bank Info) --- */
+/* --- Header Section --- */
 .header-section {
   display: flex;
   justify-content: space-between;
@@ -257,44 +201,22 @@ export default {
 .section-title { font-size: 18px; font-weight: 700; color: #333; }
 .bank-logo { height: 30px; width: auto; }
 
-/* --- Rincian (Details) Box --- */
-.rincian-box {
-  margin-bottom: 20px;
-  width: 100%;
-}
-.rincian-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 10px;
-  color: #555;
-}
-.row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 7px;
-  font-size: 14px;
-  color: #444;
-}
-.ppn {
-  font-size: 13px;
-  opacity: 70%;
-}
-.line {
-  margin: 15px 0;
-  border: 0;
-  border-top: 1px dashed #ccc;
-}
-
 /* --- Info Card (Total & Timer) --- */
 .info-card {
   background: #f8f9fa;
   padding: 15px;
   border-radius: 10px;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
-.info-card .row { margin-bottom: 5px; }
-.info-card .row:last-child { margin-bottom: 0; }
-.price { font-weight: 700; color: #180c4a; font-size: 18px; }
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #555;
+}
+.row:last-child { margin-bottom: 0; }
+.price { font-weight: 700; color: #180c4a; font-size: 16px; }
 .timer { font-weight: 700; color: #d9534f; }
 
 /* --- VA Box --- */
@@ -331,7 +253,7 @@ export default {
 .btn-copy:hover { background: #180c4a; color: white; }
 .va-info { font-size: 12px; color: #888; }
 
-/* --- Accordion Instructions --- */
+/* --- Accordion Instruksi --- */
 .instructions { margin-bottom: 30px; }
 .inst-title { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
 
@@ -368,7 +290,6 @@ export default {
 
 /* --- Buttons --- */
 .footer-actions { display: flex; flex-direction: column; gap: 10px; }
-
 .btn {
   width: 100%;
   padding: 12px;
