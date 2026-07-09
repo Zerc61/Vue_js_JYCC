@@ -1,253 +1,124 @@
 <template>
   <div class="page">
-    <div class="header">
-      <img :src="require('@/assets/scream 2.png')" alt="logo" class="logo" />
-      <h1 class="header-title">SCREAM DESTINATION</h1>
-    </div>
-
-    <button class="icon-btn" @click="goBack">⟵</button>
-
-    <div class="converter-box">
-      <h2 class="title">Convert Rupiah ke D’coin</h2>
-      <p class="subtitle">Masukkan nominal Rupiah atau pilih jumlah D’coin</p>
-
-      <div class="price-banner">
-        <div class="price-row">
-          <div>
-            <p class="price-label">Harga Ask per Gram</p>
-            <p class="price-value">
-              <span v-if="loadingHarga">Memuat harga emas…</span>
-              <span v-else-if="errorHarga">{{ errorHarga }}</span>
-              <span v-else-if="hargaEmas">Rp {{ formatNum(hargaEmas) }}</span>
-              <span v-else>Tidak tersedia</span>
-            </p>
-          </div>
-
-          <div>
-            <p class="price-label">Harga Bid per Gram</p>
-            <p class="price-value">
-              <span v-if="loadingHarga">Memuat harga emas…</span>
-              <span v-else-if="errorHarga">-</span>
-              <span v-else-if="hargaEmasBid">Rp {{ formatNum(hargaEmasBid) }}</span>
-              <span v-else>-</span>
-            </p>
-          </div>
-
-          <div class="price-actions">
-            <button class="refresh-btn" @click="fetchHargaEmas" :disabled="loadingHarga">
-              {{ loadingHarga ? "Menyegarkan…" : "Perbarui harga" }}
-            </button>
-            <small v-if="hargaUpdate" class="update-time">
-              Terakhir diperbarui: {{ hargaUpdate }}
-            </small>
-          </div>
+    <header class="header">
+      <div class="header-inner">
+        <button class="back-btn" @click="goBack">⟵</button>
+        <div class="brand">
+          <img src="@/assets/scream 2.png" alt="logo" class="logo" />
+          <h1 class="header-title">East Java Traveling</h1>
         </div>
+        <div class="spacer"></div>
       </div>
+    </header>
 
-      <transition name="slide-fade">
-        <div class="detail-box" v-if="rupiah || selected">
-          <h3 class="detail-title">📊 Rincian Konversi</h3>
+    <main class="container">
+      <div class="main-card">
+        <h2 class="title">Isi Saldo D'coin</h2>
+        <p class="subtitle">Beli D'coin untuk kemudahan transaksi wisata Anda.<br/> <strong>Nilai tukar: 1 D'coin = Rp 1.000</strong></p>
 
-          <div class="detail-item">
-            <span class="detail-icon">💰</span>
-            <div class="detail-content">
-              <strong>Harga Emas per Gram:</strong> Rp {{ formatNum(hargaEmas) }}
-            </div>
+        <div class="input-wrapper">
+          <label class="input-label">Masukkan Nominal Rupiah</label>
+          <div class="input-box" :class="{ 'has-value': rupiah > 0 }">
+            <span class="currency">Rp</span>
+            <input
+              type="text"
+              v-model="displayRupiah"
+              @input="formatRupiahInput"
+              placeholder="0"
+              class="real-input"
+            />
           </div>
+          <small class="helper-text" v-if="rupiah > 0 && rupiah < 1000">Minimal pengisian Rp 1.000</small>
+        </div>
 
-          <div class="detail-item" v-if="rupiah">
-            <span class="detail-icon">🔄</span>
-            <div class="detail-content">
-              <strong>Rupiah → Emas:</strong>
-              {{ formatNum(rupiah) }} =
-              <span class="highlight">{{ formatGram(emasFromRupiah) }} gram</span>
+        <div class="summary-section" v-if="rupiah > 0">
+          <h3 class="summary-title">Rincian Top Up</h3>
+          <div class="summary-list">
+            <div class="summary-item">
+              <span class="text-gray">Harga per D'coin</span>
+              <span class="text-dark">Rp 1.000</span>
             </div>
-          </div>
-
-          <div class="detail-item" v-if="selected">
-            <span class="detail-icon">🪙</span>
-            <div class="detail-content">
-              <strong>D’coin → Rupiah:</strong>
-              {{ formatNum(selected) }} D’coin =
-              <span class="highlight">Rp {{ formatNum(rupiah) }}</span>
+            <div class="summary-item">
+              <span class="text-gray">D'coin didapat</span>
+              <span class="text-blue font-bold">{{ formatNum(dcoinFromRupiah) }} DC</span>
             </div>
-          </div>
-
-          <div class="detail-item" v-if="selected">
-            <span class="detail-icon">🏆</span>
-            <div class="detail-content">
-              <strong>D’coin → Emas:</strong>
-              1 D’coin = 0,0002 gram
+            <div class="summary-item">
+              <span class="text-gray">Nilai Setara Emas</span>
+              <span class="text-gold font-bold">{{ formatGram(emasFromRupiah) }} gram</span>
+            </div>
+            <div class="summary-divider"></div>
+            <div class="summary-item total-row">
+              <span>Total Pembayaran</span>
+              <span class="text-xl">Rp {{ formatNum(rupiah) }}</span>
             </div>
           </div>
         </div>
-      </transition>
 
-      <input
-        type="text"
-        v-model="displayRupiah"
-        @input="formatRupiahInput"
-        placeholder="Masukkan nominal Rupiah"
-        class="input-box"
-      />
-
-      <div class="dc-grid">
-        <div
-          v-for="item in dcoinList"
-          :key="item"
-          class="dc-item"
-          @click="selectDcoin(item)"
-          :class="{ active: selected === item }"
+        <button 
+          class="btn-submit" 
+          :disabled="!rupiah || rupiah < 1000"
+          @click="goKonfirmasi"
         >
-          {{ formatCoin(item) }} D’coin
-        </div>
+          Lanjutkan ke Pembayaran
+        </button>
       </div>
-
-      <button class="btn-next" @click="goKonfirmasi">Lanjutkan ➜</button>
-    </div>
+    </main>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
   name: "IsiSaldoView",
   data() {
     return {
-      rupiah: "",
+      rupiah: 0,
       displayRupiah: "",
-      selected: null,
-      hargaEmas: null,
-      hargaEmasBid: null,
-      hargaUpdate: null,
-      loadingHarga: false,
-      errorHarga: null,
-      autoRefresh: null,
-      dcoinList: [
-        2500, 5000, 7500, 10000, 12500, 15000, 17500, 20000, 22500, 25000,
-        27500, 30000, 32500, 35000, 37500,
-      ],
+      hargaEmasStatis: 1250000, 
     };
   },
 
   computed: {
+    dcoinFromRupiah() {
+      if (!this.rupiah) return 0;
+      return Math.floor(this.rupiah / 1000);
+    },
     emasFromRupiah() {
-      if (!this.rupiah || !this.hargaEmas) return 0;
-      return this.rupiah / this.hargaEmas;
+      if (!this.rupiah) return 0;
+      return this.rupiah / this.hargaEmasStatis;
     },
-
-    emasFromDcoin() {
-      if (!this.selected || !this.hargaEmas) return 0;
-      const gramPer2500 = 0.5;
-      return (this.selected / 2500) * gramPer2500;
-    },
-  },
-
-  created() {
-    this.fetchHargaEmas();
-  },
-
-  mounted() {
-    // Auto refresh prices every 30 seconds
-    this.autoRefresh = setInterval(() => {
-      this.fetchHargaEmas();
-    }, 30000);
-  },
-
-  beforeUnmount() {
-    clearInterval(this.autoRefresh);
   },
 
   methods: {
-    formatTo24Hour(date) {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      const hours = String(date.getHours()).padStart(2, "0");
-      const minutes = String(date.getMinutes()).padStart(2, "0");
-      const seconds = String(date.getSeconds()).padStart(2, "0");
-      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    },
-
-    async fetchHargaEmas() {
-      this.loadingHarga = true;
-      this.errorHarga = null;
-
-      try {
-        const { data } = await axios.get("http://localhost:3000/api/harga-emas");
-
-        const gold = data?.GSPPJ?.Gold?.IDR;
-        const askOunce = Number(gold?.ask);
-        const bidOunce = Number(gold?.bid);
-
-        if (!gold || isNaN(askOunce) || isNaN(bidOunce)) {
-          throw new Error("Data harga emas tidak lengkap atau bukan angka");
-        }
-
-        const ounceToGram = 25;
-        const askPerGram = askOunce / ounceToGram;
-        const bidPerGram = bidOunce / ounceToGram;
-
-        this.hargaEmas = Math.round(askPerGram);
-        this.hargaEmasBid = Math.round(bidPerGram);
-        this.hargaUpdate = this.formatTo24Hour(new Date());
-      } catch (error) {
-        console.error("Gagal mengambil harga emas:", error);
-        this.errorHarga = "Tidak bisa memuat harga emas terbaru. Silakan coba lagi.";
-      } finally {
-        this.loadingHarga = false;
-      }
-    },
-
     goBack() {
       this.$router.push("/topup");
     },
 
     formatRupiahInput() {
-      let number = this.displayRupiah.replace(/\./g, "");
+      let number = this.displayRupiah.replace(/[^0-9]/g, "");
       this.rupiah = Number(number);
 
       if (!number) {
         this.displayRupiah = "";
         return;
       }
-
       this.displayRupiah = Number(number).toLocaleString("id-ID");
-      this.selected = null; // Deselect package if user types manually
-    },
-
-    selectDcoin(value) {
-      this.selected = value;
-      // Logic: 2500 Dcoin = 0.5g Gold.
-      const gram = (value / 2500) * 0.5;
-      const calculated = gram * this.hargaEmas;
-      this.rupiah = Math.round(calculated);
-      this.displayRupiah = this.rupiah.toLocaleString("id-ID");
     },
 
     goKonfirmasi() {
-      if (!this.rupiah) {
-        alert("Isi nominal atau pilih jumlah D’coin terlebih dahulu!");
-        return;
-      }
+      if (!this.rupiah || this.rupiah < 1000) return;
 
       this.$router.push({
         name: "Pembayaran",
         params: {
           rupiah: this.rupiah,
           displayRupiah: this.displayRupiah,
-          dcoin: this.selected || 0,
+          dcoin: this.dcoinFromRupiah,
         },
       });
     },
 
-    formatCoin(value) {
-      return value.toLocaleString("id-ID");
-    },
-
     formatNum(num) {
-      if (num === null || num === undefined || Number.isNaN(num)) return "-";
+      if (!num) return "0";
       return Number(num).toLocaleString("id-ID");
     },
 
@@ -260,292 +131,159 @@ export default {
 </script>
 
 <style scoped>
-/* --- Header --- */
-.header {
-  background: #180c4a;
-  color: white;
-  padding: 15px 20px;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+
+.page { 
+  min-height: 100vh; 
+  background: #f4f6f8; 
+  color: #111827; 
+  padding-bottom: 50px;
+}
+
+/* --- Header Bersih (Senada dengan Topup & Dashboard) --- */
+.header { 
+  background: #ffffff; 
+  padding: 16px 20px; 
+  border-bottom: 1px solid #f3f4f6;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-inner {
+  max-width: 700px; /* Lebar selaras dengan container utama */
+  margin: 0 auto;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+}
+.brand {
+  display: flex;
+  align-items: center;
   gap: 10px;
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-bottom: 25px;
+}
+.logo { width: 32px; height: 32px; object-fit: contain; }
+.header-title { font-size: 16px; font-weight: 700; color: #111827; }
+
+.back-btn { 
+  background: #f9fafb; 
+  border: 1px solid #e5e7eb; 
+  width: 36px; 
+  height: 36px; 
+  border-radius: 8px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  cursor: pointer; 
+  color: #111827; 
+  font-size: 18px;
+  font-weight: bold;
+  transition: background 0.2s; 
+}
+.back-btn:hover { background: #f3f4f6; }
+.spacer { width: 36px; }
+
+/* --- Container --- */
+.container { 
+  width: 100%;
+  max-width: 700px; 
+  margin: 30px auto; 
+  padding: 0 20px; 
 }
 
-.logo {
-  width: 45px;
-}
-
-.header-title {
-  font-size: 20px;
-  font-weight: 600;
-}
-
-/* --- Page Layout --- */
-.page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 0;
-  background: linear-gradient(180deg, #e8f4ff, #cbe7ff);
-  font-family: Inter, sans-serif;
-}
-
-.converter-box {
-  width: 900px;
-  padding: 32px;
-  background: white;
-  border-radius: 22px;
-  box-shadow: 0 5px 28px #00000025;
-  animation: fadeIn 0.4s ease;
-  /* Add margin to prevent overlap with icon-btn on smaller screens */
-  margin-top: 20px; 
-}
-
-.title {
-  font-size: 28px;
-  font-weight: 800;
-  color: #0f172a;
-  margin: 0;
-}
-
-.subtitle {
-  font-size: 15px;
-  color: #475569;
-  margin-bottom: 10px;
-}
-
-/* --- Price Banner --- */
-.price-banner {
-  margin-top: 18px;
-  margin-bottom: 20px;
-  padding: 18px 22px;
-  border-radius: 18px;
-  background: linear-gradient(120deg, #fff7e6, #ffe4ba);
-  box-shadow: 0 4px 15px rgba(255, 149, 0, 0.18);
-}
-
-.price-row {
-  display: flex;
-  gap: 24px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.price-label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #b45309;
-  margin: 0;
-}
-
-.price-value {
-  font-size: 20px;
-  font-weight: 700;
-  color: #92400e;
-  margin: 4px 0 0;
-}
-
-.price-actions {
-  margin-left: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-}
-
-.refresh-btn {
-  padding: 10px 18px;
-  border: none;
-  border-radius: 999px;
-  background: #f97316;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.refresh-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.refresh-btn:not(:disabled):hover {
-  transform: translateY(-1px);
-}
-
-.update-time {
-  font-size: 12px;
-  color: #78350f;
-}
-
-/* --- Back Button --- */
-.icon-btn {
-  position: absolute;
-  top: 85px; /* Adjusted to sit below header */
-  left: 22px;
-  background: white;
-  border: none;
-  width: 42px;
-  height: 42px;
-  border-radius: 11px;
-  font-size: 20px;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
-  transition: 0.25s;
-  z-index: 10;
-}
-
-.icon-btn:hover {
-  transform: scale(1.13);
-}
-
-/* --- Inputs --- */
-.input-box {
-  width: 97%;
-  height: 72px;
+/* --- Card Utama --- */
+.main-card {
+  background: #ffffff;
   border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e5e7eb;
+}
+
+.title { font-size: 24px; font-weight: 700; color: #111827; margin-bottom: 8px; }
+.subtitle { font-size: 14px; color: #4b5563; margin-bottom: 30px; line-height: 1.5; }
+
+/* --- Input Area --- */
+.input-wrapper { margin-bottom: 30px; }
+.input-label { display: block; font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 8px; }
+
+.input-box {
+  display: flex;
+  align-items: center;
+  background: #f9fafb;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0 20px;
+  height: 64px;
+  transition: all 0.2s;
+}
+.input-box:focus-within {
+  border-color: #2563eb;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+.input-box.has-value { border-color: #2563eb; background: #ffffff; }
+
+.currency { font-size: 20px; font-weight: 600; color: #6b7280; margin-right: 12px; }
+.input-box.has-value .currency { color: #111827; }
+
+.real-input {
+  width: 100%;
+  height: 100%;
   border: none;
-  padding-left: 22px;
-  font-size: 22px;
-  background: linear-gradient(135deg, #d9e7ff, #ffffff);
-  box-shadow: 0 3px 12px #00000025;
-  margin-bottom: 28px;
-  outline: none;
-}
-
-/* --- Grid --- */
-.dc-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-top: 18px;
-}
-
-.dc-item {
-  background: white;
-  padding: 22px 0;
-  text-align: center;
-  border-radius: 15px;
-  font-size: 22px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 4px 12px #00000020;
-  transition: 0.25s;
-}
-
-.dc-item:hover {
-  transform: scale(1.08);
-}
-
-.dc-item.active {
-  border: 3px solid #1976ff;
-  box-shadow: 0 0 13px #1976ff;
-}
-
-/* --- Detail Box --- */
-.detail-box {
-  margin-bottom: 25px;
-  margin-top: 10px;
-  padding: 24px;
-  background: linear-gradient(135deg, #f1f5ff, #e0e7ff);
-  border-radius: 18px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  border: 1px solid #d1d5db;
-}
-
-.detail-title {
+  background: transparent;
   font-size: 24px;
   font-weight: 700;
-  color: #1e293b;
-  margin-bottom: 20px;
-  text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  color: #111827;
+  outline: none;
 }
+.real-input::placeholder { color: #9ca3af; font-weight: 500; }
+.helper-text { display: block; margin-top: 6px; font-size: 12px; color: #ef4444; }
 
-.detail-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 16px;
-  padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.8);
+/* --- Summary / Rincian --- */
+.summary-section {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 20px;
+  margin-bottom: 30px;
 }
+.summary-title { font-size: 14px; font-weight: 700; color: #334155; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
+.summary-list { display: flex; flex-direction: column; gap: 12px; }
+.summary-item { display: flex; justify-content: space-between; align-items: center; font-size: 15px; }
 
-.detail-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
+.text-gray { color: #64748b; }
+.text-dark { color: #0f172a; font-weight: 500; }
+.text-blue { color: #2563eb; font-size: 16px; }
+.text-gold { color: #d97706; }
+.font-bold { font-weight: 700; }
 
-.detail-icon {
-  font-size: 28px;
-  margin-right: 16px;
-  flex-shrink: 0;
-}
+.summary-divider { height: 1px; background: #e2e8f0; margin: 4px 0; }
+.total-row { font-weight: 700; color: #0f172a; margin-top: 4px; }
+.text-xl { font-size: 20px; color: #111827; }
 
-.detail-content {
-  font-size: 16px;
-  color: #374151;
-  line-height: 1.5;
-}
-
-.highlight {
-  color: #2563eb;
-  font-weight: 700;
-  font-size: 18px;
-}
-
-/* --- Animation --- */
-.slide-fade-enter-active {
-  transition: all 0.4s ease-out;
-}
-
-.slide-fade-leave-active {
-  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  transform: translateY(-20px);
-  opacity: 0;
-}
-
-/* --- Buttons --- */
-.btn-next {
+/* --- Tombol Submit --- */
+.btn-submit {
   width: 100%;
-  height: 55px;
-  margin-top: 40px;
-  font-size: 22px;
-  border-radius: 14px;
-  font-weight: 700;
+  background: #111827;
+  color: #ffffff;
   border: none;
+  padding: 18px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
-  background: linear-gradient(90deg, #1e40af, #2563eb);
-  color: white;
-  box-shadow: 0 5px 18px #2563eb60;
-  transition: 0.3s;
+  transition: all 0.3s;
 }
-
-.btn-next:hover {
-  transform: translateY(-3px);
+.btn-submit:hover:not(:disabled) {
+  background: #374151;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(17, 24, 39, 0.15);
 }
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.btn-submit:disabled {
+  background: #cbd5e1;
+  color: #94a3b8;
+  cursor: not-allowed;
 }
 </style>

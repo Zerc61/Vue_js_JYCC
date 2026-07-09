@@ -1,339 +1,142 @@
 <template>
   <div class="wallet-page">
-    
-    <header class="topbar">
-      <button class="icon-btn" @click="goBack">⟵</button>
+    <header class="header">
+      <div class="header-inner">
+        <img :src="require('@/assets/scream 2.png')" alt="logo" class="logo" />
+        <h1 class="title">East Java Traveling</h1>
+      </div>
     </header>
-
-    <div class="header">
-      <img :src="require('@/assets/scream 2.png')" alt="logo" class="logo" />
-      <h1 class="title">SCREAM DESTINATION</h1>
-    </div>
 
     <main class="container">
       <section class="wallet-card">
         <div class="wallet-head">
           <div class="wallet-title">
             <h2>Dompet Digital Kamu <span class="spark">✨</span></h2>
-            <p class="subtitle">Konversi uang kamu ke emas, dapatkan D'coin untuk transaksi halal.</p>
+            <p class="subtitle">Konversi uang ke emas, dapatkan D'coin untuk transaksi halal.</p>
           </div>
-          <div class="wallet-actions">
-            <button class="btn-ghost" @click="showHistory">Riwayat</button>
-          </div>
+          <button class="btn-ghost" @click="toggleHistory">
+            {{ showHistoryModal ? 'Tutup Riwayat' : 'Riwayat' }}
+          </button>
         </div>
 
         <div class="balance-area">
           <div class="balance-left">
             <div class="balance-label">Saldo D'coin</div>
-            <div class="balance-value">100.000 <span class="dc">DC</span></div>
-            <div class="balance-small">Rp. 100.000.000 (setara 4,52 gr emas)</div>
+            <!-- Terhubung ke store.saldo_dcoin -->
+            <div class="balance-value">{{ formatNumber(store.saldo_dcoin) }} <span class="dc">DC</span></div>
+            <div class="balance-small">
+              {{ formatRupiah(store.saldo_dcoin * 1000) }} (setara {{ (store.saldo_dcoin / 5000).toFixed(2) }} gr emas)
+            </div>
           </div>
-
           <div class="balance-cta">
-            <button class="btn-primary" @click="topUp">Isi Saldo</button>
+            <button class="btn-primary" @click="handleTopUp">Isi Saldo</button>
           </div>
         </div>
 
         <div class="wallet-actions-row">
-          <button class="small-card" @click="monthlyTrans">
+          <div class="small-card">
             <div class="card-title">Transaksi Bulan Ini</div>
-            <div class="card-sub">Rp 2.500.000</div>
-          </button>
-
-          <button class="small-card" @click="coinsCashback">
+            <div class="card-sub">{{ formatRupiah(monthlyTransactionTotal) }}</div>
+          </div>
+          <div class="small-card">
             <div class="card-title">Harga Emas</div>
-            <div class="card-sub">+5.000 DC</div>
-          </button>
-
-          <button class="small-card" @click="sendTransfer">
+            <div class="card-sub">{{ formatRupiah(goldPricePerGram) }} / gr</div>
+          </div>
+          <button class="small-card interactive" @click="handleTransfer">
             <div class="card-title">Kirim / Terima</div>
-            <div class="card-sub">Transfer Instan</div>
+            <div class="card-sub text-blue">Transfer Instan &rarr;</div>
           </button>
         </div>
       </section>
 
-      <section class="info-section">
-        <h3>Penawaran & Info</h3>
-        <div class="info-grid">
-          <article class="info-card">
-            <h4>Promosi Menarik</h4>
-            <p>Dapatkan 10% cashback untuk top up minimal Rp50.000.</p>
-          </article>
-          <article class="info-card">
-            <h4>Keamanan</h4>
-            <p>Transaksi dilindungi OTP & enkripsi end-to-end.</p>
-          </article>
+      <section v-if="showHistoryModal" class="history-section">
+        <h3>Riwayat Transaksi</h3>
+        <div v-if="transactions.length === 0" class="empty-state">Belum ada transaksi.</div>
+        <div v-else class="transaction-list">
+          <div v-for="trx in transactions" :key="trx.id" class="transaction-item">
+            <div class="trx-info">
+              <div class="trx-desc">{{ trx.desc }}</div>
+              <div class="trx-date">{{ trx.date }}</div>
+            </div>
+            <div :class="['trx-amount', trx.type === 'in' ? 'text-green' : 'text-red']">
+              {{ trx.type === 'in' ? '+' : '-' }} {{ formatNumber(trx.amount) }} DC
+            </div>
+          </div>
         </div>
       </section>
     </main>
-
-    <nav class="bottom-nav" aria-label="Bottom navigation">
-      <router-link
-        v-for="(n, i) in bottomNav"
-        :key="i"
-        :to="n.route"
-        class="nav-btn"
-        active-class="active"
-      >
-        <img :src="n.image" class="nav-image" :alt="n.label" />
-        <small class="nav-label">{{ n.label }}</small>
-      </router-link>
-    </nav>
   </div>
 </template>
 
 <script>
+import { globalStore } from '@/store';
+
 export default {
   name: "TopupView",
   data() {
-    return {  
-      query: "",
-      bottomNav: [
-        {
-          label: "Home",
-          image: require("@/assets/dashboard.png"),
-          route: "/",
-        },
-        {
-          label: "Explore",
-          image: require("@/assets/explore.png"),
-          route: "/explore",
-        },
-        {
-          label: "Promo",
-          image: require("@/assets/promo.png"),
-          route: "/promo",
-        },
-        {
-          label: "Wishlist",
-          image: require("@/assets/wishlist.png"),
-          route: "/wishlist",
-        },
-        {
-          label: "Profil",
-          image: require("@/assets/profil.png"),
-          route: "/profil",
-        },
+    return {
+      store: globalStore,
+      goldPricePerGram: 1250000,
+      showHistoryModal: false,
+      transactions: [
+        { id: 1, type: "in", amount: 10000, desc: "Top Up Awal", date: new Date().toLocaleDateString() }
       ],
     };
   },
+  computed: {
+    monthlyTransactionTotal() {
+      return 2500000; // Contoh statis
+    }
+  },
   methods: {
-    goBack() { 
-      // Navigate back to dashboard or previous page
-      this.$router.push("/"); 
+    handleTopUp() {
+      // Langsung arahkan ke halaman isi saldo (isisaldo.vue)
+      this.$router.push("/isisaldo");
     },
-    topUp() { this.$router.push("/isisaldo"); },
-    convertGold() { this.$router.push("/convert-gold"); },
-    monthlyTrans() { alert("Detail transaksi bulanan"); },
-    coinsCashback() { alert("Harga Emas/Gram: 5.000 DC"); },
-    sendTransfer() { this.$router.push("/transfer"); },
-    showHistory() { this.$router.push("/history"); },
+    handleTransfer() {
+      alert("Fitur transfer akan segera hadir!");
+    },
+    toggleHistory() {
+      this.showHistoryModal = !this.showHistoryModal;
+    },
+    formatNumber(num) {
+      return new Intl.NumberFormat("id-ID").format(num);
+    },
+    formatRupiah(num) {
+      return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(num);
+    }
   }
 };
 </script>
 
 <style scoped>
-/* --- Page Layout --- */
-.wallet-page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(180deg, #f7fbff 0%, #f0f7ff 40%, #eaf6ff 100%);
-  color: #0f172a;
-  font-family: "Poppins", sans-serif;
-}
+/* CSS tetap sama, saya hapus .bottom-nav karena sudah pindah ke App.vue */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* --- Topbar --- */
-.topbar {
-  height: 56px;
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  position: relative;
-  z-index: 10;
-}
+* { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
 
-.icon-btn {
-  background: white;
-  border: none;
-  width: 42px;
-  height: 42px;
-  border-radius: 11px;
-  font-size: 20px;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.08);
-  transition: 0.25s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.icon-btn:hover {
-  transform: scale(1.13);
-}
-
-/* --- Header Branding --- */
-.header {
-  background: #180c4a;
-  color: white;
-  padding: 15px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  /* Adjust position to sit nicely under topbar */
-  margin-bottom: 10px;
-}
-
-.logo { width: 45px; }
-.title { font-size: 20px; font-weight: 600; }
-
-/* --- Container --- */
-.container {
-  width: 100%;
-  max-width: 920px;
-  margin: 12px auto;
-  padding: 0 16px 100px; /* Padding bottom for nav */
-  box-sizing: border-box;
-}
-
-/* --- Wallet Card --- */
-.wallet-card {
-  background: linear-gradient(180deg, #ffffff 0%, #f8fdff 100%);
-  border-radius: 18px;
-  padding: 18px;
-  box-shadow: 0 12px 30px rgba(2,6,23,0.08);
-  overflow: hidden;
-}
-
-.wallet-head {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: flex-start;
-  margin-bottom: 8px;
-}
-
-.wallet-title h2 { margin: 0; font-size: 20px; }
-.wallet-title .subtitle { margin-top: 6px; color: #475569; font-size: 13px; }
-
-/* --- Balance Area --- */
-.balance-area {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 12px;
-  flex-wrap: wrap;
-}
-
-.balance-left { min-width: 220px; }
-.balance-label { color: #64748b; font-size: 13px; margin-bottom: 6px; }
-.balance-value { font-size: 28px; font-weight: 800; color: #0f172a; display: flex; align-items: baseline; gap: 8px; }
-.balance-value .dc { font-size: 14px; font-weight: 700; color: #2563eb; }
-.balance-small { color: #94a3b8; font-size: 12px; margin-top: 6px; }
-
-/* --- Buttons --- */
-.balance-cta { display: flex; gap: 10px; align-items: center; }
-.btn-primary {
-  background: linear-gradient(180deg, #1e40af, #2563eb);
-  color: white;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 8px 20px rgba(37,99,235,0.18);
-}
-
-.btn-ghost {
-  background: transparent;
-  color: #0f172a;
-  border: 1px solid rgba(15,23,42,0.06);
-  padding: 10px 12px;
-  border-radius: 12px;
-  cursor: pointer;
-}
-
-/* --- Action Cards --- */
-.wallet-actions-row {
-  display: flex;
-  gap: 10px;
-  margin-top: 16px;
-  flex-wrap: wrap;
-}
-
-.small-card {
-  flex: 1 1 30%;
-  min-width: 140px;
-  background: #fff;
-  padding: 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(2,6,23,0.04);
-  box-shadow: 0 8px 18px rgba(2,6,23,0.04);
-  cursor: pointer;
-  text-align: left;
-}
-
-.small-card .card-title { font-weight: 700; color: #0f172a; }
-.small-card .card-sub { color: #475569; margin-top: 6px; font-size: 13px; }
-
-/* --- Info Section --- */
-.info-section { margin-top: 18px; }
-.info-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-top: 8px; }
-.info-card { background: #fff; padding: 12px; border-radius: 12px; box-shadow: 0 8px 18px rgba(2,6,23,0.04); }
-
-/* --- Bottom Navigation --- */
-.bottom-nav {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 14px;
-  margin: 0 auto;
-  max-width: 820px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 10px 18px;
-  background: #ffffff;
-  border-radius: 22px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
-  z-index: 999;
-}
-
-.nav-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-decoration: none;
-  color: #222;
-  gap: 4px;
-  font-family: "Poppins", sans-serif;
-}
-
-.nav-btn.active {
-  color: #2563eb;
-  font-weight: 600;
-}
-
-.nav-image {
-  width: 26px;
-  height: 26px;
-  object-fit: contain;
-  display: block;
-}
-
-.nav-label {
-  font-size: 11px;
-  color: inherit;
-}
-
-/* --- Responsive --- */
-@media (max-width: 720px) {
-  .info-grid { grid-template-columns: repeat(1,1fr); }
-  .wallet-head { flex-direction: column; align-items: flex-start; gap: 8px; }
-  .balance-area { flex-direction: column; align-items: flex-start; gap: 12px; }
-  .bottom-nav { width: calc(100% - 24px); left: 12px; margin: 0; }
-}
+.wallet-page { min-height: 100vh; background: #fcfcfd; color: #111827; padding-bottom: 40px; }
+.header { background: #ffffff; padding: 16px 20px; border-bottom: 1px solid #f3f4f6; }
+.header-inner { max-width: 920px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+.logo { width: 36px; height: 36px; object-fit: contain; }
+.title { font-size: 16px; font-weight: 700; }
+.container { max-width: 920px; margin: 24px auto; padding: 0 20px; }
+.wallet-card { background: #ffffff; border-radius: 24px; padding: 24px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); border: 1px solid #f3f4f6; }
+.wallet-head { display: flex; justify-content: space-between; align-items: flex-start; }
+.wallet-title h2 { font-size: 20px; font-weight: 700; }
+.subtitle { font-size: 13px; color: #6b7280; margin-top: 4px; }
+.btn-ghost { background: #f9fafb; color: #374151; border: 1px solid #e5e7eb; padding: 8px 16px; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.balance-area { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; }
+.balance-value { font-size: 32px; font-weight: 800; color: #111827; }
+.dc { font-size: 16px; color: #2563eb; }
+.btn-primary { background: #111827; color: #ffffff; border: none; padding: 12px 24px; border-radius: 14px; font-weight: 600; cursor: pointer; }
+.wallet-actions-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 32px; }
+.small-card { background: #f9fafb; padding: 16px; border-radius: 16px; border: 1px solid #f3f4f6; }
+.card-title { font-size: 12px; color: #6b7280; }
+.card-sub { font-size: 14px; font-weight: 700; margin-top: 4px; }
+.history-section { margin-top: 24px; background: #ffffff; padding: 20px; border-radius: 20px; border: 1px solid #f3f4f6; }
+.transaction-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+.text-green { color: #10b981; }
+.text-red { color: #ef4444; }
+@media (max-width: 768px) { .wallet-actions-row { grid-template-columns: 1fr; } }
 </style>

@@ -80,58 +80,39 @@
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
   name: "LoginPages",
-
   data() {
     return {
       email: "",
       password: "",
     };
   },
-
   methods: {
-    async login() {
-      console.log("LOGIN DIKLIK");
+    login() {
+      if (!this.email || !this.password) {
+        alert("Harap isi email dan password!");
+        return;
+      }
 
-      try {
-        const response = await axios.post("http://127.0.0.1:8000/api/login", {
-          email: this.email,
-          password: this.password,
-        });
+      // Ambil data users dari localStorage
+      let users = JSON.parse(localStorage.getItem("users")) || [];
 
-        if (response.data.status === 1) {
-          alert(response.data.message);
+      // Cari user yang email dan password-nya cocok
+      const matchedUser = users.find(u => u.email === this.email && u.password === this.password);
 
-          // Ambil role sekali saja
-          const role = response.data.user.role;
+      if (matchedUser) {
+        // Jika cocok, buatkan "dummy token" dan simpan data user yang sedang aktif
+        localStorage.setItem("token", "dummy-token-12345");
+        localStorage.setItem("active_user", JSON.stringify(matchedUser));
 
-          // Simpan token & role
-          localStorage.setItem("token", response.data.access_token);
-          localStorage.setItem("role", role);
-
-          // Arahkan sesuai role
-          if (role === "admin") {
-            this.$router.push("/admin");
-          } else if (role === "umkm") {
-            this.$router.push("/umkm");
-          } else if (role === "driver") {
-            this.$router.push("/driver");
-          } else {
-            this.$router.push("/dashboard");
-          }
-
-        } else {
-          alert("Login gagal!");
-        }
-      } catch (error) {
-        alert("Email atau password salah!");
+        alert(`Selamat datang kembali, ${matchedUser.username}!`);
+        this.$router.push("/dashboard");
+      } else {
+        alert("Email atau password salah! Silakan coba lagi atau Register.");
       }
     },
   },
-
 };
 </script>
 
@@ -205,14 +186,13 @@ export default {
   position: relative;
 }
 .travel-by-plane {
-  width: 100%;
-  max-width: 400px;
+  max-width: 500px;
   margin-left: 12%;
 }
 .welcome-text {
   position: absolute;
-  bottom: 12%;
-  left: 30%;
+  bottom: 15%;
+  left: 35%;
   color: white;
   font-size: 2rem;
 }
